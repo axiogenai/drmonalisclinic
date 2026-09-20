@@ -51,7 +51,7 @@ const recommendations: Record<string, { protocol: string; tech: string; duration
     summary: 'Soft, natural dynamic wrinkle relaxation combined with intradermal hydration for lifted, luminous firmness.',
   },
   'glow-hydrate': {
-    protocol: 'Prime Signature Medi Facial Renewal',
+    protocol: 'Signature Medi Facial Renewal',
     tech: 'Hydra-Vacuum Infusion + Cryo-Toning + Vitamin C Serum',
     duration: 'Monthly Maintenance',
     summary: 'Instant micro-circulation boost, dead cell exfoliation, and intense dermal plumping with zero recovery downtime.',

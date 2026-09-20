@@ -95,7 +95,7 @@ export default function ConfidenceSection() {
           Personalized, gentle care at <strong className="font-semibold text-gray-900">Dr. Monali&apos;s Homeopathy Clinic</strong> to restore natural well-being.
         </p>
 
-        {/* 4 Stats Grid matching primederm exact style */}
+        {/* 4 Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 w-full pt-4">
           {counters.map((stat) => (
             <div 

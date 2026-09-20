@@ -69,9 +69,8 @@ function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suff
 export default function AboutPage() {
   // Hero background slideshow
   const heroSlides = [
-    '/docbg2.png',
     '/docbg.png',
-    'https://primederm.in/wp-content/uploads/2025/06/4-1-scaled.webp'
+    '/docbg2.png',
   ];
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
 
@@ -206,7 +205,7 @@ export default function AboutPage() {
       </section>
 
       {/* =========================================================================
-          SECTION 2: OUR STORY (Welcome to Prime Derm Skin Clinic)
+          SECTION 2: OUR STORY (Welcome to Dr. Monali's Clinic)
           ========================================================================= */}
       <section id="abt-section" className="py-20 md:py-28 bg-white">
         <div className="max-w-[1240px] mx-auto px-5 md:px-8">
@@ -235,7 +234,7 @@ export default function AboutPage() {
               <h2 className="font-['Playfair_Display'] text-4xl sm:text-5xl md:text-[60px] lg:text-[64px] font-normal text-gray-900 leading-[1.08] tracking-[-0.02em]">
                 Welcome to{' '}
                 <span className="text-[#108283] italic font-extrabold block sm:inline">
-                  Prime Derm Skin Clinic
+                  Dr. Monali&apos;s Clinic
                 </span>
               </h2>
 
@@ -245,13 +244,13 @@ export default function AboutPage() {
 
               <div className="space-y-4 font-['Source_Sans_3'] text-base md:text-[16px] text-gray-800 leading-[26px] font-light">
                 <p>
-                  Prime Derm Skin and Hair Clinic was born from a clear vision to solve skin and hair concerns at their root and promote a more confident, healthy version of each individual. We believe that clear skin and healthy hair are not just aesthetic goals, but pathways to self-esteem and emotional well being.
+                  Dr. Monali&apos;s Homeopathy &amp; Cosmetology Clinic was born from a clear vision to solve skin, hair, and constitutional health concerns at their root and promote a more confident, healthy version of each individual. We believe that clear skin, radiant hair, and lasting health are pathways to self-esteem and emotional well being.
                 </p>
                 <p>
                   Rooted in clinical excellence and delivered with empathy, we provide patient centered care that is mindful, transparent, and thorough at every step.
                 </p>
                 <p>
-                  At Prime Derm Skin Clinic, we believe that true healing begins with trust, compassion, and a deep understanding of each patient&apos;s unique skin and health journey. Established in a peaceful neighborhood and surrounded by lush greenery, our clinic is more than a medical space it&apos;s a sanctuary of care, where science and soul come together to bring lasting results and lasting relationships.
+                  At Dr. Monali&apos;s Clinic, we believe that true healing begins with trust, compassion, and a deep understanding of each patient&apos;s unique health journey. Established in Kolhapur, our clinic is a sanctuary of care where constitutional science and modern cosmetology come together to bring lasting results and lifelong relationships.
                 </p>
               </div>
 
@@ -304,7 +303,7 @@ export default function AboutPage() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0 flex justify-center items-end opacity-15 lg:opacity-100">
           <img
             src="/about-model.png"
-            alt="Prime Derm Radiant Model"
+            alt="Dr. Monali's Clinic Model"
             className="h-[420px] md:h-[540px] lg:h-[680px] xl:h-[720px] w-auto max-w-none object-contain block translate-y-1"
           />
         </div>
@@ -367,7 +366,7 @@ export default function AboutPage() {
               <div className="rounded-xl overflow-hidden shadow-xl">
                 <img
                   src="https://primederm.in/wp-content/uploads/2025/05/pexels-john-tekeridis-21837-14256897-2.png"
-                  alt="Why Choose Prime Derm"
+                  alt="Why Choose Dr. Monali's Clinic"
                   className="w-full h-auto object-cover rounded-xl"
                 />
               </div>

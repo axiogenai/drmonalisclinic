@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform, useMotionValueEvent, MotionValue } from 'framer-motion';
-import { ArrowRight, X, Clock, Calendar, ShieldCheck, Check, Leaf, Droplets, Scissors, Syringe, Zap, Heart } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, X, Clock, Calendar, ShieldCheck, Check, Leaf, Droplets, Scissors, Syringe, Zap, Heart } from 'lucide-react';
 
 interface Service {
   title: string;
@@ -28,7 +28,7 @@ const SERVICES: Service[] = [
     category: 'wellness',
     tagline: 'Relief • Healing • Health',
     description: 'Effective homeopathic remedies for kidney stones and piles, ensuring non-invasive recovery.',
-    image: '/services/kidney-stones.jpg',
+    image: '/services/kidney-stones.webp',
     imagePosition: 'object-center',
     cardBg: '#064e3b',
     accent: 'from-[#064e3b]/95 via-[#10b981]/50 to-transparent',
@@ -43,7 +43,7 @@ const SERVICES: Service[] = [
     category: 'wellness',
     tagline: 'Grow • Develop • Thrive',
     description: 'Safe and natural homeopathic treatments to stimulate natural height growth during developmental years.',
-    image: '/services/height-increase.png',
+    image: '/services/height-increase.webp',
     imagePosition: 'object-top sm:object-[center_10%]',
     cardBg: '#0e4a5a',
     accent: 'from-[#0e4a5a]/95 via-[#14b8a6]/50 to-transparent',
@@ -58,7 +58,7 @@ const SERVICES: Service[] = [
     category: 'body',
     tagline: 'Balance • Shape • Wellness',
     description: 'Comprehensive homeopathic weight management protocols for healthy and sustainable loss or gain.',
-    image: '/services/female-weight-loss.png',
+    image: '/services/female-weight-loss.webp',
     imagePosition: 'object-top sm:object-[center_18%]',
     cardBg: '#1e3a8a',
     accent: 'from-[#1e3a8a]/95 via-[#3b82f6]/50 to-transparent',
@@ -73,7 +73,7 @@ const SERVICES: Service[] = [
     category: 'skin',
     tagline: 'Diagnose • Treat • Heal',
     description: 'Root-cause homeopathic treatments for eczema, psoriasis, vitiligo, and chronic skin conditions.',
-    image: '/services/psoriasis.jpg',
+    image: '/services/psoriasis.webp',
     imagePosition: 'object-center',
     cardBg: '#0c4a6e',
     accent: 'from-[#0c4a6e]/95 via-[#0ea5e9]/50 to-transparent',
@@ -88,7 +88,7 @@ const SERVICES: Service[] = [
     category: 'wellness',
     tagline: 'Regulate • Restore • Balance',
     description: 'Natural and effective management of PCOD and hormonal imbalances through constitutional homeopathy.',
-    image: '/services/pcod.png',
+    image: '/services/pcod.webp',
     imagePosition: 'object-center sm:object-[center_20%]',
     cardBg: '#701a75',
     accent: 'from-[#701a75]/95 via-[#d946ef]/50 to-transparent',
@@ -103,7 +103,7 @@ const SERVICES: Service[] = [
     category: 'skin',
     tagline: 'Renew • Refine • Glow',
     description: 'Advanced medi facials and chemical peels for instant brightening, exfoliation, and skin rejuvenation.',
-    image: '/services/medifacial.png',
+    image: '/services/medifacial.webp',
     imagePosition: 'object-center sm:object-[center_20%]',
     cardBg: '#78350f',
     accent: 'from-[#78350f]/95 via-[#f59e0b]/50 to-transparent',
@@ -119,7 +119,7 @@ const SERVICES: Service[] = [
     category: 'skin',
     tagline: 'Clear • Youthful • Radiant',
     description: 'Targeted solutions to clear active acne, reduce scars, and combat signs of aging for a youthful glow.',
-    image: '/services/anti-acne.png',
+    image: '/services/anti-acne.webp',
     imagePosition: 'object-center sm:object-[center_20%]',
     cardBg: '#115e59',
     accent: 'from-[#115e59]/95 via-[#2dd4bf]/50 to-transparent',
@@ -134,7 +134,7 @@ const SERVICES: Service[] = [
     category: 'surgery',
     tagline: 'Precise • Safe • Flawless',
     description: 'Expert procedures for pigmentation correction and safe removal of moles, warts, and skin tags.',
-    image: '/services/pigmentation.png',
+    image: '/services/pigmentation.webp',
     imagePosition: 'object-center sm:object-[center_25%]',
     cardBg: '#4c1d95',
     accent: 'from-[#4c1d95]/95 via-[#8b5cf6]/50 to-transparent',
@@ -149,7 +149,7 @@ const SERVICES: Service[] = [
     category: 'hair',
     tagline: 'Revive • Stimulate • Regrow',
     description: 'Platelet-Rich Plasma (PRP) therapy to naturally stimulate hair growth and rejuvenate facial skin.',
-    image: '/services/hair-prp.png',
+    image: '/services/hair-prp.webp',
     imagePosition: 'object-top sm:object-[center_15%]',
     cardBg: '#7c2d12',
     accent: 'from-[#7c2d12]/95 via-[#ea580c]/50 to-transparent',
@@ -164,7 +164,7 @@ const SERVICES: Service[] = [
     category: 'skin',
     tagline: 'Infuse • Repair • Rejuvenate',
     description: 'Advanced microneedling and mesotherapy to infuse vital nutrients and repair skin structure.',
-    image: '/services/microneedling.png',
+    image: '/services/microneedling.webp',
     imagePosition: 'object-top sm:object-[center_12%]',
     cardBg: '#881337',
     accent: 'from-[#881337]/95 via-[#f43f5e]/50 to-transparent',
@@ -195,6 +195,7 @@ function CategoryIcon({ cat }: { cat: Service['category'] }) {
 }
 
 
+
 const clampVal = (t: number, n: number, s: number) => Math.min(Math.max(t, n), s);
 const stepF = 0.5;
 
@@ -206,7 +207,7 @@ const desktopConfig = {
 };
 
 const mobileConfig = {
-  peek: 0,
+  peek: 0.038,
   scaleStep: 0,
   exitShrink: 0,
   maxDepth: 1,
@@ -224,11 +225,7 @@ const calcElevationE = (t: number, n: number, s: number) => {
   return Math.min(i + clampVal((m - (1 - stepF)) / stepF, 0, 1), s);
 };
 
-const calcOpacityU = (t: number, n: number, s: number) => {
-  const stackOpacity = clampVal(s + 1 - (n - Math.max(t, 0)), 0, 1);
-  const exitOpacity = 1 - calcShiftS(t, n);
-  return Number((stackOpacity * exitOpacity).toFixed(4));
-};
+const calcOpacityU = (t: number, n: number, s: number) => clampVal(s + 1 - (n - Math.max(t, 0)), 0, 1);
 
 const generateSafeKeyframes = (
   t: number,
@@ -238,13 +235,13 @@ const generateSafeKeyframes = (
   const { peek: r, scaleStep: i, exitShrink: m, maxDepth: l } = cfg;
   
   const points: { p: number; y: string; scale: number; opacity: number }[] = [];
-  const count = 100;
+  const count = 30; // 30 samples is plenty — fewer = less interpolation work per frame
   for (let step = 0; step <= count; step++) {
     const p = step / count;
-    const a = p * n - 1;
+    const a = p * Math.max(n - 1, 1);
     const yVal = `${((calcElevationE(a, t, l) * r - calcShiftS(a, t) * exitDistanceH) * 100).toFixed(3)}%`;
     const scaleVal = Number((1 - calcElevationE(a, t, l) * i - calcShiftS(a, t) * m).toFixed(4));
-    const opacityVal = calcOpacityU(a, t, l);
+    const opacityVal = Number(calcOpacityU(a, t, l).toFixed(4));
     points.push({ p, y: yVal, scale: scaleVal, opacity: opacityVal });
   }
 
@@ -293,7 +290,7 @@ const DeckCardItem = React.memo(function DeckCardItem({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12"
+      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-8 py-[80px] md:py-[100px]"
       style={{ zIndex: total - index }}
     >
       <motion.div
@@ -305,6 +302,8 @@ const DeckCardItem = React.memo(function DeckCardItem({
           opacity, 
           pointerEvents: active ? 'auto' : 'none',
           backgroundColor: service.cardBg,
+          willChange: 'transform, opacity',
+          transform: 'translateZ(0)',
         }}
       >
         {/* Right-Side Dedicated Image Frame with Proper Proportions */}
@@ -313,7 +312,7 @@ const DeckCardItem = React.memo(function DeckCardItem({
             src={service.image}
             alt={service.title}
             className={`w-full h-full object-cover ${service.imagePosition || 'object-top'}`}
-            loading={index <= 1 ? 'eager' : 'lazy'}
+            loading="eager"
             decoding="async"
           />
           {/* Edge blend gradient */}
@@ -405,6 +404,8 @@ const DeckCardItem = React.memo(function DeckCardItem({
 export default function ServicesSection() {
   const [cat, setCat] = useState<'all' | Service['category']>('all');
   const [modal, setModal] = useState<Service | null>(null);
+  const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
 
   const visible = cat === 'all'
     ? SERVICES
@@ -418,6 +419,16 @@ export default function ServicesSection() {
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
     mq.addEventListener("change", handler);
+
+    // Warm up image cache and pre-decode into GPU memory
+    SERVICES.forEach(s => {
+      const img = new window.Image();
+      img.src = s.image;
+      if (typeof img.decode === 'function') {
+        img.decode().catch(() => {});
+      }
+    });
+
     return () => mq.removeEventListener("change", handler);
   }, []);
 
@@ -425,7 +436,7 @@ export default function ServicesSection() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end end"],
+    offset: ["start start", "end end"],
   });
 
   const total = visible.length;
@@ -438,16 +449,99 @@ export default function ServicesSection() {
   const activeRef = useRef(0);
 
   useMotionValueEvent(scrollYProgress, "change", (val) => {
-    const next = clampVal(Math.round(val * total - 1), 0, total - 1);
+    const next = clampVal(Math.round(val * (total - 1)), 0, Math.max(total - 1, 0));
     if (next !== activeRef.current) {
       activeRef.current = next;
       setActiveCard(next);
     }
   });
 
+  const handleCatChange = (newCat: 'all' | Service['category']) => {
+    setCat(newCat);
+    setMobileActiveIndex(0);
+    if (mobileScrollRef.current) {
+      mobileScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  };
+
+  const [isPaused, setIsPaused] = useState(false);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const pauseAutoSwipe = useCallback((duration = 5000) => {
+    setIsPaused(true);
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+    }
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, duration);
+  }, []);
+
+  const scrollMobileTo = useCallback((index: number) => {
+    if (!mobileScrollRef.current) return;
+    const container = mobileScrollRef.current;
+    const cards = Array.from(container.children) as HTMLElement[];
+    if (cards[index]) {
+      const card = cards[index];
+      const cardRect = card.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const delta = cardRect.left - containerRect.left;
+      const targetLeft = container.scrollLeft + delta - (container.clientWidth - card.clientWidth) / 2;
+      container.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+      setMobileActiveIndex(index);
+    }
+  }, []);
+
+  // Auto-swipe effect for mobile
+  useEffect(() => {
+    if (total <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      setMobileActiveIndex((prev) => {
+        const nextIndex = (prev + 1) % total;
+        if (mobileScrollRef.current) {
+          const container = mobileScrollRef.current;
+          const cards = Array.from(container.children) as HTMLElement[];
+          if (cards[nextIndex]) {
+            const card = cards[nextIndex];
+            const cardRect = card.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            const delta = cardRect.left - containerRect.left;
+            const targetLeft = container.scrollLeft + delta - (container.clientWidth - card.clientWidth) / 2;
+            container.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+          }
+        }
+        return nextIndex;
+      });
+    }, 3800);
+
+    return () => clearInterval(interval);
+  }, [total, isPaused]);
+
+  const handleMobileScroll = () => {
+    if (!mobileScrollRef.current) return;
+    const container = mobileScrollRef.current;
+    const center = container.scrollLeft + container.clientWidth / 2;
+    const cards = Array.from(container.children) as HTMLElement[];
+    let closestIndex = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, idx) => {
+      const cardCenter = card.offsetLeft + card.clientWidth / 2;
+      const dist = Math.abs(center - cardCenter);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIndex = idx;
+      }
+    });
+    setMobileActiveIndex(closestIndex);
+  };
 
   return (
     <section id="services" className="relative bg-white pt-20 pb-24">
+      {/* Preload all service images at high priority for instant zero-delay rendering */}
+      {SERVICES.map(s => (
+        <link key={s.image} rel="preload" as="image" href={s.image} type="image/webp" />
+      ))}
       <div className="absolute top-0 inset-x-0 h-72 pointer-events-none" style={{ background: 'linear-gradient(to bottom, rgba(250,240,221,0.6), transparent)' }} />
 
       {/* Header and Category Pills Container */}
@@ -470,7 +564,7 @@ export default function ServicesSection() {
           {CATS.map(c => (
             <button
               key={c.key}
-              onClick={() => setCat(c.key)}
+              onClick={() => handleCatChange(c.key)}
               className={`px-5 py-2 rounded-full text-sm font-['Source_Sans_3'] font-medium transition-all duration-200 cursor-pointer border ${
                 cat === c.key
                   ? 'bg-[#108283] text-white border-[#108283]'
@@ -483,9 +577,9 @@ export default function ServicesSection() {
         </div>
       </div>
 
-      {/* Scroll-Sticky Card Deck — works on all screen sizes */}
-      <article ref={containerRef} className="relative w-full" style={{ height: `${total * 100}svh` }}>
-        <div className="sticky top-0 h-[100svh] flex items-center justify-center overflow-hidden">
+      {/* DESKTOP: Original Scroll-Sticky Card Deck (Untouched) */}
+      <article ref={containerRef} className="hidden md:block relative w-full" style={{ height: `${total * 100}svh` }}>
+        <div className="sticky top-0 h-[100svh] flex items-center justify-center">
           {visible.map((s, index) => (
             <DeckCardItem
               key={s.title}
@@ -500,6 +594,160 @@ export default function ServicesSection() {
           ))}
         </div>
       </article>
+
+      {/* MOBILE: Normal Smooth Side-Swiping Cards */}
+      <div className="block md:hidden relative w-full pb-6">
+        <div
+          ref={mobileScrollRef}
+          onScroll={handleMobileScroll}
+          onTouchStart={() => pauseAutoSwipe(6000)}
+          onTouchEnd={() => pauseAutoSwipe(4000)}
+          onMouseEnter={() => pauseAutoSwipe(6000)}
+          onMouseLeave={() => pauseAutoSwipe(3000)}
+          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar px-4 py-2"
+          style={{ WebkitOverflowScrolling: 'touch' }}
+        >
+          {visible.map((service, index) => (
+            <div
+              key={service.title}
+              onClick={() => setModal(service)}
+              className="snap-center shrink-0 w-[88vw] max-w-[400px] rounded-[28px] overflow-hidden cursor-pointer shadow-[0_14px_40px_rgba(0,0,0,0.22)] border border-white/15 min-h-[400px] flex flex-col justify-between p-6 relative select-none"
+              style={{ 
+                backgroundColor: service.cardBg,
+                backgroundImage: `radial-gradient(circle at 100% 0%, ${service.iconColor}25 0%, transparent 65%)` 
+              }}
+            >
+
+              {/* Top Header Rail */}
+              <div className="relative z-10 flex items-center justify-between gap-2 border-b border-white/20 pb-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  {service.badge && (
+                    <span className="whitespace-nowrap shrink-0 bg-white/95 backdrop-blur-sm text-[10px] font-['Source_Sans_3'] font-bold text-gray-800 px-3 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                      {service.badge}
+                    </span>
+                  )}
+                  <span className="truncate text-white/85 text-[11px] font-['Source_Sans_3'] font-semibold uppercase tracking-[0.14em]">
+                    {service.tagline}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="whitespace-nowrap text-white/80 font-mono text-[11px] tracking-widest font-semibold">
+                    {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+                  </span>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-lg" style={{ background: service.iconColor }}>
+                    <CategoryIcon cat={service.category} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Middle Content */}
+              <div className="relative z-10 py-3">
+                <h3 className="font-['Playfair_Display'] text-2xl font-normal text-white mb-2 leading-tight">
+                  {service.title}
+                </h3>
+                <p className="font-['Source_Sans_3'] text-white/90 text-xs font-light leading-relaxed mb-3 line-clamp-2">
+                  {service.description}
+                </p>
+
+                {/* Highlights */}
+                <div className="flex flex-wrap gap-1.5">
+                  {service.highlights.map((h, i) => (
+                    <span key={i} className="text-[11px] font-['Source_Sans_3'] bg-white/15 backdrop-blur-md text-white px-2.5 py-1 rounded-full border border-white/20 flex items-center gap-1">
+                      <Check className="w-3 h-3 stroke-[2.5]" /> {h}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Rail */}
+              <div className="relative z-10 flex items-center justify-between gap-2 pt-3 border-t border-white/20">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[11px] font-['Source_Sans_3'] px-2 py-1 rounded-full border border-white/20">
+                    <Clock className="w-3 h-3" /> {service.downtime}
+                  </span>
+                  <span className="flex items-center gap-1 bg-white/20 backdrop-blur-sm text-white text-[11px] font-['Source_Sans_3'] px-2 py-1 rounded-full border border-white/20">
+                    <Calendar className="w-3 h-3" /> {service.sessions}
+                  </span>
+                </div>
+
+                <button className="shrink-0 flex items-center gap-1.5 bg-white text-gray-900 text-xs font-['Source_Sans_3'] font-semibold px-3.5 py-2 rounded-full hover:bg-[#FAF0DD] transition-all shadow-md active:scale-95 cursor-pointer">
+                  <span>Details</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile Swipe Cue & Luxury Capsule Controls */}
+        <div className="px-5 mt-5 flex flex-col items-center gap-3">
+          {/* Status Indicator */}
+          <div className="flex items-center gap-2 text-xs font-['Source_Sans_3'] text-gray-600 font-medium bg-gray-50 border border-gray-200/80 px-4 py-1.5 rounded-full shadow-2xs">
+            <span className="relative flex h-2 w-2">
+              <span className={`absolute inline-flex h-full w-full rounded-full bg-[#108283] opacity-75 ${!isPaused ? 'animate-ping' : ''}`}></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#108283]"></span>
+            </span>
+            <span>{!isPaused ? 'Auto-swiping treatments' : 'Paused'} &bull; Swipe sideways anytime</span>
+          </div>
+
+          {/* Luxury Capsule Controls Bar */}
+          <div className="inline-flex items-center gap-2.5 sm:gap-3.5 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-full border border-gray-200 shadow-[0_8px_25px_rgba(16,130,131,0.08)]">
+            {/* Prev Button */}
+            <button
+              onClick={() => {
+                pauseAutoSwipe(6000);
+                const prev = mobileActiveIndex === 0 ? total - 1 : mobileActiveIndex - 1;
+                scrollMobileTo(prev);
+              }}
+              className="w-8 h-8 rounded-full bg-[#FAF0DD] hover:bg-[#108283] text-[#108283] hover:text-white flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-2xs"
+              aria-label="Previous treatment"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Indicator Dots */}
+            <div className="flex items-center gap-1.5 px-0.5">
+              {visible.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    pauseAutoSwipe(6000);
+                    scrollMobileTo(i);
+                  }}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    mobileActiveIndex === i
+                      ? 'w-5 sm:w-6 bg-[#108283] shadow-xs'
+                      : 'w-1.5 sm:w-2 bg-gray-200 hover:bg-gray-300'
+                  }`}
+                  aria-label={`Go to treatment ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Counter */}
+            <div className="flex items-center text-xs font-['Source_Sans_3'] font-bold text-gray-700 pl-0.5 select-none">
+              <span className="text-[#108283] font-black text-sm">{String(mobileActiveIndex + 1).padStart(2, '0')}</span>
+              <span className="text-gray-300 mx-1">/</span>
+              <span className="text-gray-400 font-semibold">{String(total).padStart(2, '0')}</span>
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => {
+                pauseAutoSwipe(6000);
+                const next = (mobileActiveIndex + 1) % total;
+                scrollMobileTo(next);
+              }}
+              className="w-8 h-8 rounded-full bg-[#108283] hover:bg-[#0e6f70] text-white flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-2xs"
+              aria-label="Next treatment"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
 
 
       {/* Modal */}
