@@ -1,0 +1,170 @@
+@import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
+
+@theme inline {
+  --color-primary: #108283;
+  --color-primary-dark: #0c6b6c;
+  --color-secondary: #FAEDDA;
+  --color-text: #7A7A7A;
+  --color-accent-green: #61CE70;
+  --color-apricot: #F0A070;
+  --color-apricot-hover: #e28b57;
+  --color-beige-light: #FAF0DD;
+  --color-beige-mid: #F0DAAA;
+  --color-gray-light: #F4F7F8;
+  --color-peach-bg: #FBF0E8;
+  --font-playfair: 'Playfair Display', serif;
+  --font-source: 'Source Sans 3', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', Georgia, serif !important;
+}
+
+.font-source {
+  font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif !important;
+}
+
+.font-roboto {
+  font-family: 'Roboto', sans-serif !important;
+}
+
+/* Ensure browser native smooth scroll doesn't fight Lenis virtual scroll */
+html {
+  scroll-behavior: auto !important;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-source);
+  color: #222;
+  background: #fff;
+  overflow-x: clip;
+}
+
+/* Lenis optimization styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Marquee animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+}
+
+/* Glassmorphic utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Before/After range slider styling */
+input[type="range"].ba-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+input[type="range"].ba-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #108283;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: ew-resize;
+  transition: transform 0.15s ease;
+}
+
+input[type="range"].ba-slider::-webkit-slider-thumb:hover {
+  background: #0c6b6c;
+}
+
+input[type="range"].ba-slider::-moz-range-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #108283;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: ew-resize;
+  transition: transform 0.15s ease;
+}
+
+/* Modal Lock - Completely eliminate outer background scrollbar */
+html.modal-open,
+body.modal-open {
+  overflow: hidden !important;
+  height: 100vh !important;
+  touch-action: none !important;
+}
+
+html.modal-open {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html.modal-open::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Elegant custom scrollbar for modal reader */
+.modal-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #108283 transparent;
+}
+
+.modal-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #108283;
+}
+

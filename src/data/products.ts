@@ -1,0 +1,112 @@
+import { Product } from '@/types/product';
+
+export const products: Product[] = [
+  {
+    id: 'ha-glow-serum',
+    name: "Dr. Monali's HA Glow Serum",
+    subtitle: 'Hyaluronic Acid + 24K Gold Leaf',
+    category: 'serums',
+    categoryLabel: 'Serums & Elixirs',
+    price: 1899,
+    mrp: 2499,
+    volume: '30 ml',
+    rating: 5.0,
+    reviewsCount: 38,
+    image: '/products/ha-glow-serum.png',
+    status: 'coming_soon',
+    badge: 'Pre-Launch Exclusive',
+    shortDesc: 'Advanced cellular hydration & instant luminous radiance with pure 24K elemental gold leaf and multi-weight hyaluronic acid.',
+    fullDesc: "Dr. Monali's HA Glow Serum is a physician-formulated master blend combining micro-molecular hyaluronic acid with authentic 24K gold suspended flakes. Engineered to penetrate deeply into dermal layers, it attracts and locks in moisture for 72 continuous hours while giving skin an unmistakable lit-from-within glow.",
+    keyActives: ['Pure 24K Gold Leaf', 'Multi-Molecular Hyaluronic Acid', 'Niacinamide (Vitamin B3)', 'D-Panthenol (Pro-Vitamin B5)', 'Centella Asiatica'],
+    benefits: [
+      'Delivers instant dewy glass-skin finish with zero greasiness',
+      'Infuses 72-hour moisture reserve into deep epidermal layers',
+      'Plumps fine dehydration lines and promotes collagen synthesis',
+      '24K gold micro-particles neutralize free radical oxidative stress'
+    ],
+    howToUse: 'Dispense 3-4 drops onto cleansed, slightly damp face and neck. Gently press and massage using upward circular motions until gold flakes melt completely. Follow with Ceramide Barrier Cream.',
+    suitableFor: 'All skin types, especially dehydrated, dull, fatigued, or pre-event skin.',
+    ingredientsList: 'Aqua, Sodium Hyaluronate (Multi-Molecular Weight), 24K Elemental Gold Leaf, Niacinamide, D-Panthenol, Centella Asiatica Extract, Rose Damascena Hydrosol, Allantoin, Glycerin, Sodium Gluconate, Phenoxyethanol, Ethylhexylglycerin.'
+  },
+  {
+    id: 'blemish-defense-serum',
+    name: "Dr. Monali's Blemish Defense Serum",
+    subtitle: '10% Niacinamide + Salicylic Acid',
+    category: 'serums',
+    categoryLabel: 'Serums & Elixirs',
+    price: 899,
+    mrp: 1199,
+    volume: '30 ml',
+    rating: 4.9,
+    reviewsCount: 142,
+    image: '/products/niacinamide-serum.jpg',
+    status: 'available',
+    badge: 'Best Seller',
+    shortDesc: 'Clinical daily clarifying concentrate to fade acne marks, decongest clogged pores, and regulate excess facial sebum.',
+    fullDesc: "Formulated specifically for acne-prone and blemish-troubled skin common in tropical climates. This serum pairs high-potency 10% pure Niacinamide with beta-hydroxy Salicylic Acid and Zinc PCA to accelerate post-acne mark clearance while preventing future flare-ups.",
+    keyActives: ['10% High-Purity Niacinamide', '1% Encapsulated Salicylic Acid', '1% Zinc PCA', 'Green Tea Extract', 'Licorice Root'],
+    benefits: [
+      'Visibly fades post-acne dark marks and hyperpigmentation',
+      'Tightens enlarged, oil-congested pores',
+      'Balances sebum without causing dryness or peeling',
+      'Calms redness and active inflammatory micro-lesions'
+    ],
+    howToUse: 'Apply 2-3 drops to clean dry skin every morning and evening before heavier moisturizers. Always use sunscreen during daytime.',
+    suitableFor: 'Oily, combination, acne-prone, and blemish-marked skin.',
+    ingredientsList: 'Purified Water, Niacinamide (10%), Butylene Glycol, Salicylic Acid (1%), Zinc PCA (1%), Camellia Sinensis (Green Tea) Leaf Extract, Glycyrrhiza Glabra (Licorice) Extract, Hydroxyethylcellulose, Phenoxyethanol.'
+  },
+  {
+    id: 'ceramide-barrier-cream',
+    name: "Dr. Monali's Ceramide Recovery Cream",
+    subtitle: 'Ceramide Complex + Centella Asiatica',
+    category: 'creams',
+    categoryLabel: 'Barrier Creams',
+    price: 749,
+    mrp: 999,
+    volume: '50 ml',
+    rating: 4.8,
+    reviewsCount: 96,
+    image: '/products/ceramide-cream.jpg',
+    status: 'available',
+    badge: 'Derm Recommended',
+    shortDesc: 'Intensive cellular lipid replenishment cream designed to repair damaged skin barriers and relieve tight, irritated skin.',
+    fullDesc: "A comforting, velvet-finish restorative cream enriched with a 3-ceramide complex (NP, AP, EOP), natural squalane, and soothing centella asiatica. Rebuilds the stratum corneum barrier impaired by harsh weather, aggressive facials, chemical peels, or chronic skin allergies.",
+    keyActives: ['Essential Ceramides 1, 3, 6-II', 'Centella Asiatica (Cica) 2%', 'Plant-Derived Squalane', 'Colloidal Oat Flour', 'Shea Butter'],
+    benefits: [
+      'Restores compromised skin barrier integrity in as little as 48 hours',
+      'Relieves post-peel dryness, tightness, and redness',
+      'Locks in moisture for all-day comfort without clogging pores',
+      'Fragrance-free, hypoallergenic, and non-comedogenic'
+    ],
+    howToUse: 'Warm a pea-sized amount between clean fingertips and gently massage over face and neck morning and night. Can be used as a recovery layer after peels.',
+    suitableFor: 'Dry, sensitive, irritated, rosacea-prone, or post-treatment skin.',
+    ingredientsList: 'Aqua, Caprylic/Capric Triglyceride, Glycerin, Ceramide NP, Ceramide AP, Ceramide EOP, Phytosphingosine, Centella Asiatica Extract, Butyrospermum Parkii (Shea) Butter, Squalane, Avena Sativa (Oat) Kernel Flour, Carbomer, Phenoxyethanol.'
+  },
+  {
+    id: 'botanical-scalp-oil',
+    name: "Dr. Monali's Botanical Scalp Therapy Oil",
+    subtitle: 'Aromatic Blend with Rosemary & Essential Oils',
+    category: 'hair',
+    categoryLabel: 'Hair & Scalp',
+    price: 799,
+    mrp: 999,
+    volume: '100 ml',
+    rating: 4.9,
+    reviewsCount: 118,
+    image: '/products/scalp-hair-oil.jpg',
+    status: 'available',
+    badge: 'Clinic Favorite',
+    shortDesc: 'Physician-crafted Ayurvedic-herbal hair root stimulant with pure Rosemary and Bhringraj for thinning hair and dandruff.',
+    fullDesc: "A potent, slow-infused therapeutic hair elixir blending cold-pressed botanicals with steam-distilled Rosemary essential oil. Designed to stimulate dormant hair roots, boost microcapillary blood flow, reduce excessive daily shedding, and maintain a clean, flake-free scalp environment.",
+    keyActives: ['Pure Rosemary Essential Oil', 'Cold-Pressed Bhringraj Extract', 'Redensyl Follicle Activator', 'Amla Fruit Extract', 'Virgin Coconut & Sweet Almond Oil'],
+    benefits: [
+      'Actively reduces hair shedding within 3 to 4 weeks of regular use',
+      'Stimulates dormant follicles along hairline and parting',
+      'Soothes itchy scalp, dry flaking, and microbial dandruff',
+      'Strengthens hair shafts to minimize breakage and split ends'
+    ],
+    howToUse: 'Section dry hair and use the dropper to apply oil directly onto the scalp. Gently massage with fingertips for 5-7 minutes. Leave on for at least 2 hours or overnight before washing with a gentle shampoo. Use 2-3 times weekly.',
+    suitableFor: 'Hair fall, thinning crowns, receding hairlines, flaky/itchy scalps.',
+    ingredientsList: 'Cocos Nucifera (Virgin Coconut) Oil, Prunus Amygdalus Dulcis (Sweet Almond) Oil, Rosmarinus Officinalis (Rosemary) Leaf Oil, Eclipta Prostrata (Bhringraj) Extract, Phyllanthus Emblica (Amla) Extract, Redensyl Active Complex, Tocopheryl Acetate (Vitamin E).'
+  }
+];
