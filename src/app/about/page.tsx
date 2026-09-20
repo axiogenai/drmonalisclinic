@@ -69,9 +69,9 @@ function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suff
 export default function AboutPage() {
   // Hero background slideshow
   const heroSlides = [
-    'https://primederm.in/wp-content/uploads/2025/06/4-1-scaled.webp',
-    'https://primederm.in/wp-content/uploads/2025/06/1-1-scaled.webp',
-    'https://primederm.in/wp-content/uploads/2025/06/2-1-scaled.webp'
+    '/docbg2.png',
+    '/docbg.png',
+    'https://primederm.in/wp-content/uploads/2025/06/4-1-scaled.webp'
   ];
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
 

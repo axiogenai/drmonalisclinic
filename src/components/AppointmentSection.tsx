@@ -63,24 +63,16 @@ function TreatmentDropdown({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-[#108283]/10 text-[#108283] flex items-center justify-center shrink-0">
-            <Sparkles className="w-3.5 h-3.5" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-gray-900 leading-tight truncate">
-              {selectedOption.label}
-            </p>
-            <p className="text-[11px] text-gray-500 leading-tight truncate">
-              {selectedOption.sub}
-            </p>
-          </div>
+        <div className="min-w-0 pr-2">
+          <p className="text-sm font-semibold text-gray-900 leading-tight truncate">
+            {selectedOption.label}
+          </p>
+          <p className="text-xs text-gray-500 leading-tight truncate mt-0.5">
+            {selectedOption.sub}
+          </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="hidden xs:inline-block text-[10px] font-semibold text-[#108283] bg-[#108283]/10 px-2 py-0.5 rounded-md">
-            Selected
-          </span>
           <ChevronDown
             className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
               isOpen ? 'rotate-180 text-[#108283]' : ''
@@ -91,7 +83,7 @@ function TreatmentDropdown({
 
       {isOpen && (
         <div
-          className="absolute left-0 top-full mt-1.5 z-50 w-full bg-white rounded-2xl border border-gray-200 shadow-[0_16px_36px_rgba(0,0,0,0.12)] p-1.5 max-h-[300px] overflow-y-auto space-y-1 animate-in fade-in zoom-in-95 duration-150"
+          className="absolute left-0 top-full mt-1.5 z-50 w-full bg-white rounded-2xl border border-gray-200 shadow-[0_20px_45px_rgba(0,0,0,0.14)] p-1.5 max-h-[260px] overflow-y-auto space-y-0.5 animate-in fade-in zoom-in-95 duration-150"
           role="listbox"
         >
           {options.map((item) => {
@@ -104,9 +96,9 @@ function TreatmentDropdown({
                   onChange(item.label);
                   setIsOpen(false);
                 }}
-                className={`w-full p-2.5 rounded-xl text-left transition-all flex items-center justify-between gap-2.5 cursor-pointer ${
+                className={`w-full px-3 py-2 rounded-xl text-left transition-all flex items-center justify-between gap-2.5 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#108283]/10 text-[#108283] font-semibold'
+                    ? 'bg-[#108283]/10 text-[#108283]'
                     : 'hover:bg-gray-50 text-gray-800'
                 }`}
                 role="option"
@@ -120,15 +112,11 @@ function TreatmentDropdown({
                     {item.sub}
                   </p>
                 </div>
-                <div
-                  className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border transition-all ${
-                    isSelected
-                      ? 'bg-[#108283] border-[#108283] text-white'
-                      : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-                </div>
+                {isSelected && (
+                  <div className="w-5 h-5 rounded-full bg-[#108283] text-white flex items-center justify-center shrink-0">
+                    <Check className="w-3 h-3 stroke-[3]" />
+                  </div>
+                )}
               </button>
             );
           })}
@@ -233,7 +221,7 @@ export default function AppointmentSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
           {/* Left Column: Booking System (Slim Form) */}
           <div className="lg:col-span-7 flex flex-col h-full">
-            <div className="h-full rounded-2xl md:rounded-[24px] overflow-hidden border border-gray-100 shadow-[0_12px_35px_rgba(0,0,0,0.05)] bg-white p-5 sm:p-6 md:p-7 flex flex-col justify-between">
+            <div className="h-full rounded-2xl md:rounded-[24px] border border-gray-100 shadow-[0_12px_35px_rgba(0,0,0,0.05)] bg-white p-5 sm:p-6 md:p-7 flex flex-col justify-between relative">
               {submitted ? (
                 <div className="text-center py-8 space-y-3 animate-in fade-in duration-300 my-auto">
                   <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
@@ -404,14 +392,14 @@ export default function AppointmentSection() {
                     <span className="truncate">Golden Spring Apt, Gangailon, Ring Rd, Kolhapur</span>
                     <ExternalLink className="w-3 h-3 shrink-0 opacity-70 group-hover/addr:opacity-100" />
                   </a>
-                  <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 mt-0.5">
+                  <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-x-3 gap-y-0.5">
                     <a 
                       href="tel:+919209472224" 
-                      className="font-['Source_Sans_3'] text-sm sm:text-base font-bold text-white hover:underline whitespace-nowrap"
+                      className="font-['Source_Sans_3'] text-sm sm:text-base font-bold text-white hover:underline whitespace-nowrap block"
                     >
                       +91 92094 72224
                     </a>
-                    <span className="font-['Source_Sans_3'] text-white/70 text-[11px] whitespace-nowrap">
+                    <span className="font-['Source_Sans_3'] text-white/75 text-[11px] whitespace-nowrap">
                       Mon–Sat: 10 AM–2 PM &amp; 5–9 PM
                     </span>
                   </div>

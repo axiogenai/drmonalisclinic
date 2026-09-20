@@ -448,15 +448,15 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="pt-8 flex flex-col lg:flex-row items-center justify-between text-xs text-gray-500 font-['Source_Sans_3'] gap-4">
-            <p className="text-gray-400">
-              Powered by{' '}
+            <p className="text-gray-400 flex items-center gap-1">
+              <span>Made with <span className="text-[#F0A070] inline-block">♥</span> by</span>{' '}
               <a 
                 href="https://team.axiogen.in" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-[#108283] hover:text-white font-semibold transition-colors"
               >
-                Team.axiogen.in
+                team.axiogen.in
               </a>
             </p>
             

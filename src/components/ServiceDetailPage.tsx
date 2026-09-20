@@ -57,16 +57,23 @@ export default function ServiceDetailPage({
         </div>
       </section>
 
-      {/* Horizontal sub-navigation bar (scrolls naturally with page) */}
-      <div className="w-full bg-white border-y border-gray-200/80 overflow-x-auto no-scrollbar">
-        <div className="max-w-[1240px] mx-auto px-5 py-4 flex items-center justify-start md:justify-center gap-4 md:gap-8 whitespace-nowrap">
-          {services.map((service, index) => (
-            <React.Fragment key={service.id}>
-              <a href={`#${service.id}`} className="text-sm md:text-base text-gray-600 hover:text-[#108283] font-medium transition-colors">
-                {service.title}
-              </a>
-              {index < services.length - 1 && <span className="text-gray-300 font-bold">•</span>}
-            </React.Fragment>
+      {/* Horizontal marquee bar for treatments (seamless loop, no scrollbar) */}
+      <div className="w-full bg-white border-y border-gray-200/80 overflow-hidden py-3.5 select-none shadow-2xs">
+        <div className="flex w-max animate-marquee items-center">
+          {[...Array(4)].map((_, loopIdx) => (
+            <div key={loopIdx} className="flex items-center">
+              {services.map((service) => (
+                <div key={service.id} className="flex items-center mx-4 md:mx-6 gap-3 shrink-0">
+                  <a
+                    href={`#${service.id}`}
+                    className="text-sm md:text-base text-gray-700 hover:text-[#108283] font-medium transition-colors whitespace-nowrap cursor-pointer"
+                  >
+                    {service.title}
+                  </a>
+                  <span className="text-[#108283]/40 font-bold select-none">•</span>
+                </div>
+              ))}
+            </div>
           ))}
         </div>
       </div>

@@ -195,7 +195,7 @@ export default function CustomDatePicker({
       {/* Fast & Smooth Custom Calendar Dropdown */}
       {isOpen && (
         <div
-          className="absolute left-0 top-full mt-1.5 z-50 w-full sm:w-[320px] bg-white rounded-2xl border border-gray-200 shadow-[0_20px_45px_rgba(0,0,0,0.12)] p-4 transition-all duration-150 animate-in fade-in zoom-in-95"
+          className="absolute left-0 top-full mt-2 z-50 w-full sm:w-[320px] max-w-[calc(100vw-40px)] bg-white rounded-2xl border border-gray-200 shadow-[0_22px_50px_rgba(0,0,0,0.18)] p-4 transition-all duration-150 animate-in fade-in zoom-in-95"
           style={{ willChange: 'transform, opacity' }}
         >
           {/* Quick Presets Bar */}
