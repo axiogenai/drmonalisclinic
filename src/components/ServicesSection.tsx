@@ -206,7 +206,7 @@ const desktopConfig = {
 };
 
 const mobileConfig = {
-  peek: 0.038,
+  peek: 0,
   scaleStep: 0,
   exitShrink: 0,
   maxDepth: 1,
@@ -224,7 +224,11 @@ const calcElevationE = (t: number, n: number, s: number) => {
   return Math.min(i + clampVal((m - (1 - stepF)) / stepF, 0, 1), s);
 };
 
-const calcOpacityU = (t: number, n: number, s: number) => clampVal(s + 1 - (n - Math.max(t, 0)), 0, 1);
+const calcOpacityU = (t: number, n: number, s: number) => {
+  const stackOpacity = clampVal(s + 1 - (n - Math.max(t, 0)), 0, 1);
+  const exitOpacity = 1 - calcShiftS(t, n);
+  return Number((stackOpacity * exitOpacity).toFixed(4));
+};
 
 const generateSafeKeyframes = (
   t: number,
@@ -234,13 +238,13 @@ const generateSafeKeyframes = (
   const { peek: r, scaleStep: i, exitShrink: m, maxDepth: l } = cfg;
   
   const points: { p: number; y: string; scale: number; opacity: number }[] = [];
-  const count = 30; // 30 samples is plenty — fewer = less interpolation work per frame
+  const count = 100;
   for (let step = 0; step <= count; step++) {
     const p = step / count;
-    const a = p * Math.max(n - 1, 1);
+    const a = p * n - 1;
     const yVal = `${((calcElevationE(a, t, l) * r - calcShiftS(a, t) * exitDistanceH) * 100).toFixed(3)}%`;
     const scaleVal = Number((1 - calcElevationE(a, t, l) * i - calcShiftS(a, t) * m).toFixed(4));
-    const opacityVal = Number(calcOpacityU(a, t, l).toFixed(4));
+    const opacityVal = calcOpacityU(a, t, l);
     points.push({ p, y: yVal, scale: scaleVal, opacity: opacityVal });
   }
 
@@ -289,7 +293,7 @@ const DeckCardItem = React.memo(function DeckCardItem({
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-8 py-[80px] md:py-[100px]"
+      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 sm:px-6 md:px-8 py-6 sm:py-8 md:py-12"
       style={{ zIndex: total - index }}
     >
       <motion.div
@@ -301,8 +305,6 @@ const DeckCardItem = React.memo(function DeckCardItem({
           opacity, 
           pointerEvents: active ? 'auto' : 'none',
           backgroundColor: service.cardBg,
-          willChange: 'transform, opacity',
-          transform: 'translateZ(0)',
         }}
       >
         {/* Right-Side Dedicated Image Frame with Proper Proportions */}
@@ -423,7 +425,7 @@ export default function ServicesSection() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"],
+    offset: ["start end", "end end"],
   });
 
   const total = visible.length;
@@ -436,7 +438,7 @@ export default function ServicesSection() {
   const activeRef = useRef(0);
 
   useMotionValueEvent(scrollYProgress, "change", (val) => {
-    const next = clampVal(Math.round(val * (total - 1)), 0, Math.max(total - 1, 0));
+    const next = clampVal(Math.round(val * total - 1), 0, total - 1);
     if (next !== activeRef.current) {
       activeRef.current = next;
       setActiveCard(next);
@@ -483,7 +485,7 @@ export default function ServicesSection() {
 
       {/* Scroll-Sticky Card Deck — works on all screen sizes */}
       <article ref={containerRef} className="relative w-full" style={{ height: `${total * 100}svh` }}>
-        <div className="sticky top-0 h-[100svh] flex items-center justify-center">
+        <div className="sticky top-0 h-[100svh] flex items-center justify-center overflow-hidden">
           {visible.map((s, index) => (
             <DeckCardItem
               key={s.title}
