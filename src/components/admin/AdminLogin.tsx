@@ -79,7 +79,7 @@ export default function AdminLogin() {
       setErrorMessage(error);
       setIsSubmitting(false);
     } else {
-      setSuccessMessage('Password reset link has been dispatched to your email. Check your inbox and spam folder.');
+      setSuccessMessage('Password reset link sent! Please check your email inbox (and check your spam folder if not visible).');
       setIsSubmitting(false);
     }
   };
@@ -274,6 +274,14 @@ export default function AdminLogin() {
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all font-medium text-gray-900"
                   />
                 </div>
+              </div>
+
+              {/* Spam folder reminder notice */}
+              <div className="p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-xs text-amber-800 flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong>Tip:</strong> If the email is not visible in your inbox, please <strong>check your Spam / Junk folder</strong>.
+                </p>
               </div>
 
               <button
