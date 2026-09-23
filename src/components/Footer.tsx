@@ -486,13 +486,6 @@ export default function Footer() {
                 Book Appointment
               </a>
 
-              {/* Admin / CRM Link */}
-              <Link 
-                href="/admin" 
-                className="text-[#108283] hover:text-white font-semibold transition-colors flex items-center gap-1"
-              >
-                <span>Admin / CRM</span>
-              </Link>
 
               {/* Back to Top Button */}
               <button

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Menu, Bell } from 'lucide-react';
+import { Menu, Bell, LogOut } from 'lucide-react';
+import { useAdminAuth } from '@/context/AdminAuthContext';
 
 interface AdminHeaderProps {
   onMenuToggle: () => void;
@@ -10,6 +11,7 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const searchParams = useSearchParams();
+  const { user, signOut } = useAdminAuth();
   const tab = searchParams.get('tab') || 'dashboard';
   
   // Convert tab to Title Case
@@ -17,36 +19,47 @@ export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
     ? 'Announcement Marquee Banner' 
     : tab.charAt(0).toUpperCase() + tab.slice(1).replace('-', ' ');
 
+  // Get user display info
+  const userEmail = user?.email || 'admin@drmonalisclinic.com';
+  const userInitials = userEmail
+    ? userEmail.slice(0, 2).toUpperCase()
+    : 'DM';
+
   return (
-    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
+    <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 font-['Source_Sans_3']">
       <div className="flex items-center gap-4">
         <button
           onClick={onMenuToggle}
-          className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
+          className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
           aria-label="Toggle menu"
         >
           <Menu size={20} />
         </button>
-        <h1 className="font-playfair text-xl font-semibold text-[#188D90] capitalize">
+        <h1 className="font-['Playfair_Display'] text-xl font-semibold text-[#188D90] capitalize">
           {pageTitle}
         </h1>
       </div>
 
-      <div className="flex items-center gap-4 sm:gap-6">
-        <button className="relative p-2 text-gray-500 hover:text-gray-700 transition-colors">
-          <Bell size={20} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#F0A070] rounded-full border border-white"></span>
-        </button>
-        
+      <div className="flex items-center gap-3 sm:gap-5">
         <div className="flex items-center gap-3">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-gray-700 font-source">Dr. Monali</p>
-            <p className="text-xs text-gray-500 font-source">Administrator</p>
+            <p className="text-xs font-semibold text-gray-800 truncate max-w-[180px]">{userEmail}</p>
+            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Active Staff</p>
           </div>
-          <div className="w-9 h-9 rounded-full bg-[#108283] text-white flex items-center justify-center font-playfair font-semibold text-sm shadow-sm ring-2 ring-[#FAEDDA]/50">
-            DM
+          <div className="w-9 h-9 rounded-full bg-[#108283] text-white flex items-center justify-center font-['Playfair_Display'] font-semibold text-xs shadow-xs ring-2 ring-[#FAEDDA]/60">
+            {userInitials}
           </div>
         </div>
+
+        {/* Sign Out Button */}
+        <button
+          onClick={() => signOut()}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100/80 border border-rose-200/80 rounded-xl transition-all cursor-pointer"
+          title="Sign out of Admin Dashboard"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span className="hidden xs:inline">Sign Out</span>
+        </button>
       </div>
     </header>
   );

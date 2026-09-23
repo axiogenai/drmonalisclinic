@@ -1,12 +1,46 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
+import Image from 'next/image';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { AdminAuthProvider, useAdminAuth } from '@/context/AdminAuthContext';
+import AdminLogin from '@/components/admin/AdminLogin';
+import { Loader2 } from 'lucide-react';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminAuthGate({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
+
+  // 1. Session verification loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFB] flex flex-col items-center justify-center font-['Source_Sans_3']">
+        <div className="relative flex flex-col items-center">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#108283] to-[#0a5e5f] p-3 shadow-xl mb-4 flex items-center justify-center animate-pulse">
+            <Image
+              src="/clinic-logo-icon.png"
+              alt="Dr. Monali's Clinic"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
+          </div>
+          <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+            <Loader2 className="w-4 h-4 text-[#108283] animate-spin" />
+            <span>Verifying Staff Session...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Unauthenticated: Show clinical Supabase login portal
+  if (!isAuthenticated) {
+    return <AdminLogin />;
+  }
+
+  // 3. Authenticated: Render full clinical management dashboard
   return (
     <div className="min-h-screen bg-[#F8FAFB] overflow-x-hidden">
       {/* Sidebar */}
@@ -24,5 +58,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminAuthProvider>
+      <AdminAuthGate>
+        {children}
+      </AdminAuthGate>
+    </AdminAuthProvider>
   );
 }

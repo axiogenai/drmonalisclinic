@@ -18,6 +18,7 @@ import {
   LogOut,
   Home
 } from 'lucide-react';
+import { useAdminAuth } from '@/context/AdminAuthContext';
 
 interface AdminSidebarProps {
   isOpen: boolean;
@@ -38,6 +39,7 @@ const navItems = [
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const searchParams = useSearchParams();
+  const { signOut } = useAdminAuth();
   const activeTab = searchParams.get('tab') || 'dashboard';
 
   return (
@@ -100,17 +102,21 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         {/* Footer */}
         <div className="p-4 border-t border-white/10 shrink-0 space-y-2">
           <Link
-            href="/"
+            href="https://drmonalisclinic.com"
             className="flex items-center gap-3 px-3 py-2 text-white/70 hover:text-white hover:bg-white/5 rounded-md transition-colors"
           >
             <Home size={18} />
-            <span className="font-source text-sm">Back to Site</span>
+            <span className="font-source text-sm">Back to Public Site</span>
           </Link>
           <button
-            className="flex items-center gap-3 px-3 py-2 text-[#F0A070] hover:text-white hover:bg-white/5 rounded-md transition-colors w-full text-left"
+            onClick={() => {
+              signOut();
+              onClose();
+            }}
+            className="flex items-center gap-3 px-3 py-2 text-[#F0A070] hover:text-white hover:bg-white/5 rounded-md transition-colors w-full text-left cursor-pointer"
           >
             <LogOut size={18} />
-            <span className="font-source text-sm">Logout</span>
+            <span className="font-source text-sm">Sign Out</span>
           </button>
         </div>
       </aside>
