@@ -9,7 +9,7 @@ import AdminLogin from '@/components/admin/AdminLogin';
 import { Loader2 } from 'lucide-react';
 
 function AdminAuthGate({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAdminAuth();
+  const { isAuthenticated, isLoading, isPasswordRecovery } = useAdminAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // 1. Session verification loading state
@@ -35,8 +35,8 @@ function AdminAuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // 2. Unauthenticated: Show clinical Supabase login portal
-  if (!isAuthenticated) {
+  // 2. Unauthenticated or Password Recovery Mode: Show clinical Supabase login/reset portal
+  if (!isAuthenticated || isPasswordRecovery) {
     return <AdminLogin />;
   }
 

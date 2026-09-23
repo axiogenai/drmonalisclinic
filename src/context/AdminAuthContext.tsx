@@ -9,8 +9,11 @@ interface AdminAuthContextType {
   session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isPasswordRecovery: boolean;
   signInWithEmail: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
+  resetPasswordForEmail: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
@@ -19,11 +22,17 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState<boolean>(false);
 
   useEffect(() => {
     if (!supabase || !isSupabaseConfigured()) {
       setIsLoading(false);
       return;
+    }
+
+    // Check if URL has recovery hash
+    if (typeof window !== 'undefined' && window.location.hash.includes('type=recovery')) {
+      setIsPasswordRecovery(true);
     }
 
     // 1. Check existing active session
@@ -37,11 +46,14 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     });
 
-    // 2. Subscribe to auth state updates (sign in, sign out, token refresh)
+    // 2. Subscribe to auth state updates (sign in, sign out, token refresh, password recovery)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, currentSession) => {
+      (event, currentSession) => {
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsPasswordRecovery(true);
+        }
         setIsLoading(false);
       }
     );
@@ -74,6 +86,51 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const resetPasswordForEmail = async (email: string): Promise<{ error: string | null }> => {
+    if (!supabase || !isSupabaseConfigured()) {
+      return { error: 'Supabase client is not configured. Check your environment variables.' };
+    }
+
+    try {
+      const redirectUrl = typeof window !== 'undefined'
+        ? `${window.location.origin}/admin`
+        : undefined;
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || 'An error occurred while requesting password reset.' };
+    }
+  };
+
+  const updatePassword = async (newPassword: string): Promise<{ error: string | null }> => {
+    if (!supabase || !isSupabaseConfigured()) {
+      return { error: 'Supabase client is not configured.' };
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        return { error: error.message };
+      }
+
+      setIsPasswordRecovery(false);
+      return { error: null };
+    } catch (err: any) {
+      return { error: err.message || 'Failed to update password.' };
+    }
+  };
+
   const signOut = async (): Promise<void> => {
     if (supabase) {
       try {
@@ -84,6 +141,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     }
     setSession(null);
     setUser(null);
+    setIsPasswordRecovery(false);
   };
 
   return (
@@ -93,8 +151,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         session,
         isLoading,
         isAuthenticated: Boolean(user && session),
+        isPasswordRecovery,
         signInWithEmail,
         signOut,
+        resetPasswordForEmail,
+        updatePassword,
       }}
     >
       {children}
