@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import { Plus, Pencil, Trash2, Upload, Image as ImageIcon, X } from 'lucide-react';
 import { useAdminData } from '@/context/AdminContext';
+import { useDialog } from '@/context/DialogContext';
 import { uploadImageToSupabase } from '@/lib/supabase';
 import AdminModal from '@/components/admin/AdminModal';
 
 export default function BlogManager() {
   const { blogs, addBlog, updateBlog, deleteBlog } = useAdminData();
+  const { confirm, toast } = useDialog();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -92,14 +93,51 @@ export default function BlogManager() {
   };
 
   const handleSave = () => {
-    if (!formData.title) return;
+    const trimmedTitle = formData.title.trim();
+    if (!trimmedTitle) {
+      toast({
+        title: 'Title Required',
+        message: 'Please provide a title for the blog article.',
+        type: 'error'
+      });
+      return;
+    }
     
     if (editingId) {
-      updateBlog(editingId, formData);
+      updateBlog(editingId, { ...formData, title: trimmedTitle });
+      toast({
+        title: 'Article Updated',
+        message: `"${trimmedTitle}" was successfully updated.`,
+        type: 'success'
+      });
     } else {
-      addBlog({ ...formData, id: 'blog-' + Date.now() });
+      addBlog({ ...formData, title: trimmedTitle, id: 'blog-' + Date.now() });
+      toast({
+        title: 'Article Created',
+        message: `"${trimmedTitle}" published to blog list.`,
+        type: 'success'
+      });
     }
     setIsModalOpen(false);
+  };
+
+  const handleDelete = async (id: string, title: string) => {
+    const ok = await confirm({
+      title: 'Delete Blog Article',
+      message: `Are you sure you want to delete "${title}"? This cannot be undone.`,
+      confirmText: 'Delete Article',
+      cancelText: 'Cancel',
+      type: 'danger'
+    });
+
+    if (ok) {
+      deleteBlog(id);
+      toast({
+        title: 'Article Deleted',
+        message: `"${title}" has been removed.`,
+        type: 'success'
+      });
+    }
   };
 
   return (
@@ -154,26 +192,6 @@ export default function BlogManager() {
                   </p>
                 </div>
 
-                {deletingId === item.id ? (
-                  <div className="flex items-center gap-2 p-1.5 bg-red-50 rounded-lg mt-auto">
-                    <p className="text-[11px] text-red-800 font-semibold flex-1">Delete post?</p>
-                    <button 
-                      onClick={() => setDeletingId(null)}
-                      className="px-2 py-0.5 text-[11px] text-gray-600 hover:bg-white rounded transition-colors"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => {
-                        deleteBlog(item.id);
-                        setDeletingId(null);
-                      }}
-                      className="px-2 py-0.5 text-[11px] bg-red-600 text-white rounded hover:bg-red-700 transition-colors font-medium"
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                ) : (
                   <div className="flex items-center justify-between pt-2.5 border-t border-gray-100 mt-auto gap-2">
                     <button 
                       onClick={() => handleOpenModal(item)}
@@ -184,7 +202,7 @@ export default function BlogManager() {
                       <span>Edit</span>
                     </button>
                     <button 
-                      onClick={() => setDeletingId(item.id)}
+                      onClick={() => handleDelete(item.id, item.title)}
                       className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors border border-rose-200/80 cursor-pointer font-source"
                       title="Delete"
                     >
@@ -192,7 +210,6 @@ export default function BlogManager() {
                       <span>Delete</span>
                     </button>
                   </div>
-                )}
               </div>
             </div>
           ))}

@@ -217,7 +217,7 @@ export default function ShopPage() {
                 How can I purchase products from the clinic?
               </h4>
               <p className="text-xs sm:text-sm text-gray-600 font-light leading-relaxed">
-                You can pick up products directly from our Kolhapur clinic counter (Golden Spring Apartment, Ring Road), or click &quot;Order on WhatsApp&quot; for direct home delivery across Kolhapur and Maharashtra.
+                You can pick up products directly from our Kolhapur clinic counter (Golden Spring Apartment, Near Ring Road), or click &quot;Order on WhatsApp&quot; for direct home delivery across Kolhapur and Maharashtra.
               </p>
             </div>
 

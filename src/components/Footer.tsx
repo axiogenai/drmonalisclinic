@@ -84,7 +84,7 @@ export default function Footer() {
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText('info@drmonali.com');
+    navigator.clipboard.writeText('info@drmonalisclinic.com');
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2200);
   };
@@ -353,7 +353,7 @@ export default function Footer() {
               <div className="space-y-4 font-['Source_Sans_3'] text-sm text-gray-400">
                 {/* Google Maps Link */}
                 <a 
-                  href="https://maps.google.com/?q=Golden+Spring+Apartment+Gangailon+Javal+Ring+Road+Kolhapur"
+                  href="https://maps.google.com/?q=Golden+Spring+Apartment+Near+Ring+Road+Kolhapur"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 hover:text-white transition-colors group cursor-pointer"
@@ -361,7 +361,7 @@ export default function Footer() {
                 >
                   <MapPin className="w-5 h-5 text-[#108283] group-hover:text-[#F0A070] shrink-0 mt-0.5 transition-colors" />
                   <span className="leading-snug">
-                    Golden Spring Apartment, Gangailon Javal, Ring Road, Kolhapur
+                    Golden Spring Apartment, Near Ring Road, Kolhapur
                     <span className="inline-flex items-center gap-1 text-[11px] text-[#108283] font-medium ml-1.5 opacity-90 group-hover:underline">
                       Maps ↗
                     </span>
@@ -404,11 +404,11 @@ export default function Footer() {
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-[#108283] shrink-0" />
                     <a 
-                      href="mailto:info@drmonali.com?subject=Consultation%20Inquiry%20-%20Dr.%20Monali%27s%20Homeopathy%20Clinic" 
+                      href="mailto:info@drmonalisclinic.com?subject=Consultation%20Inquiry%20-%20Dr.%20Monali%27s%20Homeopathy%20Clinic" 
                       className="hover:text-white transition-colors"
-                      title="Send an email to info@drmonali.com"
+                      title="Send an email to info@drmonalisclinic.com"
                     >
-                      info@drmonali.com
+                      info@drmonalisclinic.com
                     </a>
                   </div>
                   <button
@@ -586,7 +586,7 @@ export default function Footer() {
 
               <div className="bg-[#FAF0DD]/60 rounded-xl p-4 border border-[#D4AF37]/30 text-xs text-gray-700">
                 <span className="font-bold text-gray-900">Privacy Inquiries:</span> For record inquiries or data correction, reach Dr. Monali&apos;s desk at{' '}
-                <a href="mailto:info@drmonali.com" className="text-[#108283] font-semibold underline">info@drmonali.com</a> or call{' '}
+                <a href="mailto:info@drmonalisclinic.com" className="text-[#108283] font-semibold underline">info@drmonalisclinic.com</a> or call{' '}
                 <a href="tel:+919209472224" className="text-[#108283] font-semibold underline">+91 92094 72224</a>.
               </div>
             </div>

@@ -17,10 +17,13 @@ import {
   X
 } from 'lucide-react';
 import { useAdminData, MarqueeItem, Product } from '@/context/AdminContext';
+import { useDialog } from '@/context/DialogContext';
 import { uploadImageToSupabase } from '@/lib/supabase';
 import AdminModal from './AdminModal';
+import AdminSelect from './AdminSelect';
 
 export default function MarqueeManager() {
+  const { confirm, toast } = useDialog();
   const { 
     marqueeItems, 
     addMarqueeItem, 
@@ -96,7 +99,11 @@ export default function MarqueeManager() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customName.trim()) {
-      alert('Please enter an announcement title or select a product.');
+      toast({
+        title: 'Input Required',
+        message: 'Please enter an announcement title or select a product.',
+        type: 'error',
+      });
       return;
     }
 
@@ -114,8 +121,18 @@ export default function MarqueeManager() {
 
     if (editingItem) {
       updateMarqueeItem(editingItem.id, payload);
+      toast({
+        title: 'Item Updated',
+        message: `"${payload.name}" updated successfully.`,
+        type: 'success',
+      });
     } else {
       addMarqueeItem(payload);
+      toast({
+        title: 'Item Added',
+        message: `"${payload.name}" added to the marquee.`,
+        type: 'success',
+      });
     }
 
     setIsModalOpen(false);
@@ -242,44 +259,48 @@ export default function MarqueeManager() {
             <p className="text-xs text-gray-400 py-2 text-center italic">No active items in marquee. Enable items below or click &quot;Select Product&quot; to add.</p>
           ) : (
             <div className="flex w-max animate-marquee items-center hover:[animation-play-state:paused]">
-              {[0, 1].map((trackIdx) => (
-                <div
-                  key={trackIdx}
-                  className="flex items-center shrink-0"
-                  aria-hidden={trackIdx === 1 ? 'true' : undefined}
-                >
-                  {[...Array(2)].map((_, loopIdx) => (
-                    <div key={loopIdx} className="flex items-center shrink-0">
-                      {marqueeItems.filter(i => i.isActive).map((item, itemIdx) => (
-                        <div
-                          key={`${loopIdx}-${itemIdx}-${item.id}`}
-                          className="flex items-center shrink-0"
-                        >
-                          <div className="w-7 h-7 rounded-full overflow-hidden border border-[#108283]/20 bg-white shrink-0 shadow-xs flex items-center justify-center">
-                            <img 
-                              src={item.image || '/clinic-logo-icon.png'} 
-                              alt={item.name} 
-                              width={28}
-                              height={28}
-                              className="w-full h-full object-cover" 
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/clinic-logo-icon.png'; }}
-                            />
+              {(() => {
+                const activeList = marqueeItems.filter(i => i.isActive);
+                const repeatCount = Math.max(2, Math.ceil(10 / (activeList.length || 1)));
+                return [0, 1].map((trackIdx) => (
+                  <div
+                    key={trackIdx}
+                    className="flex items-center shrink-0"
+                    aria-hidden={trackIdx === 1 ? 'true' : undefined}
+                  >
+                    {[...Array(repeatCount)].map((_, loopIdx) => (
+                      <div key={loopIdx} className="flex items-center shrink-0">
+                        {activeList.map((item, itemIdx) => (
+                          <div
+                            key={`${trackIdx}-${loopIdx}-${itemIdx}-${item.id}`}
+                            className="flex items-center shrink-0"
+                          >
+                            <div className="w-7 h-7 rounded-full overflow-hidden border border-[#108283]/20 bg-white shrink-0 shadow-xs flex items-center justify-center">
+                              <img 
+                                src={item.image || '/clinic-logo-icon.png'} 
+                                alt={item.name} 
+                                width={28}
+                                height={28}
+                                className="w-full h-full object-cover" 
+                                onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/clinic-logo-icon.png'; }}
+                              />
+                            </div>
+                            <span className="ml-2.5 font-['Source_Sans_3'] text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap">
+                              {item.name}
+                            </span>
+                            <span className={`ml-2 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs ${getBadgeStyle(item.badgeColor)}`}>
+                              {item.badge}
+                            </span>
+                            <div className="mx-8 flex items-center justify-center shrink-0" aria-hidden="true">
+                              <span className="w-1.5 h-1.5 rotate-45 bg-[#108283]/30" />
+                            </div>
                           </div>
-                          <span className="ml-2.5 font-source text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap">
-                            {item.name}
-                          </span>
-                          <span className={`ml-2 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap shadow-xs ${getBadgeStyle(item.badgeColor)}`}>
-                            {item.badge}
-                          </span>
-                          <div className="mx-6 flex items-center justify-center shrink-0" aria-hidden="true">
-                            <span className="w-1.5 h-1.5 rotate-45 bg-[#108283]/30" />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              ))}
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ));
+              })()}
             </div>
           )}
         </div>
@@ -423,9 +444,21 @@ export default function MarqueeManager() {
                           <Pencil className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => {
-                            if (confirm(`Remove "${item.name}" from the marquee?`)) {
+                          onClick={async () => {
+                            const ok = await confirm({
+                              title: 'Remove Marquee Item',
+                              message: `Are you sure you want to remove "${item.name}" from the live announcement marquee?`,
+                              confirmText: 'Remove Item',
+                              cancelText: 'Cancel',
+                              type: 'danger',
+                            });
+                            if (ok) {
                               deleteMarqueeItem(item.id);
+                              toast({
+                                title: 'Item Removed',
+                                message: `"${item.name}" has been removed from the marquee.`,
+                                type: 'success',
+                              });
                             }
                           }}
                           className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
@@ -486,21 +519,19 @@ export default function MarqueeManager() {
           </div>
 
           {modalMode === 'product' && (
-            <div className="space-y-3 bg-teal-50/40 p-4 rounded-xl border border-teal-100">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
-                Choose Product from Catalog <span className="text-red-500">*</span>
-              </label>
-              <select
+            <div className="space-y-2 bg-teal-50/40 p-4 rounded-xl border border-teal-100">
+              <AdminSelect
+                label="Choose Product from Catalog"
+                required
                 value={selectedProductId}
-                onChange={(e) => handleProductSelect(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:border-[#108283] focus:ring-2 focus:ring-[#108283]/20 outline-none"
-              >
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({p.categoryLabel || p.category}) — ₹{p.price}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => handleProductSelect(val)}
+                placeholder="Select a product..."
+                options={products.map((p) => ({
+                  value: p.id,
+                  label: `${p.name} — ₹${p.price}`,
+                  sublabel: p.categoryLabel || p.category,
+                }))}
+              />
             </div>
           )}
 

@@ -417,8 +417,8 @@ export default function Navbar() {
               {/* Fast Contact info */}
               <div className="bg-[#FAF0DD]/70 border border-[#F0DAAA]/60 rounded-2xl p-3.5 flex items-center justify-between text-xs font-source">
                 <div>
-                  <div className="font-bold text-gray-950">Dr. Monali&apos;s Homeopathy Clinic</div>
-                  <div className="text-gray-600">Ring Road, Kolhapur</div>
+                  <div className="font-bold text-gray-950">Dr. Monali&apos;s Clinic (Homeopathy &amp; Skin)</div>
+                  <div className="text-gray-600">Near Ring Road, Kolhapur</div>
                   <div className="text-emerald-700 font-semibold text-[11px] mt-0.5 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     <span>Mon–Sat: 10 AM–2 PM &amp; 5–9 PM</span>

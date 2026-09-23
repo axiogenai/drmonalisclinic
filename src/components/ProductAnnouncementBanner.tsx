@@ -32,6 +32,10 @@ export default function ProductAnnouncementBanner() {
     return null;
   }
 
+  // Calculate dynamic repeat count so each track spans at least 10 items (approx 3000px+)
+  // This ensures 1, 2, 3, or more products ALWAYS scroll infinitely without any blank gaps or stopping!
+  const repeatCount = Math.max(2, Math.ceil(10 / activeItems.length));
+
   return (
     <section className="w-full bg-white border-b border-[#F0DAAA]/30 overflow-hidden relative select-none">
       <div className="py-2.5 transition-colors hover:bg-[#FAF7F0]">
@@ -43,11 +47,11 @@ export default function ProductAnnouncementBanner() {
               className="flex items-center shrink-0"
               aria-hidden={trackIdx === 1 ? 'true' : undefined}
             >
-              {[...Array(2)].map((_, loopIdx) => (
+              {[...Array(repeatCount)].map((_, loopIdx) => (
                 <div key={loopIdx} className="flex items-center shrink-0">
                   {activeItems.map((item, itemIdx) => (
                     <Link
-                      key={`${loopIdx}-${itemIdx}-${item.id}`}
+                      key={`${trackIdx}-${loopIdx}-${itemIdx}-${item.id}`}
                       href={item.link || '/shop'}
                       className="flex items-center shrink-0 group/item cursor-pointer focus:outline-none"
                       title={`${item.name} - Click to explore`}
@@ -68,7 +72,7 @@ export default function ProductAnnouncementBanner() {
                       </div>
 
                       {/* Item Name in Source Sans 3 font */}
-                      <span className="ml-2.5 font-source text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap group-hover/item:text-[#108283] transition-colors">
+                      <span className="ml-2.5 font-['Source_Sans_3'] text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap group-hover/item:text-[#108283] transition-colors">
                         {item.name}
                       </span>
 
@@ -79,7 +83,7 @@ export default function ProductAnnouncementBanner() {
 
                       {/* Diamond Divider */}
                       <div
-                        className="mx-6 sm:mx-8 flex items-center justify-center shrink-0"
+                        className="mx-8 sm:mx-12 flex items-center justify-center shrink-0"
                         aria-hidden="true"
                       >
                         <span className="w-1.5 h-1.5 rotate-45 bg-[#108283]/35" />

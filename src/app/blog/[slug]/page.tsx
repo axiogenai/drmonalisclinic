@@ -19,8 +19,10 @@ import {
   Share2,
   PhoneCall
 } from 'lucide-react';
+import { useDialog } from '@/context/DialogContext';
 
 export default function BlogArticlePage() {
+  const { toast } = useDialog();
   const params = useParams();
   const slug = params?.slug as string;
 
@@ -42,7 +44,11 @@ export default function BlogArticlePage() {
       }).catch(() => {});
     } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href);
-      alert('Article link copied to clipboard!');
+      toast({
+        title: 'Link Copied',
+        message: 'Article link copied to clipboard!',
+        type: 'success',
+      });
     }
   };
 

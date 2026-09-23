@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Phone, CheckCircle2, Calendar, Clock, Send, ShieldCheck, Check, MapPin, ExternalLink, AlertCircle, ChevronDown, Sparkles } from 'lucide-react';
+import { Phone, CheckCircle2, Calendar, Clock, Send, ShieldCheck, Check, MapPin, ExternalLink, AlertCircle, ChevronDown } from 'lucide-react';
 import { useAdminData } from '@/context/AdminDataContext';
 import CustomDatePicker from '@/components/CustomDatePicker';
 
@@ -209,11 +209,11 @@ export default function AppointmentSection() {
           </div>
 
           <h2 className="font-['Playfair_Display'] text-2xl xs:text-3xl sm:text-4xl md:text-5xl text-gray-950 font-normal leading-tight mb-4 tracking-tight">
-            Book Your <span className="text-[#108283] font-bold italic">Homeopathy Consultation</span> Today!
+            Book Your <span className="text-[#108283] font-bold italic">Consultation</span> Today!
           </h2>
 
           <p className="font-['Source_Sans_3'] text-gray-700 text-base md:text-lg leading-relaxed font-light">
-            Dr. Monali&apos;s Homeopathy Clinic, Ring Road, Kolhapur. Mon–Sat: 10 AM–2 PM &amp; 5–9 PM. Call us at{' '}
+            Dr. Monali&apos;s Clinic (Homeopathy, Skin &amp; Hair), Near Ring Road, Kolhapur. Mon–Sat: 10 AM–2 PM &amp; 5–9 PM. Call us at{' '}
             <a href="tel:+919209472224" className="font-semibold text-[#108283] hover:underline">+91 92094 72224</a>
           </p>
         </div>
@@ -389,7 +389,7 @@ export default function AppointmentSection() {
                     rel="noopener noreferrer"
                     className="font-['Source_Sans_3'] text-white/85 hover:text-white text-xs leading-tight flex items-center gap-1 group/addr truncate"
                   >
-                    <span className="truncate">Golden Spring Apt, Gangailon, Ring Rd, Kolhapur</span>
+                    <span className="truncate">Golden Spring Apt, Near Ring Road, Kolhapur</span>
                     <ExternalLink className="w-3 h-3 shrink-0 opacity-70 group-hover/addr:opacity-100" />
                   </a>
                   <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-x-3 gap-y-0.5">

@@ -138,10 +138,10 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <a 
-                href="mailto:info@drmonali.com" 
+                href="mailto:info@drmonalisclinic.com" 
                 className="px-5 py-2.5 bg-[#108283] hover:bg-[#0b5c5d] text-white font-semibold rounded-full text-sm transition-colors shadow-sm"
               >
-                Email: info@drmonali.com
+                Email: info@drmonalisclinic.com
               </a>
               <a 
                 href="tel:+919209472224" 

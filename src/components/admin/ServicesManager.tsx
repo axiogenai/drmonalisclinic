@@ -2,10 +2,12 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, X, ExternalLink, Tag, Check, Layers, AlertCircle, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, X, ExternalLink, Tag, Check, Layers, AlertCircle, Upload, Image as ImageIcon, Clock } from 'lucide-react';
 import { useAdminData, Service } from '@/context/AdminContext';
+import { useDialog } from '@/context/DialogContext';
 import { uploadImageToSupabase } from '@/lib/supabase';
 import AdminModal from '@/components/admin/AdminModal';
+import AdminSelect from '@/components/admin/AdminSelect';
 
 type ServiceCategoryKey = 'all' | 'homeopathy' | 'cosmetic' | 'hair-skin';
 
@@ -43,6 +45,7 @@ const CATEGORIES: CategoryMeta[] = [
 
 export default function ServicesManager() {
   const { services, addService, updateService, deleteService } = useAdminData();
+  const { confirm, toast } = useDialog();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<ServiceCategoryKey>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,6 +59,8 @@ export default function ServicesManager() {
     description: '',
     image: '',
     highlights: [''],
+    price: '',
+    duration: '',
   });
 
   const counts = useMemo(() => {
@@ -87,7 +92,9 @@ export default function ServicesManager() {
         indications: service.indications || '',
         description: service.description || '',
         image: service.image || '',
-        highlights: service.highlights?.length ? [...service.highlights] : ['']
+        highlights: service.highlights?.length ? [...service.highlights] : [''],
+        price: service.price || '',
+        duration: service.duration || '',
       });
       setEditingId(service.id);
     } else {
@@ -97,7 +104,9 @@ export default function ServicesManager() {
         indications: '',
         description: '',
         image: '',
-        highlights: ['']
+        highlights: [''],
+        price: 'From ₹999+',
+        duration: '30-45 mins',
       });
       setEditingId(null);
     }
@@ -106,7 +115,11 @@ export default function ServicesManager() {
 
   const handleSave = () => {
     if (!formData.title.trim()) {
-      alert('Please enter a service title');
+      toast({
+        title: 'Title Required',
+        message: 'Please enter a service title before saving.',
+        type: 'error',
+      });
       return;
     }
 
@@ -116,11 +129,18 @@ export default function ServicesManager() {
       indications: formData.indications.trim(),
       description: formData.description.trim(),
       image: formData.image.trim() || '/services/kidney-stones.jpg',
-      highlights: formData.highlights.map(h => h.trim()).filter(Boolean)
+      highlights: formData.highlights.map(h => h.trim()).filter(Boolean),
+      price: formData.price.trim() || undefined,
+      duration: formData.duration.trim() || undefined,
     };
 
     if (editingId) {
       updateService(editingId, payload);
+      toast({
+        title: 'Service Updated',
+        message: `"${payload.title}" has been updated successfully.`,
+        type: 'success',
+      });
     } else {
       const slugId = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       addService({
@@ -130,10 +150,35 @@ export default function ServicesManager() {
         description: formData.description.trim(),
         image: formData.image.trim() || '/services/kidney-stones.jpg',
         highlights: formData.highlights.map(h => h.trim()).filter(Boolean),
+        price: formData.price.trim() || undefined,
+        duration: formData.duration.trim() || undefined,
         id: slugId || ('srv-' + Date.now())
+      });
+      toast({
+        title: 'Service Created',
+        message: `"${payload.title}" added to clinic treatments.`,
+        type: 'success',
       });
     }
     setIsModalOpen(false);
+  };
+
+  const handleDelete = async (id: string, title?: string) => {
+    const ok = await confirm({
+      title: 'Delete Treatment Service',
+      message: `Are you sure you want to delete ${title ? `"${title}"` : 'this service'}? This will remove the service from treatment listings and patient booking options.`,
+      confirmText: 'Delete Service',
+      cancelText: 'Cancel',
+      type: 'danger',
+    });
+    if (ok) {
+      deleteService(id);
+      toast({
+        title: 'Service Deleted',
+        message: `${title ? `"${title}"` : 'Service'} was removed successfully.`,
+        type: 'success',
+      });
+    }
   };
 
   const handleAddHighlight = () => {
@@ -340,11 +385,27 @@ export default function ServicesManager() {
                     
                     {/* Indications Box */}
                     {service.indications && (
-                      <div className="bg-[#FAF0DD]/40 border border-[#D4AF37]/20 p-2 rounded-lg mb-2 text-xs">
-                        <span className="text-[9.5px] font-bold text-[#b8860b] uppercase tracking-wider block mb-0.5">Indications</span>
+                      <div className="bg-teal-50/60 border border-teal-100 p-2.5 rounded-lg mb-2 text-xs">
+                        <span className="text-[9.5px] font-bold text-[#108283] uppercase tracking-wider block mb-0.5">Indications</span>
                         <p className="text-gray-700 line-clamp-1 font-['Source_Sans_3'] text-[11.5px]" title={service.indications}>
                           {service.indications}
                         </p>
+                      </div>
+                    )}
+
+                    {/* Price and Duration Badges */}
+                    {(service.price || service.duration) && (
+                      <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                        {service.price && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-teal-50 text-[#108283] border border-teal-200/80 text-[10.5px] font-bold font-['Source_Sans_3']">
+                            <span>{service.price}</span>
+                          </span>
+                        )}
+                        {service.duration && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-gray-100 text-gray-700 border border-gray-200 text-[10.5px] font-semibold font-['Source_Sans_3']">
+                            <span>⏱️ {service.duration}</span>
+                          </span>
+                        )}
                       </div>
                     )}
 
@@ -360,43 +421,22 @@ export default function ServicesManager() {
                     )}
                   </div>
 
-                  {deletingId === service.id ? (
-                    <div className="flex items-center gap-2 p-1.5 bg-red-50 rounded-lg mt-auto">
-                      <p className="text-[11px] text-red-800 font-semibold flex-1">Delete service?</p>
-                      <button 
-                        onClick={() => setDeletingId(null)}
-                        className="px-2 py-0.5 text-[11px] text-gray-600 hover:bg-white rounded cursor-pointer"
-                      >
-                        Cancel
-                      </button>
-                      <button 
-                        onClick={() => {
-                          deleteService(service.id);
-                          setDeletingId(null);
-                        }}
-                        className="px-2 py-0.5 text-[11px] bg-red-600 text-white rounded hover:bg-red-700 font-medium cursor-pointer"
-                      >
-                        Confirm
-                      </button>
-                    </div>
-                  ) : (
                     <div className="flex items-center justify-between pt-2.5 border-t border-gray-100 mt-auto gap-2">
                       <button 
                         onClick={() => handleOpenModal(service)}
-                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:text-[#108283] hover:bg-[#FAEDDA]/60 rounded-lg transition-colors border border-gray-200/80 cursor-pointer font-['Source_Sans_3']"
+                        className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-gray-700 hover:text-[#108283] hover:bg-teal-50 hover:border-teal-200 rounded-lg transition-colors border border-gray-200/80 cursor-pointer font-['Source_Sans_3']"
                       >
                         <Pencil className="w-3.5 h-3.5" />
                         <span>Edit</span>
                       </button>
                       <button 
-                        onClick={() => setDeletingId(service.id)}
+                        onClick={() => handleDelete(service.id, service.title)}
                         className="flex-1 inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors border border-rose-200/80 cursor-pointer font-['Source_Sans_3']"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Delete</span>
                       </button>
                     </div>
-                  )}
                 </div>
               </div>
             );
@@ -409,71 +449,107 @@ export default function ServicesManager() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingId ? 'Edit Service' : 'Add Service'}
-        maxWidth="max-w-md"
+        maxWidth="max-w-xl"
       >
-        <div className="space-y-3.5">
-          {/* Service Title */}
-          <div>
-            <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
-              Service Title <span className="text-rose-500">*</span>
-            </label>
-            <input 
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({...formData, title: e.target.value})}
-              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all"
-              placeholder="e.g. Kidney Stones, Hair PRP, Medifacial"
-            />
-          </div>
+        <div className="space-y-4">
+          {/* Service Title and Category Row */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <div className="sm:col-span-7">
+              <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
+                Service Title <span className="text-rose-500 ml-1">*</span>
+              </label>
+              <input 
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({...formData, title: e.target.value})}
+                className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all font-medium text-gray-900"
+                placeholder="e.g. Kidney Stones, Hair PRP, Medifacial"
+              />
+            </div>
 
-          {/* Service Category / Page Assignment */}
-          <div>
-            <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
-              Target Services Page <span className="text-rose-500">*</span>
-            </label>
-            <select
-              value={formData.category}
-              onChange={(e) => setFormData({...formData, category: e.target.value as any})}
-              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] cursor-pointer"
-            >
-              <option value="homeopathy">Homeopathy Treatments (/homeopathy)</option>
-              <option value="cosmetic">Cosmetic Treatments (/cosmetic-treatments)</option>
-              <option value="hair-skin">Hair & Skin Treatments (/hair-and-skin)</option>
-            </select>
+            <div className="sm:col-span-5">
+              <AdminSelect
+                label="Target Category"
+                required
+                value={formData.category}
+                onChange={(val) => setFormData({ ...formData, category: val as any })}
+                options={[
+                  { value: 'homeopathy', label: 'Homeopathy (/homeopathy)' },
+                  { value: 'cosmetic', label: 'Cosmetic (/cosmetic-treatments)' },
+                  { value: 'hair-skin', label: 'Hair & Skin (/hair-and-skin)' },
+                ]}
+              />
+            </div>
           </div>
 
           {/* Indications (Symptom summary) */}
           <div>
-            <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
+            <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
               Indications / Clinical Concerns
             </label>
             <input 
               type="text"
               value={formData.indications}
               onChange={(e) => setFormData({...formData, indications: e.target.value})}
-              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all"
-              placeholder="e.g. Renal calculi, sudden flank pain, burning urination..."
+              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all font-medium text-gray-900"
+              placeholder="e.g. Renal calculi, flank pain, burning urination, recurrent stones..."
             />
+          </div>
+
+          {/* Consultation Fee & Time Required Row - Horizontally Balanced & Pixel-Aligned */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
+                Starting Fee / Price
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-xs pointer-events-none select-none">
+                  ₹
+                </span>
+                <input 
+                  type="text"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  className="w-full pl-7 pr-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all font-medium text-gray-900"
+                  placeholder="e.g. From ₹999+, ₹1,499"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
+                Duration / Process Time
+              </label>
+              <div className="relative">
+                <Clock className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <input 
+                  type="text"
+                  value={formData.duration}
+                  onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                  className="w-full pl-8 pr-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all font-medium text-gray-900"
+                  placeholder="e.g. 30-45 mins, 1 hr"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Detailed Description */}
           <div>
-            <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
+            <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
               Treatment Description
             </label>
             <textarea 
-              rows={2}
+              rows={3}
               value={formData.description}
               onChange={(e) => setFormData({...formData, description: e.target.value})}
-              className="w-full px-3 py-1.5 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all resize-none"
+              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-xs sm:text-sm font-['Source_Sans_3'] transition-all resize-none leading-relaxed text-gray-800"
               placeholder="Provide full description of the procedure, healing philosophy, and expected outcome..."
             />
           </div>
 
-          {/* Treatment Image (Slim Compact Upload & Preview) */}
+          {/* Treatment Image (Upload & Preview) */}
           <div>
-            <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
-              Image (Upload File or Enter URL)
+            <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
+              Featured Image (Upload File or Enter URL)
             </label>
             <div className="flex items-center gap-2">
               {formData.image ? (
@@ -509,7 +585,7 @@ export default function ServicesManager() {
               />
 
               <label 
-                className="px-3 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs font-semibold cursor-pointer transition-colors shrink-0 flex items-center gap-1.5 font-['Source_Sans_3'] shadow-xs" 
+                className="px-3.5 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs font-semibold cursor-pointer transition-colors shrink-0 flex items-center gap-1.5 font-['Source_Sans_3'] shadow-xs" 
                 title="Upload image from computer"
               >
                 <Upload className="w-3.5 h-3.5" />
@@ -527,56 +603,62 @@ export default function ServicesManager() {
             </p>
           </div>
 
-          {/* Treatment Highlights */}
+          {/* Treatment Highlights - Clean list without double scrollbar */}
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider font-['Source_Sans_3']">
-                Treatment Highlights (Bullets)
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider h-4 font-['Source_Sans_3']">
+                Key Treatment Highlights ({formData.highlights.filter(h => h.trim()).length})
               </label>
               <button 
                 type="button" 
                 onClick={handleAddHighlight}
-                className="text-xs text-[#108283] font-semibold hover:underline cursor-pointer flex items-center gap-1 font-['Source_Sans_3']"
+                className="text-xs text-[#108283] hover:text-[#0c6b6c] font-semibold cursor-pointer flex items-center gap-1 font-['Source_Sans_3'] bg-teal-50/80 hover:bg-teal-100/80 px-2.5 py-0.5 rounded-lg transition-colors border border-teal-200/50"
               >
                 <Plus className="w-3 h-3" /> Add Highlight
               </button>
             </div>
             
-            <div className="space-y-1.5 max-h-28 overflow-y-auto pr-1">
+            <div className="space-y-2">
               {formData.highlights.map((h, i) => (
-                <div key={i} className="flex items-center gap-1.5">
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-teal-50 text-[#108283] text-[10px] font-bold flex items-center justify-center shrink-0 border border-teal-200/60 select-none">
+                    {i + 1}
+                  </span>
                   <input 
                     type="text"
                     value={h}
                     onChange={(e) => handleHighlightChange(i, e.target.value)}
-                    placeholder="e.g. Non-Surgical Stone Dissolution"
-                    className="flex-1 px-2.5 py-1 bg-gray-50/80 border border-gray-200 rounded-lg text-xs font-['Source_Sans_3'] focus:bg-white focus:ring-1 focus:ring-[#108283] outline-none"
+                    placeholder={`Highlight #${i + 1} (e.g. Non-Surgical Stone Dissolution)`}
+                    className="flex-1 px-3 py-1.5 bg-gray-50/80 border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:bg-white focus:ring-1 focus:ring-[#108283] focus:border-[#108283] outline-none transition-all"
                   />
-                  <button 
-                    type="button" 
-                    onClick={() => handleRemoveHighlight(i)}
-                    className="text-gray-400 hover:text-rose-500 p-1 cursor-pointer transition-colors"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                  {formData.highlights.length > 1 && (
+                    <button 
+                      type="button" 
+                      onClick={() => handleRemoveHighlight(i)}
+                      className="text-gray-400 hover:text-rose-500 p-1.5 hover:bg-rose-50 rounded-lg cursor-pointer transition-colors shrink-0"
+                      title="Remove highlight"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-2.5 pt-3.5 border-t border-gray-100 mt-2">
             <button 
               type="button" 
               onClick={() => setIsModalOpen(false)}
-              className="px-3.5 py-1.5 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors font-medium text-xs sm:text-sm cursor-pointer font-['Source_Sans_3']"
+              className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-colors font-medium text-xs sm:text-sm cursor-pointer font-['Source_Sans_3']"
             >
               Cancel
             </button>
             <button 
               type="button" 
               onClick={handleSave}
-              className="px-4 py-1.5 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl transition-all font-semibold text-xs sm:text-sm cursor-pointer shadow-xs font-['Source_Sans_3'] active:scale-98"
+              className="px-5 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl transition-all font-semibold text-xs sm:text-sm cursor-pointer shadow-xs font-['Source_Sans_3'] active:scale-98"
             >
               {editingId ? 'Save Changes' : 'Add Service'}
             </button>

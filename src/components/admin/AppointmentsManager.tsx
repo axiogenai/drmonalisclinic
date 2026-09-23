@@ -3,10 +3,13 @@
 import React, { useState } from 'react';
 import { Search, Filter, Eye, CheckCircle, XCircle, Clock, Trash2, Calendar } from 'lucide-react';
 import { useAdminData, Appointment } from '@/context/AdminContext';
+import { useDialog } from '@/context/DialogContext';
 import AdminModal from './AdminModal';
+import AdminSelect, { AdminSelectOption } from './AdminSelect';
 
 export default function AppointmentsManager() {
   const { appointments, updateAppointmentStatus, deleteAppointment, clearAppointments } = useAdminData();
+  const { confirm, toast } = useDialog();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -29,10 +32,53 @@ export default function AppointmentsManager() {
     }
   };
 
-  const handleClearAll = () => {
-    if (confirm('Are you sure you want to clear all booked appointments? This action cannot be undone.')) {
+  const handleClearAll = async () => {
+    const ok = await confirm({
+      title: 'Clear All Bookings',
+      message: 'Are you sure you want to clear all booked appointments? This action cannot be undone and will permanently remove all patient bookings.',
+      confirmText: 'Clear All',
+      cancelText: 'Keep Bookings',
+      type: 'danger',
+    });
+    if (ok) {
       clearAppointments();
+      toast({
+        title: 'Appointments Cleared',
+        message: 'All booked appointments have been successfully removed.',
+        type: 'success',
+      });
     }
+  };
+
+  const handleDeleteAppointment = async (apt: Appointment) => {
+    const patientName = apt.fullName || (apt as any).name || 'this patient';
+    const ok = await confirm({
+      title: 'Delete Appointment',
+      message: `Are you sure you want to delete the appointment for "${patientName}"? This record will be permanently removed.`,
+      confirmText: 'Delete Booking',
+      cancelText: 'Cancel',
+      type: 'danger',
+    });
+    if (ok) {
+      deleteAppointment(apt.id);
+      if (selectedAppointment?.id === apt.id) {
+        setSelectedAppointment(null);
+      }
+      toast({
+        title: 'Appointment Deleted',
+        message: `Booking for "${patientName}" has been removed.`,
+        type: 'success',
+      });
+    }
+  };
+
+  const handleUpdateStatus = (id: string, status: Appointment['status'], label: string) => {
+    updateAppointmentStatus(id, status);
+    toast({
+      title: 'Status Updated',
+      message: `Appointment marked as ${label}.`,
+      type: 'success',
+    });
   };
 
   return (
@@ -50,18 +96,20 @@ export default function AppointmentsManager() {
         </div>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto items-center">
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-400 shrink-0" />
-            <select
+            <Filter className="w-4 h-4 text-gray-400 shrink-0" />
+            <AdminSelect
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-sm bg-white"
-            >
-              <option value="All">All Statuses ({appointments.length})</option>
-              <option value="New">New</option>
-              <option value="Confirmed">Confirmed</option>
-              <option value="Completed">Completed</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
+              onChange={(val) => setStatusFilter(val)}
+              options={[
+                { value: 'All', label: `All Statuses (${appointments.length})` },
+                { value: 'New', label: 'New' },
+                { value: 'Confirmed', label: 'Confirmed' },
+                { value: 'Completed', label: 'Completed' },
+                { value: 'Cancelled', label: 'Cancelled' },
+              ]}
+              width="w-44 sm:w-52"
+              buttonClassName="bg-white py-2"
+            />
           </div>
           {appointments.length > 0 && (
             <button
@@ -133,7 +181,7 @@ export default function AppointmentsManager() {
                         </button>
                         {apt.status?.toLowerCase() === 'new' && (
                           <button
-                            onClick={() => updateAppointmentStatus(apt.id, 'confirmed')}
+                            onClick={() => handleUpdateStatus(apt.id, 'confirmed', 'Confirmed')}
                             className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                             title="Confirm"
                           >
@@ -142,7 +190,7 @@ export default function AppointmentsManager() {
                         )}
                         {apt.status?.toLowerCase() === 'confirmed' && (
                           <button
-                            onClick={() => updateAppointmentStatus(apt.id, 'completed')}
+                            onClick={() => handleUpdateStatus(apt.id, 'completed', 'Completed')}
                             className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                             title="Mark Completed"
                           >
@@ -151,7 +199,7 @@ export default function AppointmentsManager() {
                         )}
                         {apt.status?.toLowerCase() !== 'cancelled' && apt.status?.toLowerCase() !== 'completed' && (
                           <button
-                            onClick={() => updateAppointmentStatus(apt.id, 'cancelled')}
+                            onClick={() => handleUpdateStatus(apt.id, 'cancelled', 'Cancelled')}
                             className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
                             title="Cancel"
                           >
@@ -159,11 +207,7 @@ export default function AppointmentsManager() {
                           </button>
                         )}
                         <button
-                          onClick={() => {
-                            if (confirm(`Delete appointment for "${apt.fullName || (apt as any).name}"?`)) {
-                              deleteAppointment(apt.id);
-                            }
-                          }}
+                          onClick={() => handleDeleteAppointment(apt)}
                           className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                           title="Delete Appointment"
                         >
@@ -221,7 +265,7 @@ export default function AppointmentsManager() {
               {selectedAppointment.status?.toLowerCase() === 'new' && (
                 <button
                   onClick={() => {
-                    updateAppointmentStatus(selectedAppointment.id, 'confirmed');
+                    handleUpdateStatus(selectedAppointment.id, 'confirmed', 'Confirmed');
                     setSelectedAppointment(null);
                   }}
                   className="px-4 py-2 bg-[#108283] text-white rounded-xl hover:bg-[#188D90] transition-colors cursor-pointer"
@@ -232,7 +276,7 @@ export default function AppointmentsManager() {
               {selectedAppointment.status?.toLowerCase() === 'confirmed' && (
                 <button
                   onClick={() => {
-                    updateAppointmentStatus(selectedAppointment.id, 'completed');
+                    handleUpdateStatus(selectedAppointment.id, 'completed', 'Completed');
                     setSelectedAppointment(null);
                   }}
                   className="px-4 py-2 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors cursor-pointer"
@@ -243,7 +287,7 @@ export default function AppointmentsManager() {
               {selectedAppointment.status?.toLowerCase() !== 'cancelled' && selectedAppointment.status?.toLowerCase() !== 'completed' && (
                 <button
                   onClick={() => {
-                    updateAppointmentStatus(selectedAppointment.id, 'cancelled');
+                    handleUpdateStatus(selectedAppointment.id, 'cancelled', 'Cancelled');
                     setSelectedAppointment(null);
                   }}
                   className="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl transition-colors cursor-pointer text-sm font-medium"
@@ -252,12 +296,7 @@ export default function AppointmentsManager() {
                 </button>
               )}
               <button
-                onClick={() => {
-                  if (confirm(`Delete appointment for "${selectedAppointment.fullName || (selectedAppointment as any).name}"?`)) {
-                    deleteAppointment(selectedAppointment.id);
-                    setSelectedAppointment(null);
-                  }
-                }}
+                onClick={() => handleDeleteAppointment(selectedAppointment)}
                 className="ml-auto px-4 py-2 text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer text-sm font-medium"
               >
                 Delete Booking

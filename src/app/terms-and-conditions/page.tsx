@@ -141,10 +141,10 @@ export default function TermsAndConditionsPage() {
                 Call Clinic Desk: +91 92094 72224
               </a>
               <a 
-                href="mailto:info@drmonali.com" 
+                href="mailto:info@drmonalisclinic.com" 
                 className="px-5 py-2.5 bg-white hover:bg-gray-50 text-gray-800 font-semibold rounded-full text-sm transition-colors border border-gray-200 shadow-sm"
               >
-                Email: info@drmonali.com
+                Email: info@drmonalisclinic.com
               </a>
             </div>
           </div>

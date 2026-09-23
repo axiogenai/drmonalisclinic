@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Star, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { useAdminData } from '@/context/AdminDataContext';
 
 interface TestimonialItem {
@@ -208,15 +208,22 @@ export default function TestimonialsSection() {
     contextTestimonials && contextTestimonials.length > 0
       ? contextTestimonials.map((item, index) => {
           const fallback = fallbackTestimonials[index % fallbackTestimonials.length];
+          const displayName = item.name?.trim() || fallback.name;
+          const displayHeadline = (item as any).headline?.trim() || displayName;
+          const displayConcern = item.concern?.trim() || fallback.concern;
+          const displayTag = (item as any).tag?.trim() || (item.concern?.trim() ? item.concern.trim().toUpperCase() : fallback.tag);
+          const displayImage = (item as any).image?.trim() || fallback.image;
+          const displayRating = (item as any).rating || 5;
+
           return {
             id: item.id || String(index + 1),
-            name: item.name,
-            tag: (item as any).tag || fallback.tag,
-            headline: (item as any).headline || fallback.headline || item.name,
-            concern: item.concern || fallback.concern,
-            review: item.review,
-            image: (item as any).image || fallback.image,
-            rating: (item as any).rating || 5,
+            name: displayName,
+            tag: displayTag,
+            headline: displayHeadline,
+            concern: displayConcern,
+            review: item.review || fallback.review,
+            image: displayImage,
+            rating: displayRating,
           };
         })
       : fallbackTestimonials;
@@ -601,10 +608,21 @@ export default function TestimonialsSection() {
 
                     {/* Patient Details & Verified Badge */}
                     <div className={`flex items-center justify-between pt-1.5 sm:pt-2 border-t ${theme.dividerColor}`}>
-                      {/* Soft Warm Gold Stars */}
-                      <div className="flex items-center gap-0.5">
-                        {[...Array(5)].map((_, starI) => (
-                          <Star key={starI} className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-[#E2B887] text-[#E2B887]" />
+                      {/* Google Review Stars */}
+                      <div className="flex items-center gap-0.5" title={`${t.rating || 5} out of 5 stars`}>
+                        {[1, 2, 3, 4, 5].map((starI) => (
+                          <svg
+                            key={starI}
+                            viewBox="0 0 24 24"
+                            className="w-3 h-3 sm:w-3.5 sm:h-3.5 drop-shadow-xs"
+                            fill={starI <= (t.rating || 5) ? '#FBBC04' : 'rgba(255,255,255,0.2)'}
+                            stroke={starI <= (t.rating || 5) ? '#FBBC04' : 'rgba(255,255,255,0.25)'}
+                            strokeWidth="1"
+                            strokeLinejoin="round"
+                            strokeLinecap="round"
+                          >
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                          </svg>
                         ))}
                       </div>
 

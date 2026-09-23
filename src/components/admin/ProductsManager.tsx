@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, X, ChevronDown, Check, Tag, Layers, IndianRupee, ArrowLeft, ArrowRight, Upload, Image as ImageIcon } from 'lucide-react';
 import { useAdminData, Product } from '@/context/AdminContext';
+import { useDialog } from '@/context/DialogContext';
 import { uploadImageToSupabase } from '@/lib/supabase';
 import AdminModal from './AdminModal';
 
@@ -106,35 +107,43 @@ function CustomSelect({
   );
 }
 
+type ProductFormData = Omit<Partial<Product>, 'price' | 'mrp'> & {
+  price?: number | string;
+  mrp?: number | string;
+};
+
+const defaultProductFormData: ProductFormData = {
+  name: '',
+  subtitle: '',
+  category: 'serums',
+  categoryLabel: 'Serums & Elixirs',
+  price: '',
+  mrp: '',
+  volume: '30ml | 1.0 fl oz',
+  rating: 5,
+  reviewsCount: 0,
+  image: '',
+  status: 'available',
+  badge: '',
+  shortDesc: '',
+  fullDesc: '',
+  howToUse: '',
+  suitableFor: 'All Indian Skin Types',
+  ingredientsList: '',
+  keyActives: [],
+  benefits: []
+};
+
 export default function ProductsManager() {
   const { products, addProduct, updateProduct, deleteProduct } = useAdminData();
+  const { confirm, toast } = useDialog();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'out_of_stock' | 'coming_soon'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [activeModalTab, setActiveModalTab] = useState<'basic' | 'details'>('basic');
   
-  const [formData, setFormData] = useState<Partial<Product>>({
-    name: '',
-    subtitle: '',
-    category: 'serums',
-    categoryLabel: 'Serums & Elixirs',
-    price: 0,
-    mrp: 0,
-    volume: '30ml | 1.0 fl oz',
-    rating: 5,
-    reviewsCount: 0,
-    image: '',
-    status: 'available',
-    badge: '',
-    shortDesc: '',
-    fullDesc: '',
-    howToUse: '',
-    suitableFor: 'All Indian Skin Types',
-    ingredientsList: '',
-    keyActives: [],
-    benefits: []
-  });
+  const [formData, setFormData] = useState<ProductFormData>(defaultProductFormData);
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -171,27 +180,7 @@ export default function ProductsManager() {
   const openAddModal = () => {
     setEditingProduct(null);
     setActiveModalTab('basic');
-    setFormData({
-      name: '',
-      subtitle: '',
-      category: 'serums',
-      categoryLabel: 'Serums & Elixirs',
-      price: 0,
-      mrp: 0,
-      volume: '30ml | 1.0 fl oz',
-      rating: 5,
-      reviewsCount: 0,
-      image: '',
-      status: 'available',
-      badge: '',
-      shortDesc: '',
-      fullDesc: '',
-      howToUse: '',
-      suitableFor: 'All Indian Skin Types',
-      ingredientsList: '',
-      keyActives: [],
-      benefits: []
-    });
+    setFormData(defaultProductFormData);
     setIsModalOpen(true);
   };
 
@@ -200,15 +189,29 @@ export default function ProductsManager() {
     setActiveModalTab('basic');
     setFormData({
       ...product,
+      price: product.price !== undefined && product.price !== null ? String(product.price) : '',
+      mrp: product.mrp !== undefined && product.mrp !== null ? String(product.mrp) : '',
       keyActives: product.keyActives ? [...product.keyActives] : [],
       benefits: product.benefits ? [...product.benefits] : []
     });
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
+  const handleDelete = async (id: string, name?: string) => {
+    const ok = await confirm({
+      title: 'Delete Product',
+      message: `Are you sure you want to delete ${name ? `"${name}"` : 'this product'}? This action cannot be undone and will permanently remove it from your clinic catalog.`,
+      confirmText: 'Delete Product',
+      cancelText: 'Cancel',
+      type: 'danger',
+    });
+    if (ok) {
       deleteProduct(id);
+      toast({
+        title: 'Product Deleted',
+        message: `${name ? `"${name}"` : 'Product'} removed from catalog successfully.`,
+        type: 'success',
+      });
     }
   };
 
@@ -230,29 +233,60 @@ export default function ProductsManager() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name?.trim() || !formData.price || !formData.image?.trim()) {
-      alert('Please fill in required fields: Product Name, Price, and Image URL.');
+
+    const nameStr = formData.name?.trim() || '';
+    const rawPrice = formData.price !== undefined && formData.price !== null ? String(formData.price).trim() : '';
+    const numPrice = Number(rawPrice);
+    const imageStr = formData.image?.trim() || '';
+
+    if (!nameStr) {
+      toast({
+        title: 'Missing Product Name',
+        message: 'Please provide a name for this product.',
+        type: 'error',
+      });
       return;
     }
+
+    if (!rawPrice || isNaN(numPrice) || numPrice <= 0) {
+      toast({
+        title: 'Invalid Selling Price',
+        message: 'Please enter a valid product price greater than ₹0.',
+        type: 'error',
+      });
+      return;
+    }
+
+    if (!imageStr) {
+      toast({
+        title: 'Missing Product Image',
+        message: 'Please upload or provide an image URL for the product.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const rawMrp = formData.mrp !== undefined && formData.mrp !== null ? String(formData.mrp).trim() : '';
+    const numMrp = rawMrp && !isNaN(Number(rawMrp)) && Number(rawMrp) > 0 ? Number(rawMrp) : numPrice;
     
     const cleanedPayload: Product = {
       id: editingProduct ? editingProduct.id : 'prod-' + Date.now(),
-      name: formData.name.trim(),
+      name: nameStr,
       subtitle: formData.subtitle?.trim() || '',
       category: (formData.category as Product['category']) || 'serums',
       categoryLabel: formData.categoryLabel?.trim() || categoryLabelMap[formData.category || 'serums'] || 'Skincare',
-      price: Number(formData.price),
-      mrp: Number(formData.mrp) || Number(formData.price),
+      price: numPrice,
+      mrp: numMrp,
       volume: formData.volume?.trim() || '30ml',
       rating: formData.rating || 5,
       reviewsCount: formData.reviewsCount || 0,
-      image: formData.image.trim(),
+      image: imageStr,
       status: (formData.status as Product['status']) || 'available',
       badge: formData.badge?.trim() || '',
       shortDesc: formData.shortDesc?.trim() || '',
       fullDesc: formData.fullDesc?.trim() || '',
       howToUse: formData.howToUse?.trim() || '',
-      suitableFor: formData.suitableFor?.trim() || 'All Skin Types',
+      suitableFor: formData.suitableFor?.trim() || 'All Indian Skin Types',
       ingredientsList: formData.ingredientsList?.trim() || '',
       keyActives: (formData.keyActives || []).filter(a => a.trim() !== ''),
       benefits: (formData.benefits || []).filter(b => b.trim() !== '')
@@ -260,8 +294,18 @@ export default function ProductsManager() {
 
     if (editingProduct) {
       updateProduct(editingProduct.id, cleanedPayload);
+      toast({
+        title: 'Product Updated',
+        message: `"${cleanedPayload.name}" was updated successfully.`,
+        type: 'success',
+      });
     } else {
       addProduct(cleanedPayload);
+      toast({
+        title: 'Product Created',
+        message: `"${cleanedPayload.name}" was added to catalog.`,
+        type: 'success',
+      });
     }
     setIsModalOpen(false);
   };
@@ -379,37 +423,53 @@ export default function ProductsManager() {
                 <img 
                   src={product.image} 
                   alt={product.name} 
-                  className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${
-                    product.status === 'out_of_stock' ? 'grayscale-[30%]' : ''
+                  className={`w-full h-full object-cover transition-transform duration-300 ${
+                    product.status === 'coming_soon'
+                      ? 'blur-[5px] scale-105'
+                      : product.status === 'out_of_stock'
+                      ? 'grayscale-[30%]'
+                      : 'group-hover:scale-105'
                   }`}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
                       'https://placehold.co/400x400/FAF0DD/108283?text=' + encodeURIComponent(product.name);
                   }}
                 />
+
+                {/* Coming Soon Center Overlay with Background Blur */}
+                {product.status === 'coming_soon' && (
+                  <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex flex-col items-center justify-center p-2 text-center z-10 pointer-events-none">
+                    <div className="bg-black/90 border-2 border-[#F0A070] text-[#F0A070] px-3 py-1 rounded-full text-[9px] font-extrabold tracking-widest uppercase mb-1 shadow-md">
+                      COMING SOON
+                    </div>
+                    <p className="text-white text-[9px] font-medium tracking-wide">
+                      Pre-Launch Formulation
+                    </p>
+                  </div>
+                )}
+
+                {/* Out of Stock Center Overlay */}
+                {product.status === 'out_of_stock' && (
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex flex-col items-center justify-center p-2 text-center z-10 pointer-events-none">
+                    <div className="bg-rose-600 text-white px-3 py-0.5 rounded-full text-[9px] font-extrabold tracking-widest uppercase shadow-md">
+                      OUT OF STOCK
+                    </div>
+                  </div>
+                )}
                 
-                {/* Floating Status & Custom Badges */}
-                <div className="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none gap-1">
-                  {product.badge ? (
-                    <span className="bg-[#108283] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs truncate max-w-[95px]">
-                      {product.badge}
-                    </span>
-                  ) : <span />}
-                  
-                  {product.status === 'out_of_stock' ? (
-                    <span className="bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs shrink-0">
-                      Out of Stock
-                    </span>
-                  ) : product.status === 'coming_soon' ? (
-                    <span className="bg-amber-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs shrink-0">
-                      Coming Soon
-                    </span>
-                  ) : (
+                {/* Floating Status & Custom Badges for In-Stock Products */}
+                {product.status === 'available' && (
+                  <div className="absolute top-2 left-2 right-2 flex items-center justify-between pointer-events-none gap-1 z-10">
+                    {product.badge ? (
+                      <span className="bg-[#108283] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs truncate max-w-[95px]">
+                        {product.badge}
+                      </span>
+                    ) : <span />}
                     <span className="bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs shrink-0">
                       In Stock
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Card Details */}
@@ -447,7 +507,7 @@ export default function ProductsManager() {
                     <Edit2 className="w-3.5 h-3.5" /> <span>Edit</span>
                   </button>
                   <button
-                    onClick={() => handleDelete(product.id)}
+                    onClick={() => handleDelete(product.id, product.name)}
                     className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer border border-rose-200/80 font-['Source_Sans_3']"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> <span>Delete</span>
@@ -558,45 +618,90 @@ export default function ProductsManager() {
               </div>
 
               {/* Price, MRP, Volume Row */}
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
                     Price (₹) <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="number"
-                    required
-                    min={0}
-                    value={formData.price ?? ''}
-                    onChange={e => setFormData({...formData, price: Number(e.target.value)})}
-                    className="w-full px-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all font-semibold"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-xs pointer-events-none select-none">
+                      ₹
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      required
+                      placeholder="899"
+                      value={formData.price !== undefined && formData.price !== null ? String(formData.price) : ''}
+                      onChange={e => {
+                        const val = e.target.value.replace(/[^0-9]/g, '');
+                        setFormData({ ...formData, price: val });
+                      }}
+                      className="w-full pl-7 pr-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all font-semibold text-gray-900 placeholder:text-gray-400 placeholder:font-normal"
+                    />
+                  </div>
                 </div>
+
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
                     MRP (₹)
                   </label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={formData.mrp ?? ''}
-                    onChange={e => setFormData({...formData, mrp: Number(e.target.value)})}
-                    className="w-full px-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-xs pointer-events-none select-none">
+                      ₹
+                    </span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="1099"
+                      value={formData.mrp !== undefined && formData.mrp !== null ? String(formData.mrp) : ''}
+                      onChange={e => {
+                        const val = e.target.value.replace(/[^0-9]/g, '');
+                        setFormData({ ...formData, mrp: val });
+                      }}
+                      className="w-full pl-7 pr-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all text-gray-900 placeholder:text-gray-400"
+                    />
+                  </div>
                 </div>
+
                 <div>
                   <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
                     Volume / Size
                   </label>
                   <input
                     type="text"
-                    placeholder="30ml"
+                    placeholder="30ml | 1.0 fl oz"
                     value={formData.volume || ''}
-                    onChange={e => setFormData({...formData, volume: e.target.value})}
+                    onChange={e => setFormData({ ...formData, volume: e.target.value })}
                     className="w-full px-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all"
                   />
                 </div>
               </div>
+
+              {/* Price Intelligence & Discount Preview */}
+              {(() => {
+                const p = Number(formData.price);
+                const m = Number(formData.mrp);
+                if (p > 0 && m > p) {
+                  const discount = Math.round(((m - p) / m) * 100);
+                  const savings = m - p;
+                  return (
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50/80 border border-emerald-200/70 rounded-xl text-xs text-emerald-800 font-['Source_Sans_3']">
+                      <span className="font-bold text-emerald-700">{discount}% OFF</span>
+                      <span className="text-emerald-400">•</span>
+                      <span>Customer saves ₹{savings.toLocaleString('en-IN')} (MRP: ₹{m.toLocaleString('en-IN')})</span>
+                    </div>
+                  );
+                }
+                if (p > 0 && m > 0 && m < p) {
+                  return (
+                    <div className="px-3 py-1.5 bg-amber-50/80 border border-amber-200/70 rounded-xl text-xs text-amber-800 font-['Source_Sans_3']">
+                      ⚠️ Note: MRP (₹{m}) is lower than Selling Price (₹{p})
+                    </div>
+                  );
+                }
+                return null;
+              })()}
 
               {/* Status & Badge */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

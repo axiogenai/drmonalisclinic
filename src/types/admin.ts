@@ -15,6 +15,8 @@ export interface Service {
   downtime?: string;
   sessions?: string;
   badge?: string;
+  price?: string;
+  duration?: string;
 }
 
 export interface Testimonial {

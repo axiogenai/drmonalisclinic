@@ -56,27 +56,41 @@ export default function HeroSection() {
             className="mb-3.5 max-w-2xl"
           >
             <h1
-              className="font-playfair text-[32px] xs:text-[38px] sm:text-[42px] md:text-[46px] lg:text-[50px] font-normal leading-[1.14] tracking-tight text-gray-950 mb-2.5"
+              className="font-playfair text-[30px] xs:text-[36px] sm:text-[40px] md:text-[44px] lg:text-[48px] font-normal leading-[1.15] tracking-tight text-gray-950 mb-2.5"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
-              Heal Naturally with{' '}
+              Advanced{' '}
               <span
                 className="font-semibold italic text-[#108283]"
                 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               >
                 Homeopathy
               </span>
+              ,{' '}
+              <span
+                className="font-semibold italic text-[#108283]"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
+                Skin
+              </span>{' '}
+              &amp;{' '}
+              <span
+                className="font-semibold italic text-[#108283]"
+                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+              >
+                Hair Care
+              </span>
             </h1>
             <p
               className="font-playfair text-base xs:text-lg sm:text-xl italic text-gray-700 font-light leading-snug mb-2"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
-              Safe. Gentle. Root-Cause Healing for All Ages.
+              Constitutional Healing &amp; Modern Clinical Cosmetology in Kolhapur.
             </p>
             <p className="font-source text-gray-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-lg mx-auto md:mx-0">
-              Consult with <strong className="font-semibold text-gray-900">Dr. Monali</strong> &amp;{' '}
+              Consult with <strong className="font-semibold text-gray-900">Dr. Monali Subhedar</strong> (BHMS, MD, Cosmetologist) &amp;{' '}
               <strong className="font-semibold text-gray-900">Dr. Sachin Subhedar</strong>.
-              15+ years of trusted clinical excellence, combining classical homeopathy with modern diagnostics.
+              15+ years of trusted clinical excellence, combining root-cause constitutional homeopathy, advanced skin treatments, and hair PRP therapy.
             </p>
           </motion.div>
 
@@ -122,7 +136,7 @@ export default function HeroSection() {
             <span className="text-gray-300">•</span>
             <div className="flex items-center gap-1 text-gray-600">
               <MapPin className="w-3.5 h-3.5 text-[#F0A070] shrink-0" />
-              <span>Ring Road, Kolhapur</span>
+              <span>Near Ring Road, Kolhapur</span>
             </div>
           </motion.div>
 

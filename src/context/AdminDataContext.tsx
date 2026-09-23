@@ -92,13 +92,13 @@ const defaultBlogs: BlogPost[] = [
 ];
 
 const defaultSettings: SiteSettings = {
-  clinicName: "Dr. Monali's Homeopathy Clinic",
+  clinicName: "Dr. Monali's Homeopathy, Skin & Hair Clinic",
   phone: '+91 92094 72224',
   whatsapp: '919209472224',
   email: 'drmonalishomeopathy@gmail.com',
-  address: 'Kolhapur, Maharashtra, India',
-  heroHeading: 'Expert Homeopathy. Precision. Personalisation in every treatment',
-  heroSubtext: 'Get your personalized skin and hair consultation with Dr. Monali Subhedar, BHMS'
+  address: 'Golden Spring Apartment, Near Ring Road, Kolhapur, Maharashtra 416012, India',
+  heroHeading: 'Advanced Homeopathy, Skin & Hair Clinic',
+  heroSubtext: 'Personalized constitutional healing & aesthetic cosmetology with Dr. Monali Subhedar & Dr. Sachin Subhedar'
 };
 
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
@@ -136,7 +136,16 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
     );
 
     if (isServicePagesFormat) {
-      setServices(loadedServices);
+      // Ensure price and duration are populated even if older cache exists
+      const mergedServices = loadedServices.map((srv) => {
+        const defaultMatch = defaultServices.find((ds) => ds.id === srv.id);
+        return {
+          ...srv,
+          price: srv.price || defaultMatch?.price,
+          duration: srv.duration || defaultMatch?.duration,
+        };
+      });
+      setServices(mergedServices);
     } else {
       setServices(defaultServices);
       try {

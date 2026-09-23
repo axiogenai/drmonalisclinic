@@ -12,7 +12,9 @@ export const defaultServices: Service[] = [
     description: 'Safe, natural homeopathic remedies that gently dissolve kidney stones and facilitate natural expulsion without surgery. Prevents recurrent calculus formation.',
     highlights: ['Non-Surgical Stone Dissolution', 'Pain & Spasm Relief', 'Prevents Recurrence', 'Safe for Renal Health'],
     image: '/services/kidney-stones.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹799+',
+    duration: '30-45 mins'
   },
   {
     id: 'piles',
@@ -22,7 +24,9 @@ export const defaultServices: Service[] = [
     description: 'Effective homeopathic treatment providing relief from swelling, bleeding, and burning. Addresses root digestive and venous causes without surgical trauma.',
     highlights: ['Painless, Non-Invasive', 'Relieves Bleeding & Inflammation', 'Corrects Root Digestive Cause', 'No Surgical Recovery Period'],
     image: '/services/piles.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹799+',
+    duration: '30-45 mins'
   },
   {
     id: 'height-increase',
@@ -32,7 +36,9 @@ export const defaultServices: Service[] = [
     description: 'Constitutional homeopathic growth therapy designed to naturally stimulate growth hormone response, support bone epiphyseal plates, and optimize metabolic absorption during growth years.',
     highlights: ['Safe for Children & Teens', 'Naturally Supports Growth Plates', 'Improves Calcium Assimilation', '100% Hormone-Free'],
     image: '/services/height-increase.webp',
-    imagePosition: 'object-[center_12%]'
+    imagePosition: 'object-[center_12%]',
+    price: 'From ₹999+',
+    duration: '30-45 mins'
   },
   {
     id: 'weight-loss',
@@ -42,7 +48,9 @@ export const defaultServices: Service[] = [
     description: 'Holistic weight loss protocol that balances sluggish metabolism, curbs unhealthy cravings, and promotes natural fat burning alongside personalized dietary guidance.',
     highlights: ['Boosts Basal Metabolic Rate', 'Zero Crash Dieting', 'Hormonal & Thyroid Balancing', 'Long-Term Sustainable Results'],
     image: '/services/weight-loss.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹999+',
+    duration: '30-45 mins'
   },
   {
     id: 'weight-gain',
@@ -52,7 +60,9 @@ export const defaultServices: Service[] = [
     description: 'Constitutional therapy focused on improving digestive fire, enhancing nutrient absorption in the gut, and building healthy lean mass and stamina.',
     highlights: ['Stimulates Healthy Appetite', 'Enhances Gut Nutrient Absorption', 'Increases Energy & Vitality', 'Safe & Natural Mass Building'],
     image: '/services/weight-gain.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹999+',
+    duration: '30-45 mins'
   },
   {
     id: 'eczema-psoriasis',
@@ -62,7 +72,9 @@ export const defaultServices: Service[] = [
     description: 'Deep constitutional healing addressing immune dysregulation and skin barrier inflammation at the root, delivering long-term remission without steroid dependence.',
     highlights: ['100% Steroid-Free Healing', 'Calms Severe Itching & Scaling', 'Regulates Autoimmune Response', 'Long-Term Skin Remission'],
     image: '/services/psoriasis.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹899+',
+    duration: '30-45 mins'
   },
   {
     id: 'pcod',
@@ -72,7 +84,9 @@ export const defaultServices: Service[] = [
     description: 'Gentle homeopathic treatment that addresses hormonal imbalance, dissolves follicular cysts, restores regular menstrual cycles, and supports fertility naturally.',
     highlights: ['Restores Natural Menstrual Rhythm', 'Reduces Cyst Formation', 'Controls Hormonal Acne & Hair Fall', 'Safe for Long-Term Reproductive Health'],
     image: '/services/pcod.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹999+',
+    duration: '30-45 mins'
   },
 
   // ==========================================
@@ -86,7 +100,9 @@ export const defaultServices: Service[] = [
     description: 'Medical-grade clinical facials utilizing ultrasound, deep infusion of active serums, and gentle vacuum extraction for instantaneous glow and deep cellular hydration.',
     highlights: ['Immediate Radiant Glow', 'Deep Pore Cleansing', 'Customized to Your Skin Type', 'Zero Downtime'],
     image: '/services/medifacial.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹1,499+',
+    duration: '45-60 mins'
   },
   {
     id: 'anti-acne',
@@ -96,7 +112,9 @@ export const defaultServices: Service[] = [
     description: 'Comprehensive anti-acne therapy combining topical clinical treatments with homeopathic root-cause remedies to soothe inflammation and clear breakouts permanently.',
     highlights: ['Targeted Antibacterial Action', 'Regulates Excess Sebum', 'Prevents Acne Scarring', 'Soothes Active Inflammation'],
     image: '/services/anti-acne.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹1,199+',
+    duration: '30-45 mins'
   },
   {
     id: 'chemical-peel',
@@ -106,7 +124,9 @@ export const defaultServices: Service[] = [
     description: 'Dermatologically formulated chemical peels that gently exfoliate damaged outer layers, revealing smoother, brighter, and rejuvenated skin underneath.',
     highlights: ['Removes Damaged Outer Cells', 'Lightens Stubborn Marks', 'Smooths Skin Surface', 'Customized Peel Strengths'],
     image: '/services/chemical-peel.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹1,799+',
+    duration: '30-45 mins'
   },
   {
     id: 'anti-aging',
@@ -116,7 +136,9 @@ export const defaultServices: Service[] = [
     description: 'Non-surgical aesthetic therapies that boost natural collagen synthesis, firm sagging skin, and restore youthful elasticity and vitality.',
     highlights: ['Stimulates Natural Collagen', 'Firms & Tones Skin Texture', 'Reduces Fine Expression Lines', 'Youthful Natural Rejuvenation'],
     image: '/services/anti-aging.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹2,499+',
+    duration: '45-60 mins'
   },
   {
     id: 'pigmentation',
@@ -126,7 +148,9 @@ export const defaultServices: Service[] = [
     description: 'Advanced pigment-clearing protocols designed to inhibit excess melanin production and gradually restore an even, luminous skin tone.',
     highlights: ['Targets Deep Melanin Deposits', 'Fades Melasma & Sun Spots', 'Even, Bright Complexion', 'Safe for All Indian Skin Types'],
     image: '/services/pigmentation.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹1,999+',
+    duration: '45 mins'
   },
   {
     id: 'removal-moles-warts',
@@ -136,7 +160,9 @@ export const defaultServices: Service[] = [
     description: 'Quick, hygienic, and precise cosmetic removal procedure performed under local anesthesia with minimal discomfort and clean cosmetic healing.',
     highlights: ['Quick In-Clinic Procedure', 'Virtually Painless', 'Minimal to No Scarring', 'Immediate Clear Skin'],
     image: '/services/moles-warts-removal.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹499/tag',
+    duration: '15-30 mins'
   },
 
   // ==========================================
@@ -150,7 +176,9 @@ export const defaultServices: Service[] = [
     description: 'Autologous platelet-rich plasma enriched with natural growth factors injected into the scalp to awaken dormant follicles, increase hair density, and arrest hair fall.',
     highlights: ['100% Autologous (Own Blood)', 'Stimulates Dormant Follicles', 'Thickens Existing Hair Strands', 'Clinically Proven Efficacy'],
     image: '/services/hair-prp.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹2,999+',
+    duration: '45-60 mins'
   },
   {
     id: 'skin-prp',
@@ -160,7 +188,9 @@ export const defaultServices: Service[] = [
     description: 'Harnessing your body\'s own concentrated growth factors to trigger vigorous collagen synthesis, cell renewal, and a luminous, firm complexion.',
     highlights: ['Natural Collagen Stimulation', 'Restores Youthful Radiance', 'Improves Fine Lines & Texture', 'Safe & Biocompatible'],
     image: '/services/skin-prp.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹3,499+',
+    duration: '45-60 mins'
   },
   {
     id: 'mesotherapy',
@@ -170,7 +200,9 @@ export const defaultServices: Service[] = [
     description: 'Micro-infusion of customized nutrient cocktails containing essential vitamins, minerals, and peptides directly into the target dermal and scalp layer.',
     highlights: ['Direct Nutritional Delivery', 'Strengthens Hair Roots', 'Intense Skin Hydration', 'Quick & Comfortable'],
     image: '/services/mesotherapy.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹1,999+',
+    duration: '30-45 mins'
   },
   {
     id: 'microneedling',
@@ -180,7 +212,9 @@ export const defaultServices: Service[] = [
     description: 'Precision micro-channeling that triggers the natural wound healing cascade, generating fresh elastin and collagen for smooth, refined skin texture.',
     highlights: ['Visibly Reduces Acne Scars', 'Tightens Enlarged Pores', 'Improves Skin Elasticity', 'Enhanced Serum Penetration'],
     image: '/services/microneedling.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹2,199+',
+    duration: '45 mins'
   },
   {
     id: 'high-frequency',
@@ -190,6 +224,8 @@ export const defaultServices: Service[] = [
     description: 'Gentle electrical current therapy that produces germicidal ozone to eliminate acne-causing bacteria, soothe inflammation, and stimulate micro-circulation in hair follicles.',
     highlights: ['Antibacterial & Antiseptic Action', 'Calms Cystic Breakouts', 'Stimulates Scalp Microcirculation', 'Painless & Relaxing'],
     image: '/services/high-frequency.webp',
-    imagePosition: 'object-center'
+    imagePosition: 'object-center',
+    price: 'From ₹899+',
+    duration: '20-30 mins'
   }
 ];
