@@ -9,12 +9,10 @@ import {
   Mail, 
   Eye, 
   EyeOff, 
-  ShieldCheck, 
   ArrowRight, 
   AlertCircle, 
   Loader2,
-  ExternalLink,
-  Sparkles
+  ExternalLink
 } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -49,26 +47,21 @@ export default function AdminLogin() {
       <div className="relative w-full max-w-md">
         
         {/* Branding Card Top */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#108283] to-[#0a5e5f] shadow-lg shadow-[#108283]/20 border border-white/40 mb-4 p-3">
+        <div className="flex flex-col items-center mb-6 text-center">
+          <div className="flex items-center justify-center gap-3 mb-1">
             <Image
-              src="/clinic-logo-icon.png"
+              src="/clinic-logo.png"
               alt="Dr. Monali's Clinic"
-              width={48}
-              height={48}
-              className="object-contain drop-shadow"
+              width={44}
+              height={44}
+              className="h-10 sm:h-11 w-auto object-contain"
+              priority
             />
+            <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight leading-tight">
+              Dr. Monali&apos;s Clinic
+            </h2>
           </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#108283]/10 text-[#108283] text-xs font-bold uppercase tracking-wider mb-2 border border-[#108283]/20">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Clinical Staff &amp; CMS Portal</span>
-          </div>
-
-          <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
-            Dr. Monali&apos;s Clinic
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
+          <p className="text-xs sm:text-sm text-gray-500 font-medium">
             Homeopathy, Skin Care &amp; Trichology Management
           </p>
         </div>
@@ -140,15 +133,6 @@ export default function AdminLogin() {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-            </div>
-
-            {/* Security Badge Info */}
-            <div className="flex items-center justify-between text-[11px] text-gray-500 pt-1">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Supabase Live Auth Active</span>
-              </div>
-              <span className="font-mono text-gray-400">SSL 256-bit</span>
             </div>
 
             {/* Submit Button */}
