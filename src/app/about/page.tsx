@@ -6,6 +6,20 @@ import { ArrowRight, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Award, C
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ContactWidget from '@/components/ContactWidget';
+import { useAdminData } from '@/context/AdminDataContext';
+import { defaultAboutSettings } from '@/data/defaultAboutAndFooter';
+
+function parseNumber(str: string, fallback: number): number {
+  if (!str) return fallback;
+  const match = str.match(/\d+/);
+  return match ? parseInt(match[0], 10) : fallback;
+}
+
+function parseSuffix(str: string, fallback: string): string {
+  if (!str) return fallback;
+  const clean = str.replace(/[0-9]/g, '').trim();
+  return clean || fallback;
+}
 
 function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(end);
@@ -67,6 +81,12 @@ function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suff
 }
 
 export default function AboutPage() {
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {}
+  const aboutSettings = adminData?.aboutSettings || defaultAboutSettings;
+
   // Hero background slideshow
   const heroSlides = [
     '/docbg.png',
@@ -183,14 +203,22 @@ export default function AboutPage() {
         <div className="relative z-10 w-full max-w-[1240px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="max-w-2xl text-left">
             <h1 className="text-white font-['Playfair_Display'] text-5xl sm:text-6xl md:text-[72px] font-light leading-[1.05] tracking-[-0.02em]">
-              Behind Every Glow is a{' '}
-              <span className="font-extrabold italic text-[#108283] block sm:inline">
-                Story
-              </span>
+              {(() => {
+                const words = (aboutSettings.heroHeading || defaultAboutSettings.heroHeading).split(' ');
+                const last = words.pop();
+                return (
+                  <>
+                    {words.join(' ')}{' '}
+                    <span className="font-extrabold italic text-[#108283] block sm:inline">
+                      {last}
+                    </span>
+                  </>
+                );
+              })()}
             </h1>
 
             <p className="text-white font-['Source_Sans_3'] text-xl sm:text-2xl font-light leading-snug mt-5 mb-8 max-w-xl">
-              Indulge in premium skincare solutions designed for beauty, health, and confidence.
+              {aboutSettings.heroSubheading || defaultAboutSettings.heroSubheading}
             </p>
 
             <a
@@ -232,26 +260,29 @@ export default function AboutPage() {
               </div>
 
               <h2 className="font-['Playfair_Display'] text-4xl sm:text-5xl md:text-[60px] lg:text-[64px] font-normal text-gray-900 leading-[1.08] tracking-[-0.02em]">
-                Welcome to{' '}
-                <span className="text-[#108283] italic font-extrabold block sm:inline">
-                  Dr. Monali&apos;s Clinic
-                </span>
+                {(aboutSettings.storyTitle || defaultAboutSettings.storyTitle).includes("Dr. Monali") ? (
+                  <>
+                    {(aboutSettings.storyTitle || defaultAboutSettings.storyTitle).split("Dr. Monali")[0]}
+                    <span className="text-[#108283] italic font-extrabold block sm:inline">
+                      Dr. Monali{(aboutSettings.storyTitle || defaultAboutSettings.storyTitle).split("Dr. Monali")[1]}
+                    </span>
+                  </>
+                ) : (
+                  aboutSettings.storyTitle || defaultAboutSettings.storyTitle
+                )}
               </h2>
 
               <p className="font-['Playfair_Display'] text-lg sm:text-xl md:text-[22px] italic text-[#555555] leading-relaxed pt-1 font-normal">
-                &ldquo;Wherever the art of medicine is loved, there is also a love for humanity.&rdquo; <span className="not-italic text-gray-400 font-sans text-base">&mdash; Hippocrates</span>
+                {aboutSettings.storyQuote || defaultAboutSettings.storyQuote}
               </p>
 
               <div className="space-y-4 font-['Source_Sans_3'] text-base md:text-[16px] text-gray-800 leading-[26px] font-light">
-                <p>
-                  Dr. Monali&apos;s Homeopathy &amp; Cosmetology Clinic was born from a clear vision to solve skin, hair, and constitutional health concerns at their root and promote a more confident, healthy version of each individual. We believe that clear skin, radiant hair, and lasting health are pathways to self-esteem and emotional well being.
-                </p>
-                <p>
-                  Rooted in clinical excellence and delivered with empathy, we provide patient centered care that is mindful, transparent, and thorough at every step.
-                </p>
-                <p>
-                  At Dr. Monali&apos;s Clinic, we believe that true healing begins with trust, compassion, and a deep understanding of each patient&apos;s unique health journey. Established in Kolhapur, our clinic is a sanctuary of care where constitutional science and modern cosmetology come together to bring lasting results and lifelong relationships.
-                </p>
+                {(aboutSettings.storyParagraphs && aboutSettings.storyParagraphs.length > 0
+                  ? aboutSettings.storyParagraphs
+                  : defaultAboutSettings.storyParagraphs
+                ).map((para, idx) => (
+                  <p key={idx}>{para}</p>
+                ))}
               </div>
 
               <div className="pt-2">
@@ -279,11 +310,7 @@ export default function AboutPage() {
             <div key={loopIdx} className="flex items-center">
               {marqueeItems.map((item, idx) => (
                 <div key={idx} className="flex items-center mx-5 md:mx-7 gap-3 shrink-0">
-                  <img
-                    src="/stroke-logo.png"
-                    alt="Emblem"
-                    className="w-6 h-6 md:w-7 md:h-7 object-contain shrink-0"
-                  />
+                  <span className="w-1.5 h-1.5 rounded-full bg-white/70 shrink-0" />
                   <span className="font-['Playfair_Display'] text-base md:text-lg lg:text-[19px] font-normal text-white tracking-wide leading-none">
                     {item}
                   </span>
@@ -390,26 +417,15 @@ export default function AboutPage() {
               </h2>
 
               <ul className="space-y-4 font-['Source_Sans_3'] text-base md:text-[16px] text-black leading-[23.8px] font-normal">
-                <li>
-                  <strong className="font-semibold text-black">Thorough Guidance from Start to Finish:</strong>{' '}
-                  We explain each step with care and transparency until you feel confident, not just informed.
-                </li>
-                <li>
-                  <strong className="font-semibold text-black">Beyond Treatment:</strong>{' '}
-                  Our connection doesn’t end with your appointment. We stay in touch, follow up, and ensure you’re healing well post-treatment.
-                </li>
-                <li>
-                  <strong className="font-semibold text-black">All Ages, All Skin Types:</strong>{' '}
-                  From newborns to the elderly, our clinical journey has touched every age group, building trust across generations.
-                </li>
-                <li>
-                  <strong className="font-semibold text-black">Word-of-Mouth Growth:</strong>{' '}
-                  Our reputation has grown organically, driven by heartfelt referrals from our happy, healed patients.
-                </li>
-                <li>
-                  <strong className="font-semibold text-black">Anxiety-Free Ambience:</strong>{' '}
-                  Patients often share how the calm, green setting and welcoming space immediately ease their fears &mdash; a rare comfort in clinical spaces.
-                </li>
+                {(aboutSettings.whyUsItems && aboutSettings.whyUsItems.length > 0 
+                  ? aboutSettings.whyUsItems 
+                  : defaultAboutSettings.whyUsItems
+                ).map((item, idx) => (
+                  <li key={idx}>
+                    <strong className="font-semibold text-black">{item.title}:</strong>{' '}
+                    {item.desc}
+                  </li>
+                ))}
               </ul>
 
               <div className="pt-4">
@@ -437,7 +453,11 @@ export default function AboutPage() {
                 Years of Experience
               </span>
               <span className="font-['Playfair_Display'] text-6xl sm:text-7xl md:text-8xl lg:text-[94px] font-normal italic text-[#108283] leading-none tracking-tight">
-                <AnimatedCounter end={6} suffix="+" duration={1.8} />
+                <AnimatedCounter 
+                  end={parseNumber(aboutSettings.stats.yearsExperience, 6)} 
+                  suffix={parseSuffix(aboutSettings.stats.yearsExperience, '+')} 
+                  duration={1.8} 
+                />
               </span>
             </div>
 
@@ -447,7 +467,11 @@ export default function AboutPage() {
                 Treatments Performed
               </span>
               <span className="font-['Playfair_Display'] text-6xl sm:text-7xl md:text-8xl lg:text-[94px] font-normal italic text-[#108283] leading-none tracking-tight">
-                <AnimatedCounter end={5} suffix="k+" duration={1.8} />
+                <AnimatedCounter 
+                  end={parseNumber(aboutSettings.stats.treatmentsPerformed, 5)} 
+                  suffix={parseSuffix(aboutSettings.stats.treatmentsPerformed, 'k+')} 
+                  duration={1.8} 
+                />
               </span>
             </div>
 
@@ -457,7 +481,11 @@ export default function AboutPage() {
                 Client Satisfaction
               </span>
               <span className="font-['Playfair_Display'] text-6xl sm:text-7xl md:text-8xl lg:text-[94px] font-normal italic text-[#108283] leading-none tracking-tight">
-                <AnimatedCounter end={98} suffix="%" duration={2.2} />
+                <AnimatedCounter 
+                  end={parseNumber(aboutSettings.stats.clientSatisfaction, 98)} 
+                  suffix={parseSuffix(aboutSettings.stats.clientSatisfaction, '%')} 
+                  duration={2.2} 
+                />
               </span>
             </div>
 
@@ -467,7 +495,11 @@ export default function AboutPage() {
                 Safe &amp; FDA Approved
               </span>
               <span className="font-['Playfair_Display'] text-6xl sm:text-7xl md:text-8xl lg:text-[94px] font-normal italic text-[#108283] leading-none tracking-tight">
-                <AnimatedCounter end={100} suffix="%" duration={2.2} />
+                <AnimatedCounter 
+                  end={parseNumber(aboutSettings.stats.safeFdaApproved, 100)} 
+                  suffix={parseSuffix(aboutSettings.stats.safeFdaApproved, '%')} 
+                  duration={2.2} 
+                />
               </span>
             </div>
 
@@ -566,16 +598,22 @@ export default function AboutPage() {
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="inline-block bg-[#FAEDDA] text-black text-xs md:text-sm font-medium px-5 py-1.5 rounded-full uppercase tracking-wider mb-4">
-              ABOUT OUR PHYSICIANS
+              {aboutSettings.tagline || defaultAboutSettings.tagline}
             </span>
             <h2 className="font-['Playfair_Display'] text-[15px] xs:text-[18px] sm:text-[26px] md:text-[36px] lg:text-[46px] xl:text-[50px] font-light text-black leading-tight whitespace-nowrap tracking-tight">
-              Meet{' '}
-              <span className="text-[#108283] font-extrabold italic">
-                Dr. Monali &amp; Dr. Sachin Subhedar
-              </span>
+              {(aboutSettings.heading || defaultAboutSettings.heading).includes('&') ? (
+                <>
+                  {(aboutSettings.heading || defaultAboutSettings.heading).split('&')[0]} &amp;{' '}
+                  <span className="text-[#108283] font-extrabold italic">
+                    {(aboutSettings.heading || defaultAboutSettings.heading).split('&')[1]}
+                  </span>
+                </>
+              ) : (
+                aboutSettings.heading || defaultAboutSettings.heading
+              )}
             </h2>
             <p className="font-['Source_Sans_3'] text-gray-600 text-base md:text-lg font-light mt-3">
-              Decades of combined clinical mastery in classical constitutional homeopathy, clinical aesthetics, and family healthcare.
+              {aboutSettings.subheading || defaultAboutSettings.subheading}
             </p>
           </div>
 
@@ -586,36 +624,29 @@ export default function AboutPage() {
             <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
               <div>
                 <div className="inline-block bg-[#FAEDDA] text-[#108283] text-xs font-semibold px-3.5 py-1 rounded-full uppercase tracking-wider mb-3">
-                  Homeopathy &amp; Aesthetic Physician
+                  {aboutSettings.doctor1.title}
                 </div>
                 <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-2xl md:text-[28px] leading-snug whitespace-nowrap">
-                  Dr. Monali Subhedar
+                  {aboutSettings.doctor1.name}
                 </h3>
                 <p className="text-xs font-semibold text-[#108283] tracking-wide mt-1 mb-4 uppercase">
-                  BHMS (Mumbai), PGDCC • Reg. No. 61847
+                  {aboutSettings.doctor1.degrees} • {aboutSettings.doctor1.regNo}
                 </p>
                 <p className="font-['Source_Sans_3'] text-gray-700 text-[16px] leading-[26px] font-light">
-                  Specializing in classical homeopathy and clinical aesthetics, Dr. Monali provides individualized remedies for chronic skin and hair concerns, acne scar resurfacing, melasma, and holistic aesthetic rejuvenation. Her practice combines gentle natural therapies with thorough constitutional evaluation to achieve lasting wellness.
+                  {aboutSettings.doctor1.bio}
                 </p>
               </div>
 
               <div className="space-y-2.5 pt-4 border-t border-gray-100 font-['Source_Sans_3'] text-sm text-gray-800">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Classical Homeopathy for Skin &amp; Hair</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Clinical Trichology &amp; Hair Restoration</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Chemical Peels &amp; Medifacials</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Safe, Steroid-Free Natural Rejuvenation</span>
-                </div>
+                {(aboutSettings.doctor1.highlights && aboutSettings.doctor1.highlights.length > 0
+                  ? aboutSettings.doctor1.highlights
+                  : defaultAboutSettings.doctor1.highlights
+                ).map((h, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
+                    <span>{h}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -623,12 +654,12 @@ export default function AboutPage() {
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
               <img
                 src="/aboutdoc.png?v=latest"
-                alt="Dr. Monali Subhedar & Dr. Sachin Subhedar"
+                alt={`${aboutSettings.doctor1.name} & ${aboutSettings.doctor2.name}`}
                 className="w-full max-w-[440px] h-auto object-contain block"
               />
               <div className="mt-4 inline-flex items-center gap-2 bg-white border border-gray-200/80 shadow-xs px-4 py-1.5 rounded-full text-xs font-medium text-gray-700">
                 <Award className="w-4 h-4 text-[#108283]" />
-                <span>Maharashtra Council Reg. No. 61847 &amp; 64981</span>
+                <span>Maharashtra Council {aboutSettings.councilRegistrationText || defaultAboutSettings.councilRegistrationText}</span>
               </div>
             </div>
 
@@ -636,36 +667,29 @@ export default function AboutPage() {
             <div className="lg:col-span-4 flex flex-col justify-between h-full space-y-6">
               <div>
                 <div className="inline-block bg-[#FAEDDA] text-[#108283] text-xs font-semibold px-3.5 py-1 rounded-full uppercase tracking-wider mb-3">
-                  Homeopathy &amp; Family Physician
+                  {aboutSettings.doctor2.title}
                 </div>
                 <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-2xl md:text-[28px] leading-snug whitespace-nowrap">
-                  Dr. Sachin Subhedar
+                  {aboutSettings.doctor2.name}
                 </h3>
                 <p className="text-xs font-semibold text-[#108283] tracking-wide mt-1 mb-4 uppercase">
-                  BHMS (Mumbai) • Reg. No. 64981
+                  {aboutSettings.doctor2.degrees} • {aboutSettings.doctor2.regNo}
                 </p>
                 <p className="font-['Source_Sans_3'] text-gray-700 text-[16px] leading-[26px] font-light">
-                  With deep expertise in family medicine and holistic healthcare, Dr. Sachin focuses on acute and chronic illnesses, pediatric and geriatric care, allergies, and long-term health restoration. He is dedicated to addressing root causes and strengthening the body&apos;s natural defense mechanisms across all age groups.
+                  {aboutSettings.doctor2.bio}
                 </p>
               </div>
 
               <div className="space-y-2.5 pt-4 border-t border-gray-100 font-['Source_Sans_3'] text-sm text-gray-800">
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Comprehensive Family Healthcare</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Chronic Kidney Stone &amp; Piles Management</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Pediatric &amp; Adolescent Growth Support</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
-                  <span>Immunity Restoration &amp; Metabolic Balance</span>
-                </div>
+                {(aboutSettings.doctor2.highlights && aboutSettings.doctor2.highlights.length > 0
+                  ? aboutSettings.doctor2.highlights
+                  : defaultAboutSettings.doctor2.highlights
+                ).map((h, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#108283] shrink-0" />
+                    <span>{h}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -686,12 +710,9 @@ export default function AboutPage() {
               {activeAccordion === 'expertise' && (
                 <div className="px-5 pb-5 border-t border-gray-100 pt-3">
                   <ul className="space-y-2 font-['Source_Sans_3'] text-sm text-gray-700 list-disc list-inside">
-                    <li>Classical Homeopathy for Chronic &amp; Autoimmune Skin Conditions</li>
-                    <li>Advanced Acne, Acne Scar Resurfacing &amp; Pore Refinement</li>
-                    <li>Melasma, Pigmentation &amp; Deep Radiant Glow Protocols</li>
-                    <li>Clinical Trichology: PRP Therapy, Mesotherapy &amp; Hair Fall Arrest</li>
-                    <li>Chemical Peels, Hydrafacials and Skin Booster Treatments</li>
-                    <li>Comprehensive Family Healthcare &amp; Immunity Restoration</li>
+                    {(aboutSettings.expertiseList || defaultAboutSettings.expertiseList).map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -709,10 +730,9 @@ export default function AboutPage() {
               {activeAccordion === 'credentials' && (
                 <div className="px-5 pb-5 border-t border-gray-100 pt-3">
                   <ul className="space-y-2 font-['Source_Sans_3'] text-sm text-gray-700 list-disc list-inside">
-                    <li>Bachelor of Homeopathic Medicine and Surgery (B.H.M.S.) – Mumbai University</li>
-                    <li>Post Graduate Diploma in Clinical Cosmetology (PGDCC)</li>
-                    <li>Certified Trichologist &amp; Aesthetic Medicine Practitioner</li>
-                    <li>Registered Medical Practitioners – Maharashtra Council (Reg. Nos. 61847 &amp; 64981)</li>
+                    {(aboutSettings.educationalDegreesList || defaultAboutSettings.educationalDegreesList).map((item, idx) => (
+                      <li key={idx}>{item}</li>
+                    ))}
                   </ul>
                 </div>
               )}

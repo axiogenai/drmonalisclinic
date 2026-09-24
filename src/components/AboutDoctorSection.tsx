@@ -3,9 +3,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Award, Stethoscope, HeartHandshake, CheckCircle2 } from 'lucide-react';
+import { useAdminData } from '@/context/AdminDataContext';
+import { defaultAboutSettings } from '@/data/defaultAboutAndFooter';
 
 export default function AboutDoctorSection() {
   const [activeTab, setActiveTab] = useState<'bio' | 'philosophy' | 'story'>('bio');
+
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {
+    // fallback
+  }
+  const aboutSettings = adminData?.aboutSettings || defaultAboutSettings;
 
   return (
     <section id="about" className="relative bg-white pt-24 md:pt-32 pb-24 md:pb-32 overflow-hidden">
@@ -14,14 +24,11 @@ export default function AboutDoctorSection() {
           {/* Left: Doctor Portrait with Floating Credential Badges */}
           <div className="lg:col-span-5 flex justify-center lg:justify-start">
             <div className="relative max-w-[420px] w-full">
-              {/* Ambient Glow */}
-              <div className="absolute -inset-3 bg-gradient-to-tr from-[#108283]/20 via-[#FAEDDA]/60 to-[#F0A070]/20 rounded-[36px] blur-2xl opacity-60"></div>
-
               {/* Main Portrait Card */}
               <div className="relative rounded-[32px] overflow-hidden border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white">
                 <img
                   src="/doctor.png?v=original"
-                  alt="Dr. Monali Subhedar &amp; Dr. Sachin Subhedar - Dr. Monali's Homeopathy Clinic"
+                  alt={`${aboutSettings.doctor1.name} & ${aboutSettings.doctor2.name} - Dr. Monali's Homeopathy Clinic`}
                   className="w-full h-auto max-h-[580px] object-cover"
                   loading="lazy"
                 />
@@ -30,7 +37,7 @@ export default function AboutDoctorSection() {
               {/* Verified Medical Council Registration Chip */}
               <div className="absolute -top-4 -right-2 bg-white/95 backdrop-blur-md border border-gray-100 shadow-md px-3.5 py-1.5 rounded-full flex items-center gap-1.5 text-[11px] font-['Source_Sans_3'] text-gray-800 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Reg. No. 61847 &amp; 64981</span>
+                <span>{aboutSettings.councilRegistrationText}</span>
               </div>
             </div>
           </div>
@@ -39,7 +46,7 @@ export default function AboutDoctorSection() {
           <div className="lg:col-span-7 flex flex-col items-start">
             {/* Tag */}
             <div className="inline-block bg-[#FAEDDA] text-[#108283] text-xs md:text-sm font-['Source_Sans_3'] font-semibold px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider">
-              ABOUT OUR PHYSICIANS
+              {aboutSettings.tagline}
             </div>
 
             {/* Heading */}
@@ -47,7 +54,13 @@ export default function AboutDoctorSection() {
               className="font-playfair text-2xl xs:text-3xl sm:text-3xl md:text-3xl lg:text-[34px] leading-tight text-gray-950 font-normal mb-6 tracking-tight"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
-              Meet <span className="text-[#108283] font-semibold italic">Dr. Monali &amp; Dr. Sachin Subhedar</span>
+              {aboutSettings.heading.includes('&') ? (
+                <>
+                  {aboutSettings.heading.split('&')[0]} &amp; <span className="text-[#108283] font-semibold italic">{aboutSettings.heading.split('&')[1]}</span>
+                </>
+              ) : (
+                aboutSettings.heading
+              )}
             </h2>
 
             {/* Interactive Tab Switcher: Full-width equal 3-column pill */}
@@ -90,24 +103,24 @@ export default function AboutDoctorSection() {
                 <div className="space-y-4 animate-in fade-in duration-200">
                   <div>
                     <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg whitespace-nowrap">
-                      Dr. Monali Subhedar
+                      {aboutSettings.doctor1.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#108283] tracking-wide mb-1">
-                      BHMS (Mumbai) • Homeopathy &amp; Aesthetic Physician • Reg. No. 61847
+                      {aboutSettings.doctor1.degrees} • {aboutSettings.doctor1.title} • {aboutSettings.doctor1.regNo}
                     </p>
                     <p className="text-sm md:text-[15px] leading-relaxed text-gray-700">
-                      Specializing in classical homeopathy and clinical aesthetics, Dr. Monali provides individualized remedies for chronic skin and hair concerns, lifestyle conditions, and holistic aesthetic rejuvenation. Her practice combines gentle natural therapies with thorough constitutional evaluation to achieve lasting wellness.
+                      {aboutSettings.doctor1.bio}
                     </p>
                   </div>
                   <div>
                     <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg whitespace-nowrap">
-                      Dr. Sachin Subhedar
+                      {aboutSettings.doctor2.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#108283] tracking-wide mb-1">
-                      BHMS (Mumbai) • Homeopathy &amp; Family Physician • Reg. No. 64981
+                      {aboutSettings.doctor2.degrees} • {aboutSettings.doctor2.title} • {aboutSettings.doctor2.regNo}
                     </p>
                     <p className="text-sm md:text-[15px] leading-relaxed text-gray-700">
-                      With deep expertise in family medicine and holistic healthcare, Dr. Sachin focuses on acute and chronic illnesses, pediatric and geriatric care, and long-term health restoration. He is dedicated to addressing root causes and strengthening the body&apos;s natural defense mechanisms across all age groups.
+                      {aboutSettings.doctor2.bio}
                     </p>
                   </div>
                 </div>
@@ -119,10 +132,10 @@ export default function AboutDoctorSection() {
                     className="border-l-3 border-[#108283] pl-5 py-3 text-gray-900 font-medium text-base sm:text-[17px] leading-[1.7] bg-[#FAF0DD]/30 rounded-r-2xl"
                     style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif" }}
                   >
-                    “Dr. Monali&apos;s Homeopathy Clinic reflects our commitment to holistic healing, integrity, and individualized care — treating the individual as a whole, not just the symptoms.”
+                    {aboutSettings.philosophyQuote}
                   </blockquote>
                   <p className="text-sm text-gray-600 pt-1 font-source" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-                    Every protocol is customized through detailed constitutional case analysis, prioritizing long-term biological vitality, natural immunity, and side-effect-free healing over temporary relief.
+                    {aboutSettings.philosophyText}
                   </p>
                 </div>
               )}
@@ -133,10 +146,10 @@ export default function AboutDoctorSection() {
                     className="border-l-3 border-[#F0A070] pl-5 py-3 text-gray-900 font-medium text-base sm:text-[17px] leading-[1.7] bg-[#FAF0DD]/30 rounded-r-2xl"
                     style={{ fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif" }}
                   >
-                    “Our journey in homeopathy is guided by the conviction that true healing begins from within. Every patient brings a unique story, and our mission is to provide safe, natural care that restores balance, health, and vitality for every family.”
+                    {aboutSettings.storyQuote}
                   </blockquote>
                   <p className="text-sm text-gray-600 pt-1 font-source" style={{ fontFamily: "'Source Sans 3', sans-serif" }}>
-                    This empathy and clinical dedication define every consultation at Dr. Monali&apos;s Homeopathy Clinic, ensuring patients feel heard, understood, and fully supported.
+                    {aboutSettings.storyText}
                   </p>
                 </div>
               )}

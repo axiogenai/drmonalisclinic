@@ -11,6 +11,8 @@ import FAQManager from '@/components/admin/FAQManager';
 import BlogManager from '@/components/admin/BlogManager';
 import MarqueeManager from '@/components/admin/MarqueeManager';
 import ResultsManager from '@/components/admin/ResultsManager';
+import FooterManager from '@/components/admin/FooterManager';
+import AboutManager from '@/components/admin/AboutManager';
 
 function AdminContent() {
   const searchParams = useSearchParams();
@@ -18,6 +20,8 @@ function AdminContent() {
   
   switch (tab) {
     case 'appointments': return <AppointmentsManager />;
+    case 'about': return <AboutManager />;
+    case 'footer': return <FooterManager />;
     case 'services': return <ServicesManager />;
     case 'results': return <ResultsManager />;
     case 'products': return <ProductsManager />;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
-import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images } from 'lucide-react';
+import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardOverview() {
@@ -227,6 +227,32 @@ export default function DashboardOverview() {
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 group-hover:text-rose-700">Before &amp; After Results</h4>
                 <p className="text-xs text-gray-500 mt-1">Manage clinical before/after photo transformations and metrics.</p>
+              </div>
+            </button>
+
+            <button 
+              onClick={() => router.push('?tab=about')}
+              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
+            >
+              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-amber-700">About &amp; Doctors CMS</h4>
+                <p className="text-xs text-gray-500 mt-1">Edit doctor degrees, council reg numbers, clinical bios, and stats.</p>
+              </div>
+            </button>
+
+            <button 
+              onClick={() => router.push('?tab=footer')}
+              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
+            >
+              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                <Building2 className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700">Footer &amp; Clinic Hours</h4>
+                <p className="text-xs text-gray-500 mt-1">Update phone, timings, address, social handles, and credits.</p>
               </div>
             </button>
           </div>

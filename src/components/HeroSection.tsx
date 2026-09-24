@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, CalendarCheck, Star, Clock, MapPin } from 'lucide-react';
+import { ArrowRight, CalendarCheck, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function HeroSection() {

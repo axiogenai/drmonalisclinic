@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { useAdminData } from '@/context/AdminDataContext';
+import { defaultAboutSettings } from '@/data/defaultAboutAndFooter';
 
 function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(end);
@@ -59,12 +61,30 @@ function AnimatedCounter({ end, suffix = '', duration = 2 }: { end: number; suff
   );
 }
 
+function parseNumber(str: string, fallback: number): number {
+  if (!str) return fallback;
+  const match = str.match(/\d+/);
+  return match ? parseInt(match[0], 10) : fallback;
+}
+
+function parseSuffix(str: string, fallback: string): string {
+  if (!str) return fallback;
+  const clean = str.replace(/[0-9]/g, '').trim();
+  return clean || fallback;
+}
+
 export default function ConfidenceSection() {
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {}
+  const stats = adminData?.aboutSettings?.stats || defaultAboutSettings.stats;
+
   const counters = [
-    { label: 'Years of Experience', value: 6, suffix: '+' },
-    { label: 'Treatments Performed', value: 5, suffix: 'k+' },
-    { label: 'Client Satisfaction', value: 98, suffix: '%' },
-    { label: 'Safe & Natural Care', value: 100, suffix: '%' },
+    { label: 'Years of Experience', value: parseNumber(stats.yearsExperience, 6), suffix: parseSuffix(stats.yearsExperience, '+') },
+    { label: 'Treatments Performed', value: parseNumber(stats.treatmentsPerformed, 5), suffix: parseSuffix(stats.treatmentsPerformed, 'k+') },
+    { label: 'Client Satisfaction', value: parseNumber(stats.clientSatisfaction, 98), suffix: parseSuffix(stats.clientSatisfaction, '%') },
+    { label: 'Safe & Natural Care', value: parseNumber(stats.safeFdaApproved, 100), suffix: parseSuffix(stats.safeFdaApproved, '%') },
   ];
 
   return (

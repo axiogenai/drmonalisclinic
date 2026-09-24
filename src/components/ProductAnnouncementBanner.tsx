@@ -81,12 +81,12 @@ export default function ProductAnnouncementBanner() {
                         {item.badge}
                       </span>
 
-                      {/* Diamond Divider */}
+                      {/* Round Dot Divider */}
                       <div
                         className="mx-8 sm:mx-12 flex items-center justify-center shrink-0"
                         aria-hidden="true"
                       >
-                        <span className="w-1.5 h-1.5 rotate-45 bg-[#108283]/35" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#108283]/35" />
                       </div>
                     </Link>
                   ))}

@@ -24,11 +24,7 @@ export default function ServiceMarquee() {
           <div key={loopIdx} className="flex items-center">
             {services.map((service, index) => (
               <div key={`${loopIdx}-${index}`} className="flex items-center mx-5 md:mx-7 shrink-0">
-                <img 
-                  src="/stroke-logo.png"
-                  alt="Dr. Monali's"
-                  className="w-6 h-6 md:w-7 md:h-7 object-contain mr-3 shrink-0"
-                />
+                <span className="w-1.5 h-1.5 rounded-full bg-white/70 mr-3.5 shrink-0" />
                 <span className="font-['Playfair_Display'] text-base md:text-lg lg:text-[19px] font-normal text-white tracking-wide leading-none">
                   {service}
                 </span>

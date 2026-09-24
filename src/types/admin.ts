@@ -94,3 +94,59 @@ export interface ResultItem {
   isActive?: boolean;
 }
 
+export interface FooterSettings {
+  clinicName: string;
+  subTitle: string;
+  description: string;
+  address: string;
+  mapsUrl: string;
+  phone: string;
+  email: string;
+  workingDays: string;
+  morningHours: string;
+  eveningHours: string;
+  sundayHours: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  whatsappNumber: string;
+  creditText: string;
+  creditUrl: string;
+}
+
+export interface DoctorProfile {
+  name: string;
+  title: string;
+  degrees: string;
+  regNo: string;
+  bio: string;
+  highlights: string[];
+}
+
+export interface AboutSettings {
+  tagline: string;
+  heading: string;
+  subheading: string;
+  councilRegistrationText: string;
+  doctor1: DoctorProfile;
+  doctor2: DoctorProfile;
+  philosophyQuote: string;
+  philosophyText: string;
+  storyQuote: string;
+  storyText: string;
+
+  stats: {
+    yearsExperience: string;
+    treatmentsPerformed: string;
+    clientSatisfaction: string;
+    safeFdaApproved: string;
+  };
+
+  heroHeading: string;
+  heroSubheading: string;
+  storyTitle: string;
+  storyParagraphs: string[];
+  whyUsItems: { title: string; desc: string }[];
+  educationalDegreesList: string[];
+  expertiseList: string[];
+}
+

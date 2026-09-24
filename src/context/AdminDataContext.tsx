@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/types/product';
-import { Service, Testimonial, FAQ, BlogPost, Appointment, SiteSettings, MarqueeItem, MarqueeSettings, ResultItem } from '@/types/admin';
+import { Service, Testimonial, FAQ, BlogPost, Appointment, SiteSettings, MarqueeItem, MarqueeSettings, ResultItem, FooterSettings, AboutSettings } from '@/types/admin';
 import { 
   getAppointmentsFromDb, 
   saveAppointmentToDb, 
@@ -14,6 +14,7 @@ import { products as defaultProducts } from '@/data/products';
 import { defaultServices } from '@/data/services';
 import { defaultMarqueeItems, defaultMarqueeSettings } from '@/data/marquee';
 import { defaultResults } from '@/data/results';
+import { defaultFooterSettings, defaultAboutSettings } from '@/data/defaultAboutAndFooter';
 
 interface AdminDataContextType {
   products: Product[];
@@ -50,6 +51,14 @@ interface AdminDataContextType {
 
   siteSettings: SiteSettings;
   updateSiteSettings: (settings: Partial<SiteSettings>) => void;
+
+  footerSettings: FooterSettings;
+  updateFooterSettings: (settings: Partial<FooterSettings>) => void;
+  resetFooterSettings: () => void;
+
+  aboutSettings: AboutSettings;
+  updateAboutSettings: (settings: Partial<AboutSettings>) => void;
+  resetAboutSettings: () => void;
 
   marqueeItems: MarqueeItem[];
   addMarqueeItem: (item: MarqueeItem) => void;
@@ -111,6 +120,8 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSettings);
+  const [footerSettings, setFooterSettings] = useState<FooterSettings>(defaultFooterSettings);
+  const [aboutSettings, setAboutSettings] = useState<AboutSettings>(defaultAboutSettings);
   const [marqueeItems, setMarqueeItems] = useState<MarqueeItem[]>([]);
   const [marqueeSettings, setMarqueeSettings] = useState<MarqueeSettings>(defaultMarqueeSettings);
   const [results, setResults] = useState<ResultItem[]>([]);
@@ -165,6 +176,8 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       localStorage.removeItem('admin_appointments');
     } catch {}
     setSiteSettings(loadData<SiteSettings>('admin_settings', defaultSettings));
+    setFooterSettings(loadData<FooterSettings>('admin_footer_settings_v1', defaultFooterSettings));
+    setAboutSettings(loadData<AboutSettings>('admin_about_settings_v1', defaultAboutSettings));
     // For marquee items: ensure valid images and purge broken cached items like stroke-logo.png
     const loadedMarquee = loadData<MarqueeItem[]>('admin_marquee_items_v2', []);
     const hasBrokenMarquee = !loadedMarquee || loadedMarquee.length === 0 || loadedMarquee.some(m => 
@@ -256,6 +269,18 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (isLoaded) {
+      localStorage.setItem('admin_footer_settings_v1', JSON.stringify(footerSettings));
+    }
+  }, [footerSettings, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem('admin_about_settings_v1', JSON.stringify(aboutSettings));
+    }
+  }, [aboutSettings, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded) {
       localStorage.setItem('admin_marquee_items_v2', JSON.stringify(marqueeItems));
     }
   }, [marqueeItems, isLoaded]);
@@ -331,6 +356,26 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   const updateSiteSettings = (settings: Partial<SiteSettings>) => 
     setSiteSettings({ ...siteSettings, ...settings });
 
+  // Footer actions
+  const updateFooterSettings = (settings: Partial<FooterSettings>) =>
+    setFooterSettings(prev => ({ ...prev, ...settings }));
+  const resetFooterSettings = () => {
+    setFooterSettings(defaultFooterSettings);
+    try {
+      localStorage.setItem('admin_footer_settings_v1', JSON.stringify(defaultFooterSettings));
+    } catch {}
+  };
+
+  // About actions
+  const updateAboutSettings = (settings: Partial<AboutSettings>) =>
+    setAboutSettings(prev => ({ ...prev, ...settings }));
+  const resetAboutSettings = () => {
+    setAboutSettings(defaultAboutSettings);
+    try {
+      localStorage.setItem('admin_about_settings_v1', JSON.stringify(defaultAboutSettings));
+    } catch {}
+  };
+
   // Marquee actions
   const addMarqueeItem = (item: MarqueeItem) => setMarqueeItems([...marqueeItems, item]);
   const updateMarqueeItem = (id: string, updated: Partial<MarqueeItem>) =>
@@ -361,6 +406,8 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       blogs, addBlog, updateBlog, deleteBlog,
       appointments, addAppointment, updateAppointmentStatus, deleteAppointment, clearAppointments,
       siteSettings, updateSiteSettings,
+      footerSettings, updateFooterSettings, resetFooterSettings,
+      aboutSettings, updateAboutSettings, resetAboutSettings,
       marqueeItems, addMarqueeItem, updateMarqueeItem, deleteMarqueeItem, reorderMarqueeItems,
       marqueeSettings, updateMarqueeSettings,
       results, addResult, updateResult, deleteResult, restoreDefaultResults

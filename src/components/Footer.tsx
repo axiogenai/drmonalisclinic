@@ -20,10 +20,20 @@ import {
   FileText
 } from 'lucide-react';
 import { scrollToTop, scrollToTarget } from '@/components/SmoothScroll';
+import { useAdminData } from '@/context/AdminDataContext';
+import { defaultFooterSettings } from '@/data/defaultAboutAndFooter';
 
 export default function Footer() {
   const pathname = usePathname();
   const router = useRouter();
+
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {
+    // fallback
+  }
+  const footerSettings = adminData?.footerSettings || defaultFooterSettings;
 
   // Modals state
   const [activeModal, setActiveModal] = useState<'privacy' | 'terms' | null>(null);
@@ -75,7 +85,7 @@ export default function Footer() {
   const handleCopyPhone = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText('+919209472224');
+    navigator.clipboard.writeText(footerSettings.phone || '+91 92094 72224');
     setCopiedPhone(true);
     setTimeout(() => setCopiedPhone(false), 2200);
   };
@@ -84,7 +94,7 @@ export default function Footer() {
   const handleCopyEmail = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    navigator.clipboard.writeText('info@drmonalisclinic.com');
+    navigator.clipboard.writeText(footerSettings.email || 'info@drmonalisclinic.com');
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2200);
   };
@@ -151,22 +161,22 @@ export default function Footer() {
                 />
                 <div className="flex flex-col justify-center">
                   <span className="font-['Playfair_Display'] font-bold text-white text-xl leading-tight group-hover:text-[#108283] transition-colors">
-                    Dr. Monali&apos;s
+                    {footerSettings.clinicName}
                   </span>
                   <span className="text-xs font-medium tracking-wider uppercase text-[#108283]">
-                    Homeopathy Clinic
+                    {footerSettings.subTitle}
                   </span>
                 </div>
               </Link>
               
               <p className="font-['Source_Sans_3'] text-gray-400 text-sm md:text-[15px] leading-relaxed font-light">
-                Dr. Monali&apos;s Homeopathy Clinic is your trusted destination for natural, holistic healing in Kolhapur. Led by Dr. Monali Subhedar &amp; <span className="whitespace-nowrap">Dr. Sachin Subhedar</span> — healing through nature&apos;s wisdom.
+                {footerSettings.description}
               </p>
 
               {/* Social Media Links */}
               <div className="flex gap-3">
                 <a
-                  href="https://www.instagram.com/drmonalisachin/"
+                  href={footerSettings.instagramUrl || "https://www.instagram.com/drmonalisachin/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-[#E1306C] flex items-center justify-center transition-all duration-300 text-white hover:scale-110 shadow-sm"
@@ -178,7 +188,7 @@ export default function Footer() {
                   </svg>
                 </a>
                 <a
-                  href="https://www.facebook.com/drmonalisachin/"
+                  href={footerSettings.facebookUrl || "https://www.facebook.com/drmonalisachin/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-[#1877F2] flex items-center justify-center transition-all duration-300 text-white hover:scale-110 shadow-sm"
@@ -190,7 +200,7 @@ export default function Footer() {
                   </svg>
                 </a>
                 <a
-                  href="https://wa.me/919209472224?text=Hello%20Dr.%20Monali%27s%20Clinic,%20I%20would%20like%20to%20inquire%20about%20a%20consultation."
+                  href={`https://wa.me/${footerSettings.whatsappNumber || '919209472224'}?text=Hello%20Dr.%20Monali%27s%20Clinic,%20I%20would%20like%20to%20inquire%20about%20a%20consultation.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 hover:bg-[#25D366] flex items-center justify-center transition-all duration-300 text-white hover:scale-110 shadow-sm"
@@ -353,7 +363,7 @@ export default function Footer() {
               <div className="space-y-4 font-['Source_Sans_3'] text-sm text-gray-400">
                 {/* Google Maps Link */}
                 <a 
-                  href="https://maps.google.com/?q=Golden+Spring+Apartment+Near+Ring+Road+Kolhapur"
+                  href={footerSettings.mapsUrl || "https://maps.google.com/?q=Golden+Spring+Apartment+Near+Ring+Road+Kolhapur"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 hover:text-white transition-colors group cursor-pointer"
@@ -361,7 +371,7 @@ export default function Footer() {
                 >
                   <MapPin className="w-5 h-5 text-[#108283] group-hover:text-[#F0A070] shrink-0 mt-0.5 transition-colors" />
                   <span className="leading-snug">
-                    Golden Spring Apartment, Near Ring Road, Kolhapur
+                    {footerSettings.address}
                     <span className="inline-flex items-center gap-1 text-[11px] text-[#108283] font-medium ml-1.5 opacity-90 group-hover:underline">
                       Maps ↗
                     </span>
@@ -373,16 +383,16 @@ export default function Footer() {
                   <div className="flex items-center gap-3">
                     <Phone className="w-4 h-4 text-[#108283] shrink-0" />
                     <a 
-                      href="tel:+919209472224" 
+                      href={`tel:${(footerSettings.phone || '+91 92094 72224').replace(/\s+/g, '')}`} 
                       className="hover:text-[#61CE70] transition-colors font-medium text-white tracking-wide"
                       title="Call Dr. Monali's Clinic"
                     >
-                      +91 92094 72224
+                      {footerSettings.phone}
                     </a>
                   </div>
                   <button
                     onClick={handleCopyPhone}
-                    className="text-xs px-2 py-0.5 rounded bg-white/10 hover:bg-[#108283] text-gray-300 hover:text-white transition-all flex items-center gap-1"
+                    className="text-xs px-2 py-0.5 rounded bg-white/10 hover:bg-[#108283] text-gray-300 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
                     title="Copy phone number"
                   >
                     {copiedPhone ? (
@@ -404,16 +414,16 @@ export default function Footer() {
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-[#108283] shrink-0" />
                     <a 
-                      href="mailto:info@drmonalisclinic.com?subject=Consultation%20Inquiry%20-%20Dr.%20Monali%27s%20Homeopathy%20Clinic" 
+                      href={`mailto:${footerSettings.email || 'info@drmonalisclinic.com'}?subject=Consultation%20Inquiry%20-%20Dr.%20Monali%27s%20Homeopathy%20Clinic`} 
                       className="hover:text-white transition-colors"
-                      title="Send an email to info@drmonalisclinic.com"
+                      title={`Send an email to ${footerSettings.email}`}
                     >
-                      info@drmonalisclinic.com
+                      {footerSettings.email}
                     </a>
                   </div>
                   <button
                     onClick={handleCopyEmail}
-                    className="text-xs px-2 py-0.5 rounded bg-white/10 hover:bg-[#108283] text-gray-300 hover:text-white transition-all flex items-center gap-1"
+                    className="text-xs px-2 py-0.5 rounded bg-white/10 hover:bg-[#108283] text-gray-300 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
                     title="Copy email address"
                   >
                     {copiedEmail ? (
@@ -435,11 +445,11 @@ export default function Footer() {
                   <Clock className="w-4 h-4 text-[#108283] shrink-0 mt-0.5" />
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-white font-medium">Monday – Saturday</p>
+                      <p className="text-white font-medium">{footerSettings.workingDays}</p>
                     </div>
-                    <p className="text-gray-300 text-xs">Morning: 10:00 AM – 2:00 PM</p>
-                    <p className="text-gray-300 text-xs">Evening: 5:00 PM – 9:00 PM</p>
-                    <p className="text-amber-400 text-xs font-semibold">Sunday: Closed</p>
+                    <p className="text-gray-300 text-xs">{footerSettings.morningHours}</p>
+                    <p className="text-gray-300 text-xs">{footerSettings.eveningHours}</p>
+                    <p className="text-amber-400 text-xs font-semibold">{footerSettings.sundayHours}</p>
                   </div>
                 </div>
               </div>
@@ -451,12 +461,12 @@ export default function Footer() {
             <p className="text-gray-400 flex items-center gap-1">
               <span>Made with <span className="text-[#F0A070] inline-block">♥</span> by</span>{' '}
               <a 
-                href="https://team.axiogen.in" 
+                href={footerSettings.creditUrl || "https://team.axiogen.in"} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-[#108283] hover:text-white font-semibold transition-colors"
               >
-                team.axiogen.in
+                {footerSettings.creditText || "team.axiogen.in"}
               </a>
             </p>
             

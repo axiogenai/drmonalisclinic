@@ -16,7 +16,9 @@ import {
   Images,
   X,
   LogOut,
-  Home
+  Home,
+  GraduationCap,
+  Building2
 } from 'lucide-react';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
@@ -28,6 +30,8 @@ interface AdminSidebarProps {
 const navItems = [
   { name: 'Dashboard', id: 'dashboard', icon: LayoutDashboard },
   { name: 'Appointments', id: 'appointments', icon: Calendar },
+  { name: 'About & Doctors', id: 'about', icon: GraduationCap },
+  { name: 'Footer & Clinic Info', id: 'footer', icon: Building2 },
   { name: 'Services', id: 'services', icon: Stethoscope },
   { name: 'Products', id: 'products', icon: ShoppingBag },
   { name: 'Before & After', id: 'results', icon: Images },
