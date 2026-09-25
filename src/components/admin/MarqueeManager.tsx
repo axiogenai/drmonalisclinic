@@ -320,7 +320,7 @@ export default function MarqueeManager() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-gray-50/75 border-b border-gray-100 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">

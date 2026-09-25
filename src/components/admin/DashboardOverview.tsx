@@ -143,7 +143,7 @@ export default function DashboardOverview() {
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </button>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto no-scrollbar">
             {recentAppointments.length > 0 ? (
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">

@@ -105,19 +105,16 @@ export default function Navbar() {
     }
   };
 
-  // Appointment CTA button - scrolls smoothly to #booking or navigates
+  // Appointment CTA button - routes cleanly to /appointment
   const handleAppointmentClick = (e: React.MouseEvent) => {
-    e.preventDefault();
     setIsMobileMenuOpen(false);
     setIsServicesOpen(false);
     setIsMobileServicesOpen(false);
     setHideNav(false);
 
-    if (pathname === '/') {
-      scrollToTarget('booking', -90);
-      window.history.pushState(null, '', '#booking');
-    } else {
-      router.push('/#booking');
+    if (pathname === '/appointment') {
+      e.preventDefault();
+      scrollToTop();
     }
   };
 
@@ -270,13 +267,13 @@ export default function Navbar() {
           </button>
 
           {/* Appointment Button */}
-          <button
-            type="button"
+          <Link
+            href="/appointment"
             onClick={handleAppointmentClick}
-            className="bg-[#108283] hover:bg-[#0c6b6c] text-white px-5 py-2 rounded-full font-['Source_Sans_3'] font-semibold text-xs md:text-sm tracking-wide transition-all shadow-xs active:scale-95 cursor-pointer"
+            className="bg-[#108283] hover:bg-[#0c6b6c] text-white px-5 py-2 rounded-full font-['Source_Sans_3'] font-semibold text-xs md:text-sm tracking-wide transition-all shadow-xs active:scale-95 cursor-pointer inline-flex items-center"
           >
             Appointment
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Cart & Hamburger */}
@@ -433,15 +430,15 @@ export default function Navbar() {
               </div>
 
               {/* Primary Consultation CTA */}
-              <button
-                type="button"
+              <Link
+                href="/appointment"
                 onClick={handleAppointmentClick}
                 className="w-full flex items-center justify-center gap-2 bg-[#108283] hover:bg-[#0c6b6c] active:scale-98 text-white py-3 rounded-full font-source font-semibold text-sm shadow-[0_8px_20px_rgba(16,130,131,0.25)] transition-all cursor-pointer"
               >
                 <CalendarCheck className="w-4 h-4 text-white" />
                 <span>Book Consultation Today</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </div>
         </>

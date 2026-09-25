@@ -764,13 +764,13 @@ export default function AboutPage() {
 
           {/* Centered Book Button */}
           <div className="text-center pt-10">
-            <a
-              href="/#booking"
-              className="inline-flex items-center gap-3 bg-[#108283] hover:bg-[#0c6b6c] text-white border border-[#108283] rounded-full px-8 py-4 text-[14px] font-medium transition-all duration-300 shadow-md"
+            <Link
+              href="/appointment"
+              className="inline-flex items-center gap-3 bg-[#108283] hover:bg-[#0c6b6c] text-white border border-[#108283] rounded-full px-8 py-4 text-[14px] font-medium transition-all duration-300 shadow-md cursor-pointer"
             >
               <span>Book Consultation with Our Doctors</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
 
         </div>
@@ -797,13 +797,13 @@ export default function AboutPage() {
             &ldquo;Dr. Monali&apos;s Homeopathy &amp; Cosmetology Clinic helps you rebuild what time, stress, or conditions took away. For every skin that’s struggled, for every strand that’s lost, trust our holistic care to restore with confidence.&rdquo;
           </p>
 
-          <a
-            href="/#booking"
-            className="inline-flex items-center gap-3 bg-[#108283] hover:bg-white text-white hover:text-[#108283] px-8 py-4 rounded-full font-medium text-sm transition-all duration-300 shadow-xl"
+          <Link
+            href="/appointment"
+            className="inline-flex items-center gap-3 bg-[#108283] hover:bg-white text-white hover:text-[#108283] px-8 py-4 rounded-full font-medium text-sm transition-all duration-300 shadow-xl cursor-pointer"
           >
             <span>Book Appointment</span>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
 
         </div>
       </section>

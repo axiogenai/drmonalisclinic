@@ -439,7 +439,7 @@ export default function CouponsManager() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0 text-xs">
           {[
             { id: 'all', label: 'All Codes' },
             { id: 'active', label: 'Active' },

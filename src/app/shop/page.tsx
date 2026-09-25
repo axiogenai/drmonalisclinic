@@ -178,12 +178,12 @@ export default function ShopPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto shrink-0">
-              <a
-                href="/#booking"
+              <Link
+                href="/appointment"
                 className="bg-white text-[#108283] hover:bg-[#FAF0DD] px-7 py-3.5 rounded-full font-bold text-xs uppercase tracking-wider text-center transition-all shadow-md active:scale-95"
               >
                 Book Clinic Visit
-              </a>
+              </Link>
               <a
                 href="https://wa.me/919209472224?text=Hello%20Dr.%20Monali%27s%20Clinic%2C%20I%20would%20like%20guidance%20on%20choosing%20the%20right%20skincare%20products."
                 target="_blank"

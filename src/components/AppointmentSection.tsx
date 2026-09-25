@@ -199,8 +199,8 @@ export default function AppointmentSection() {
   };
 
   return (
-    <section id="booking" className="py-20 md:py-28 bg-white relative scroll-mt-20 md:scroll-mt-24">
-      <div id="appointment" className="absolute -top-24 pointer-events-none" />
+    <section id="booking" className="pt-10 md:pt-14 pb-16 md:pb-24 bg-white relative scroll-mt-24 md:scroll-mt-28">
+      <div id="appointment" className="absolute top-0 pointer-events-none" />
       <div className="max-w-[1140px] mx-auto px-5 md:px-8">
         {/* Centered Section Header */}
         <div className="text-center max-w-4xl mx-auto mb-10 md:mb-12">

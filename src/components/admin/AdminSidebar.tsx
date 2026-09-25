@@ -60,9 +60,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-[260px] bg-[#0a5e5f] text-white z-50 transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed top-0 left-0 h-screen w-[260px] bg-[#0a5e5f] text-white z-50 transition-transform duration-300 ease-in-out flex flex-col no-scrollbar ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {/* Header */}
         <div className="h-16 flex items-center justify-between px-6 border-b border-white/10 shrink-0">
@@ -79,7 +80,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto py-6 flex flex-col gap-1 px-3">
+        <div 
+          className="flex-1 overflow-y-auto no-scrollbar py-3 flex flex-col gap-0.5 px-3"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -89,16 +93,16 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                 key={item.id}
                 href={`/admin?tab=${item.id}`}
                 onClick={() => onClose()}
-                className={`flex items-center gap-3 px-3 py-3 rounded-md transition-colors relative ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative text-sm ${
                   isActive 
-                    ? 'bg-[#108283] text-white font-medium' 
-                    : 'text-white/70 hover:bg-white/5 hover:text-white'
+                    ? 'bg-[#108283] text-white font-medium shadow-sm' 
+                    : 'text-white/75 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#61CE70] rounded-r-md" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#61CE70] rounded-r-md" />
                 )}
-                <Icon size={18} className={isActive ? "text-[#61CE70]" : ""} />
+                <Icon size={18} className={isActive ? "text-[#61CE70]" : "text-white/70"} />
                 <span className="font-source">{item.name}</span>
               </Link>
             );

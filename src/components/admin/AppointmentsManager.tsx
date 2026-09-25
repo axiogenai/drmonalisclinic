@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, Filter, Eye, CheckCircle, XCircle, Clock, Trash2, Calendar } from 'lucide-react';
+import { Search, Filter, Eye, CheckCircle, XCircle, Clock, Trash2, Calendar, Phone } from 'lucide-react';
 import { useAdminData, Appointment } from '@/context/AdminContext';
 import { useDialog } from '@/context/DialogContext';
 import AdminModal from './AdminModal';
@@ -83,19 +83,19 @@ export default function AppointmentsManager() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <div className="flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center justify-between">
+        <div className="relative w-full sm:w-80 md:w-96">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search by name or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-sm"
+            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none text-sm bg-white"
           />
         </div>
-        <div className="flex flex-wrap gap-2 w-full sm:w-auto items-center">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 flex-1 sm:flex-none">
             <Filter className="w-4 h-4 text-gray-400 shrink-0" />
             <AdminSelect
               value={statusFilter}
@@ -107,121 +107,223 @@ export default function AppointmentsManager() {
                 { value: 'Completed', label: 'Completed' },
                 { value: 'Cancelled', label: 'Cancelled' },
               ]}
-              width="w-44 sm:w-52"
-              buttonClassName="bg-white py-2"
+              width="w-full sm:w-48"
+              buttonClassName="bg-white py-2.5"
             />
           </div>
           {appointments.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer shrink-0"
               title="Clear all appointments"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear All</span>
+              <span className="hidden xs:inline">Clear All</span>
             </button>
           )}
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Name</th>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Phone</th>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Date/Time</th>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Condition</th>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Status</th>
-                <th className="px-6 py-4 text-sm font-medium text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredAppointments.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                      <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
-                        <Calendar className="w-6 h-6 text-gray-400" />
-                      </div>
-                      <p className="text-sm font-semibold text-gray-900 mb-1">
-                        {appointments.length === 0 ? 'No booked appointments yet' : 'No matching appointments found'}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {appointments.length === 0 
-                          ? 'Consultation requests booked by patients on the website will be recorded and displayed here in real time.'
-                          : 'Try adjusting your search query or status filter above.'}
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredAppointments.map((apt: Appointment) => (
-                  <tr key={apt.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">{apt.fullName || (apt as any).name}</td>
-                    <td className="px-6 py-4 text-gray-600 font-mono text-xs">{apt.phone}</td>
-                    <td className="px-6 py-4 text-gray-600 text-xs">
-                      <div>{apt.date}</div>
-                    </td>
-                    <td className="px-6 py-4 text-gray-600 text-xs">{apt.condition || '-'}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${getStatusBadge(apt.status)}`}>
-                        {apt.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => setSelectedAppointment(apt)}
-                          className="p-1.5 text-gray-400 hover:text-[#108283] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                          title="View Details"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        {apt.status?.toLowerCase() === 'new' && (
-                          <button
-                            onClick={() => handleUpdateStatus(apt.id, 'confirmed', 'Confirmed')}
-                            className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
-                            title="Confirm"
-                          >
-                            <CheckCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        {apt.status?.toLowerCase() === 'confirmed' && (
-                          <button
-                            onClick={() => handleUpdateStatus(apt.id, 'completed', 'Completed')}
-                            className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                            title="Mark Completed"
-                          >
-                            <Clock className="w-4 h-4" />
-                          </button>
-                        )}
-                        {apt.status?.toLowerCase() !== 'cancelled' && apt.status?.toLowerCase() !== 'completed' && (
-                          <button
-                            onClick={() => handleUpdateStatus(apt.id, 'cancelled', 'Cancelled')}
-                            className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
-                            title="Cancel"
-                          >
-                            <XCircle className="w-4 h-4" />
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleDeleteAppointment(apt)}
-                          className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-                          title="Delete Appointment"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {filteredAppointments.length === 0 ? (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-14 text-center flex flex-col items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-[#108283]/10 text-[#108283] flex items-center justify-center mb-4 shadow-inner">
+            <Calendar className="w-7 h-7" />
+          </div>
+          <h4 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5 font-['Playfair_Display']">
+            {appointments.length === 0 ? 'No booked appointments yet' : 'No matching appointments found'}
+          </h4>
+          <p className="text-xs sm:text-sm text-gray-500 max-w-sm mx-auto leading-relaxed font-['Source_Sans_3']">
+            {appointments.length === 0 
+              ? 'Consultation requests booked by patients on the website will be recorded and displayed here in real time.'
+              : 'Try adjusting your search query or status filter above.'}
+          </p>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Mobile View: Dedicated, highly readable patient cards */}
+          <div className="block md:hidden space-y-3">
+            {filteredAppointments.map((apt: Appointment) => (
+              <div 
+                key={apt.id} 
+                className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3"
+              >
+                {/* Header: Name, Status & Date */}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-gray-950 text-base leading-snug truncate">
+                      {apt.fullName || (apt as any).name || 'Patient'}
+                    </h4>
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                      <Calendar className="w-3.5 h-3.5 text-[#108283] shrink-0" />
+                      <span>{apt.date}</span>
+                    </div>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize shrink-0 ${getStatusBadge(apt.status)}`}>
+                    {apt.status}
+                  </span>
+                </div>
+
+                {/* Phone & Direct Dial Actions */}
+                <div className="flex items-center justify-between gap-2 p-2.5 bg-gray-50/90 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
+                    <span className="text-xs font-mono font-medium text-gray-800 truncate">{apt.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <a
+                      href={`tel:${apt.phone}`}
+                      className="px-2.5 py-1 bg-white hover:bg-gray-100 border border-gray-200 text-gray-700 rounded-lg text-xs font-medium transition-colors shadow-2xs"
+                    >
+                      Call
+                    </a>
+                    <a
+                      href={`https://wa.me/${apt.phone?.replace(/[^0-9]/g, '')}?text=Hello%20${encodeURIComponent(apt.fullName || (apt as any).name || 'Patient')}%2C%20regarding%20your%20consultation%20appointment%20at%20Dr.%20Monali%27s%20Clinic...`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition-colors shadow-2xs"
+                    >
+                      WhatsApp
+                    </a>
+                  </div>
+                </div>
+
+                {/* Condition focus */}
+                {apt.condition && (
+                  <div className="text-xs text-gray-600 flex items-baseline gap-1.5">
+                    <span className="font-semibold text-gray-700 shrink-0">Focus:</span>
+                    <span className="text-gray-600 truncate">{apt.condition}</span>
+                  </div>
+                )}
+
+                {/* Action Buttons Bar */}
+                <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-gray-100">
+                  <button
+                    onClick={() => setSelectedAppointment(apt)}
+                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#108283] bg-[#108283]/10 hover:bg-[#108283]/20 rounded-lg transition-colors cursor-pointer"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Details</span>
+                  </button>
+
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    {apt.status?.toLowerCase() === 'new' && (
+                      <button
+                        onClick={() => handleUpdateStatus(apt.id, 'confirmed', 'Confirmed')}
+                        className="px-2.5 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors cursor-pointer"
+                      >
+                        Confirm
+                      </button>
+                    )}
+                    {apt.status?.toLowerCase() === 'confirmed' && (
+                      <button
+                        onClick={() => handleUpdateStatus(apt.id, 'completed', 'Completed')}
+                        className="px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+                      >
+                        Complete
+                      </button>
+                    )}
+                    {apt.status?.toLowerCase() !== 'cancelled' && apt.status?.toLowerCase() !== 'completed' && (
+                      <button
+                        onClick={() => handleUpdateStatus(apt.id, 'cancelled', 'Cancelled')}
+                        className="px-2.5 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDeleteAppointment(apt)}
+                      className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      title="Delete Appointment"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View: Clean Table */}
+          <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="overflow-x-auto no-scrollbar">
+              <table className="w-full text-left min-w-[700px]">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500">Name</th>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500">Phone</th>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500">Date/Time</th>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500">Condition</th>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500">Status</th>
+                    <th className="px-6 py-4 text-sm font-medium text-gray-500 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredAppointments.map((apt: Appointment) => (
+                    <tr key={apt.id} className="hover:bg-gray-50/70 transition-colors">
+                      <td className="px-6 py-4 font-medium text-gray-900">{apt.fullName || (apt as any).name}</td>
+                      <td className="px-6 py-4 text-gray-600 font-mono text-xs">{apt.phone}</td>
+                      <td className="px-6 py-4 text-gray-600 text-xs">
+                        <div>{apt.date}</div>
+                      </td>
+                      <td className="px-6 py-4 text-gray-600 text-xs">{apt.condition || '-'}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${getStatusBadge(apt.status)}`}>
+                          {apt.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            onClick={() => setSelectedAppointment(apt)}
+                            className="p-1.5 text-gray-400 hover:text-[#108283] hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          {apt.status?.toLowerCase() === 'new' && (
+                            <button
+                              onClick={() => handleUpdateStatus(apt.id, 'confirmed', 'Confirmed')}
+                              className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                              title="Confirm"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </button>
+                          )}
+                          {apt.status?.toLowerCase() === 'confirmed' && (
+                            <button
+                              onClick={() => handleUpdateStatus(apt.id, 'completed', 'Completed')}
+                              className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                              title="Mark Completed"
+                            >
+                              <Clock className="w-4 h-4" />
+                            </button>
+                          )}
+                          {apt.status?.toLowerCase() !== 'cancelled' && apt.status?.toLowerCase() !== 'completed' && (
+                            <button
+                              onClick={() => handleUpdateStatus(apt.id, 'cancelled', 'Cancelled')}
+                              className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                              title="Cancel"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDeleteAppointment(apt)}
+                            className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                            title="Delete Appointment"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
       <AdminModal
         isOpen={!!selectedAppointment}

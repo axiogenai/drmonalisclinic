@@ -132,8 +132,6 @@ export default function CartDrawer() {
     }
   }, [isCartOpen, closeCart]);
 
-  if (!isCartOpen) return null;
-
   const handleProceedToDelivery = () => {
     if (items.length === 0) return;
     setCheckoutStep('delivery');
@@ -141,7 +139,7 @@ export default function CartDrawer() {
 
   // Revalidate applied coupon whenever cart total changes
   useEffect(() => {
-    if (appliedCoupon) {
+    if (appliedCoupon && typeof validateCoupon === 'function') {
       const res = validateCoupon(appliedCoupon.code, totalPrice);
       if (res.isValid && res.coupon) {
         setCouponDiscount(res.discountAmount);
@@ -313,6 +311,8 @@ export default function CartDrawer() {
       type: 'success',
     });
   };
+
+  if (!isCartOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[130] overflow-hidden">

@@ -8,6 +8,7 @@ interface CustomDatePickerProps {
   onChange: (val: string) => void;
   required?: boolean;
   minDate?: string; // default today
+  placeholder?: string;
 }
 
 const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -31,6 +32,7 @@ export default function CustomDatePicker({
   onChange,
   required = false,
   minDate,
+  placeholder = 'Select consultation date...',
 }: CustomDatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -181,7 +183,7 @@ export default function CustomDatePicker({
         <div className="flex items-center gap-2.5 min-w-0">
           <CalendarIcon className="w-4 h-4 text-[#108283] shrink-0" />
           <span className={`truncate text-sm font-['Source_Sans_3'] ${value ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
-            {value ? formatDisplay(value) : 'Select consultation date...'}
+            {value ? formatDisplay(value) : placeholder}
           </span>
         </div>
 
