@@ -18,7 +18,8 @@ import {
   LogOut,
   Home,
   GraduationCap,
-  Building2
+  Building2,
+  TicketPercent
 } from 'lucide-react';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
@@ -34,6 +35,7 @@ const navItems = [
   { name: 'Footer & Clinic Info', id: 'footer', icon: Building2 },
   { name: 'Services', id: 'services', icon: Stethoscope },
   { name: 'Products', id: 'products', icon: ShoppingBag },
+  { name: 'Coupons & Discounts', id: 'coupons', icon: TicketPercent },
   { name: 'Before & After', id: 'results', icon: Images },
   { name: 'Testimonials', id: 'testimonials', icon: MessageSquareQuote },
   { name: 'FAQs', id: 'faqs', icon: HelpCircle },

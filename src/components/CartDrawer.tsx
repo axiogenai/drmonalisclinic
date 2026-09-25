@@ -17,10 +17,14 @@ import {
   User, 
   Phone, 
   CheckCircle2, 
-  IndianRupee 
+  IndianRupee,
+  Tag,
+  AlertCircle
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useDialog } from '@/context/DialogContext';
+import { useAdminData } from '@/context/AdminDataContext';
+import { Coupon } from '@/types/admin';
 
 interface DeliveryDetails {
   method: 'home' | 'pickup';
@@ -45,8 +49,13 @@ export default function CartDrawer() {
     clearCart
   } = useCart();
   const { toast } = useDialog();
+  const { validateCoupon, recordCouponUse } = useAdminData();
 
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'delivery'>('cart');
+  const [couponCodeInput, setCouponCodeInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [couponError, setCouponError] = useState<string | null>(null);
 
   const [deliveryData, setDeliveryData] = useState<DeliveryDetails>({
     method: 'home',
@@ -130,6 +139,62 @@ export default function CartDrawer() {
     setCheckoutStep('delivery');
   };
 
+  // Revalidate applied coupon whenever cart total changes
+  useEffect(() => {
+    if (appliedCoupon) {
+      const res = validateCoupon(appliedCoupon.code, totalPrice);
+      if (res.isValid && res.coupon) {
+        setCouponDiscount(res.discountAmount);
+        setCouponError(null);
+      } else {
+        setCouponDiscount(0);
+        setCouponError(res.message);
+      }
+    }
+  }, [totalPrice, appliedCoupon, validateCoupon]);
+
+  const handleApplyCoupon = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const clean = couponCodeInput.trim().toUpperCase();
+    if (!clean) {
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+    const res = validateCoupon(clean, totalPrice);
+    if (res.isValid && res.coupon) {
+      setAppliedCoupon(res.coupon);
+      setCouponDiscount(res.discountAmount);
+      setCouponError(null);
+      toast({
+        title: 'Coupon Applied!',
+        message: res.message,
+        type: 'success',
+      });
+    } else {
+      setCouponDiscount(0);
+      setCouponError(res.message);
+      toast({
+        title: 'Could Not Apply Coupon',
+        message: res.message,
+        type: 'error',
+      });
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponDiscount(0);
+    setCouponError(null);
+    setCouponCodeInput('');
+    toast({
+      title: 'Coupon Removed',
+      message: 'Discount has been removed from your cart.',
+      type: 'info',
+    });
+  };
+
+  const finalPayable = Math.max(0, totalPrice - couponDiscount);
+
   const handleConfirmOrderWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0) return;
@@ -212,13 +277,24 @@ export default function CartDrawer() {
         `📍 *Pickup Location:* Dr. Monali's Clinic, Opp. Circuit House, Kolhapur`;
     }
 
+    if (appliedCoupon && couponDiscount > 0) {
+      recordCouponUse(appliedCoupon.code);
+    }
+
+    const discountSummary = appliedCoupon && couponDiscount > 0
+      ? `🏷️ *COUPON APPLIED:* ${appliedCoupon.code} (${appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.discountValue}%` : `₹${appliedCoupon.discountValue}`} OFF)\n` +
+        `💸 *Discount Saved:* -₹${couponDiscount}\n` +
+        `🛒 *Cart Subtotal:* ₹${totalPrice}\n` +
+        `💰 *Final Payable Amount:* ₹${finalPayable}\n`
+      : `💰 *Total Amount:* ₹${totalPrice}\n`;
+
     const message = 
       `Hello Dr. Monali's Homeopathy Clinic!\n\n` +
       `🌿 *NEW FORMULATION ORDER REQUEST*\n` +
       `===================================\n\n` +
       `📦 *ORDERED PRODUCTS:*\n` +
       `${itemsList}\n\n` +
-      `💰 *Total Amount:* ₹${totalPrice}\n` +
+      discountSummary +
       `🚚 *Shipping Fee:* FREE\n\n` +
       `-----------------------------------\n` +
       `👤 *PATIENT / RECIPIENT DETAILS:*\n` +
@@ -546,13 +622,87 @@ export default function CartDrawer() {
 
           {/* Footer Summary */}
           {items.length > 0 && (
-            <div className="p-5 sm:p-6 border-t border-gray-100 bg-[#FAF0DD]/30 space-y-3.5">
+            <div className="p-5 sm:p-6 border-t border-gray-100 bg-[#FAF0DD]/30 space-y-3 font-['Source_Sans_3']">
               
-              <div className="space-y-1.5 text-xs text-gray-600 font-['Source_Sans_3']">
+              {/* Promo Code Input / Applied Badge */}
+              <div className="pt-0.5">
+                {appliedCoupon && couponDiscount > 0 ? (
+                  <div className="p-2.5 bg-emerald-50/90 border border-emerald-200/80 rounded-xl flex items-center justify-between gap-2 shadow-2xs">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                        <Tag className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-emerald-950 font-mono flex items-center gap-1.5 truncate">
+                          <span>{appliedCoupon.code}</span>
+                          <span className="text-[10px] bg-emerald-200 text-emerald-800 font-sans px-1.5 py-0.5 rounded-md font-bold">
+                            -₹{couponDiscount}
+                          </span>
+                        </p>
+                        <p className="text-[10.5px] text-emerald-700 truncate">
+                          {appliedCoupon.description || 'Promotional coupon discount'}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="p-1 rounded-md text-emerald-700 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
+                      title="Remove coupon"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleApplyCoupon} className="space-y-1">
+                    <div className="flex items-center gap-1.5">
+                      <div className="relative flex-1">
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Coupon code (e.g. WELCOME10)"
+                          value={couponCodeInput}
+                          onChange={(e) => {
+                            setCouponCodeInput(e.target.value.toUpperCase());
+                            if (couponError) setCouponError(null);
+                          }}
+                          className="w-full pl-8 pr-2.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-mono uppercase tracking-wider focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="px-3.5 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white text-xs font-bold rounded-xl transition-all active:scale-95 cursor-pointer shrink-0 font-['Source_Sans_3']"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {couponError && (
+                      <p className="text-[11px] text-rose-600 flex items-center gap-1 pl-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{couponError}</span>
+                      </p>
+                    )}
+                  </form>
+                )}
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="space-y-1.5 text-xs text-gray-600 pt-1">
                 <div className="flex justify-between">
                   <span>Cart Subtotal</span>
                   <span className="font-semibold text-gray-900">₹{totalPrice}</span>
                 </div>
+
+                {appliedCoupon && couponDiscount > 0 && (
+                  <div className="flex justify-between items-center text-emerald-700 font-medium">
+                    <span className="flex items-center gap-1">
+                      <Tag className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Coupon Discount ({appliedCoupon.code})</span>
+                    </span>
+                    <span className="font-bold">-₹{couponDiscount}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center text-emerald-700">
                   <span className="flex items-center gap-1">
                     <Truck className="w-3.5 h-3.5" /> 
@@ -567,7 +717,7 @@ export default function CartDrawer() {
                   Total Payable
                 </span>
                 <span className="text-2xl font-bold text-[#108283]">
-                  ₹{totalPrice}
+                  ₹{finalPayable}
                 </span>
               </div>
 
@@ -586,7 +736,7 @@ export default function CartDrawer() {
                   onClick={handleConfirmOrderWhatsApp}
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-full font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-95 cursor-pointer font-['Source_Sans_3']"
                 >
-                  <span>Place Order via WhatsApp (₹{totalPrice})</span>
+                  <span>Place Order via WhatsApp (₹{finalPayable})</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               )}

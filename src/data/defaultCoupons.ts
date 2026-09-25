@@ -1,0 +1,47 @@
+import { Coupon } from '@/types/admin';
+
+export const defaultCoupons: Coupon[] = [
+  {
+    id: 'coupon-1',
+    code: 'WELCOME10',
+    description: '10% discount on all doctor formulations for new and returning patients.',
+    discountType: 'percentage',
+    discountValue: 10,
+    minOrderAmount: 0,
+    maxDiscount: 300,
+    maxUses: 100,
+    usedCount: 7,
+    startDate: '2026-09-01T00:00:00.000Z',
+    expiresAt: '2027-03-31T23:59:59.000Z',
+    isActive: true,
+    createdAt: '2026-09-01T10:00:00.000Z',
+  },
+  {
+    id: 'coupon-2',
+    code: 'GLOW200',
+    description: 'Flat ₹200 off on premium skincare orders of ₹999 or more.',
+    discountType: 'fixed',
+    discountValue: 200,
+    minOrderAmount: 999,
+    maxUses: 50,
+    usedCount: 14,
+    startDate: '2026-09-15T00:00:00.000Z',
+    expiresAt: '2026-12-31T23:59:59.000Z',
+    isActive: true,
+    createdAt: '2026-09-15T11:30:00.000Z',
+  },
+  {
+    id: 'coupon-3',
+    code: 'FESTIVE50',
+    description: 'Flat ₹50 off on daily homeopathic hair & skin essentials over ₹499.',
+    discountType: 'fixed',
+    discountValue: 50,
+    minOrderAmount: 499,
+    maxUses: 30,
+    usedCount: 22,
+    startDate: '2026-09-20T00:00:00.000Z',
+    expiresAt: '2026-10-31T23:59:59.000Z',
+    isActive: true,
+    createdAt: '2026-09-20T09:00:00.000Z',
+  }
+];

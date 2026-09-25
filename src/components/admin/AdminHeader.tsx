@@ -15,9 +15,11 @@ export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const tab = searchParams.get('tab') || 'dashboard';
   
   // Convert tab to Title Case
-  const pageTitle = tab === 'marquee' 
-    ? 'Announcement Marquee Banner' 
-    : tab.charAt(0).toUpperCase() + tab.slice(1).replace('-', ' ');
+  let pageTitle = tab.charAt(0).toUpperCase() + tab.slice(1).replace('-', ' ');
+  if (tab === 'marquee') pageTitle = 'Announcement Marquee Banner';
+  if (tab === 'coupons') pageTitle = 'Coupons & Discounts';
+  if (tab === 'about') pageTitle = 'About & Doctors CMS';
+  if (tab === 'footer') pageTitle = 'Footer & Clinic Info';
 
   // Get user display info
   const userEmail = user?.email || 'admin@drmonalisclinic.com';

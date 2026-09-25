@@ -13,6 +13,7 @@ import MarqueeManager from '@/components/admin/MarqueeManager';
 import ResultsManager from '@/components/admin/ResultsManager';
 import FooterManager from '@/components/admin/FooterManager';
 import AboutManager from '@/components/admin/AboutManager';
+import CouponsManager from '@/components/admin/CouponsManager';
 
 function AdminContent() {
   const searchParams = useSearchParams();
@@ -25,6 +26,7 @@ function AdminContent() {
     case 'services': return <ServicesManager />;
     case 'results': return <ResultsManager />;
     case 'products': return <ProductsManager />;
+    case 'coupons': return <CouponsManager />;
     case 'blogs': return <BlogManager />;
     case 'testimonials': return <TestimonialsManager />;
     case 'faqs': return <FAQManager />;

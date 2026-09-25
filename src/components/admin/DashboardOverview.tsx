@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
-import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2 } from 'lucide-react';
+import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2, TicketPercent } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardOverview() {
-  const { appointments, products, services, testimonials, results } = useAdminData();
+  const { appointments, products, services, testimonials, results, coupons = [] } = useAdminData();
   const router = useRouter();
 
   // Sort and get recent appointments
@@ -32,7 +32,8 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {/* 1. Total Appointments */}
         <div 
           onClick={() => router.push('?tab=appointments')}
@@ -81,7 +82,23 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        {/* 4. Before & After Results */}
+        {/* 4. Active Coupons */}
+        <div 
+          onClick={() => router.push('?tab=coupons')}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:border-teal-400 transition-colors"
+        >
+          <div className="p-4 lg:p-5 flex items-center">
+            <div className="w-11 h-11 rounded-full bg-[#108283]/10 flex items-center justify-center mr-3 shrink-0">
+              <TicketPercent className="h-5 w-5 text-[#108283]" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-500">Coupons</p>
+              <p className="text-xl font-bold text-gray-900">{coupons.length}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 5. Before & After Results */}
         <div 
           onClick={() => router.push('?tab=results')}
           className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:border-rose-300 transition-colors"
@@ -97,10 +114,10 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        {/* 5. Testimonials */}
+        {/* 6. Testimonials */}
         <div 
           onClick={() => router.push('?tab=testimonials')}
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden col-span-2 sm:col-span-1 cursor-pointer hover:border-amber-300 transition-colors"
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:border-amber-300 transition-colors"
         >
           <div className="p-4 lg:p-5 flex items-center">
             <div className="w-11 h-11 rounded-full bg-amber-50 flex items-center justify-center mr-3 shrink-0">
@@ -214,6 +231,19 @@ export default function DashboardOverview() {
               <div>
                 <h4 className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700">Manage Products</h4>
                 <p className="text-xs text-gray-500 mt-1">Add or update skincare products, pricing, and stock status.</p>
+              </div>
+            </button>
+
+            <button 
+              onClick={() => router.push('?tab=coupons')}
+              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
+            >
+              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-[#108283]/10 text-[#108283] flex items-center justify-center group-hover:bg-[#108283] group-hover:text-white transition-colors">
+                <TicketPercent className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-[#108283]">Coupons &amp; Discounts</h4>
+                <p className="text-xs text-gray-500 mt-1">Issue limited-time promo codes and track usage limits.</p>
               </div>
             </button>
 

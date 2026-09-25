@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '@/types/product';
-import { Service, Testimonial, FAQ, BlogPost, Appointment, SiteSettings, MarqueeItem, MarqueeSettings, ResultItem, FooterSettings, AboutSettings } from '@/types/admin';
+import { Service, Testimonial, FAQ, BlogPost, Appointment, SiteSettings, MarqueeItem, MarqueeSettings, ResultItem, FooterSettings, AboutSettings, Coupon, CouponValidationResult } from '@/types/admin';
 import { 
   getAppointmentsFromDb, 
   saveAppointmentToDb, 
@@ -15,8 +15,17 @@ import { defaultServices } from '@/data/services';
 import { defaultMarqueeItems, defaultMarqueeSettings } from '@/data/marquee';
 import { defaultResults } from '@/data/results';
 import { defaultFooterSettings, defaultAboutSettings } from '@/data/defaultAboutAndFooter';
+import { defaultCoupons } from '@/data/defaultCoupons';
 
 interface AdminDataContextType {
+  coupons: Coupon[];
+  addCoupon: (coupon: Coupon) => void;
+  updateCoupon: (id: string, coupon: Partial<Coupon>) => void;
+  deleteCoupon: (id: string) => void;
+  recordCouponUse: (code: string) => boolean;
+  validateCoupon: (code: string, cartTotal: number) => CouponValidationResult;
+  resetCoupons: () => void;
+
   products: Product[];
   addProduct: (product: Product) => void;
   updateProduct: (id: string, product: Partial<Product>) => void;
@@ -113,6 +122,7 @@ const defaultSettings: SiteSettings = {
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
 
 export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -138,6 +148,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
+    setCoupons(loadData<Coupon[]>('admin_coupons_v1', defaultCoupons));
     setProducts(loadData<Product[]>('admin_products', defaultProducts || []));
 
     // For services: validate that services belong to the 3 service pages (homeopathy, cosmetic, hair-skin)
@@ -227,6 +238,12 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   // Save to localStorage whenever state changes, after initial load
   useEffect(() => {
     if (isLoaded) {
+      localStorage.setItem('admin_coupons_v1', JSON.stringify(coupons));
+    }
+  }, [coupons, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded) {
       localStorage.setItem('admin_products', JSON.stringify(products));
     }
   }, [products, isLoaded]);
@@ -296,6 +313,98 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('admin_results_v1', JSON.stringify(results));
     }
   }, [results, isLoaded]);
+
+  // Coupon actions
+  const addCoupon = (coupon: Coupon) => setCoupons(prev => [coupon, ...prev]);
+
+  const updateCoupon = (id: string, updated: Partial<Coupon>) =>
+    setCoupons(prev => prev.map(c => c.id === id ? { ...c, ...updated } : c));
+
+  const deleteCoupon = (id: string) =>
+    setCoupons(prev => prev.filter(c => c.id !== id));
+
+  const resetCoupons = () => {
+    setCoupons(defaultCoupons);
+    try {
+      localStorage.setItem('admin_coupons_v1', JSON.stringify(defaultCoupons));
+    } catch {}
+  };
+
+  const recordCouponUse = (code: string): boolean => {
+    const cleanCode = (code || '').trim().toUpperCase();
+    let recorded = false;
+    setCoupons(prev =>
+      prev.map(c => {
+        if (c.code.toUpperCase() === cleanCode) {
+          recorded = true;
+          return { ...c, usedCount: c.usedCount + 1 };
+        }
+        return c;
+      })
+    );
+    return recorded;
+  };
+
+  const validateCoupon = (code: string, cartTotal: number): CouponValidationResult => {
+    const cleanCode = (code || '').trim().toUpperCase();
+    if (!cleanCode) {
+      return { isValid: false, discountAmount: 0, message: 'Please enter a coupon code.' };
+    }
+
+    const coupon = coupons.find(c => c.code.toUpperCase() === cleanCode);
+    if (!coupon) {
+      return { isValid: false, discountAmount: 0, message: 'Invalid promo or coupon code.' };
+    }
+
+    if (!coupon.isActive) {
+      return { isValid: false, discountAmount: 0, message: 'This coupon has been disabled by the clinic.' };
+    }
+
+    const now = new Date();
+    if (coupon.startDate && new Date(coupon.startDate) > now) {
+      return { isValid: false, discountAmount: 0, message: 'This coupon offer is not active yet.' };
+    }
+
+    if (coupon.expiresAt && new Date(coupon.expiresAt) < now) {
+      const expDate = new Date(coupon.expiresAt).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+      return { isValid: false, discountAmount: 0, message: `This coupon expired on ${expDate}.` };
+    }
+
+    if (coupon.maxUses > 0 && coupon.usedCount >= coupon.maxUses) {
+      return { isValid: false, discountAmount: 0, message: `This coupon has reached its maximum redemptions limit (${coupon.maxUses}/${coupon.maxUses} used).` };
+    }
+
+    if (coupon.minOrderAmount > 0 && cartTotal < coupon.minOrderAmount) {
+      return { 
+        isValid: false, 
+        discountAmount: 0, 
+        message: `Requires a minimum cart value of ₹${coupon.minOrderAmount} (Current: ₹${cartTotal}).` 
+      };
+    }
+
+    let discount = 0;
+    if (coupon.discountType === 'percentage') {
+      discount = Math.round((cartTotal * coupon.discountValue) / 100);
+      if (coupon.maxDiscount && coupon.maxDiscount > 0) {
+        discount = Math.min(discount, coupon.maxDiscount);
+      }
+    } else {
+      discount = coupon.discountValue;
+    }
+
+    discount = Math.min(discount, cartTotal);
+
+    return {
+      isValid: true,
+      coupon,
+      discountAmount: discount,
+      message: `Coupon "${coupon.code}" applied! You saved ₹${discount}.`
+    };
+  };
 
   // Product actions
   const addProduct = (product: Product) => setProducts([...products, product]);
@@ -399,6 +508,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AdminDataContext.Provider value={{
+      coupons, addCoupon, updateCoupon, deleteCoupon, recordCouponUse, validateCoupon, resetCoupons,
       products, addProduct, updateProduct, deleteProduct,
       services, addService, updateService, deleteService,
       testimonials, addTestimonial, updateTestimonial, deleteTestimonial,

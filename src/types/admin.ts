@@ -150,3 +150,25 @@ export interface AboutSettings {
   expertiseList: string[];
 }
 
+export interface Coupon {
+  id: string;
+  code: string; // Uppercase alphanumeric, e.g. "WELCOME10", "GLOW200"
+  description: string;
+  discountType: 'percentage' | 'fixed'; // '%' or '₹'
+  discountValue: number; // e.g. 15 (for 15%) or 200 (for ₹200)
+  minOrderAmount: number; // Minimum cart value required (0 for none)
+  maxDiscount?: number; // Optional cap for percentage discounts (e.g. max ₹500 off)
+  maxUses: number; // Limited uses: Total allowable redemptions (e.g. 50)
+  usedCount: number; // Redemptions count so far
+  startDate: string; // ISO date string
+  expiresAt: string; // ISO date string (Limited time)
+  isActive: boolean; // Manual active/inactive toggle
+  createdAt: string;
+}
+
+export interface CouponValidationResult {
+  isValid: boolean;
+  coupon?: Coupon;
+  discountAmount: number;
+  message: string;
+}
