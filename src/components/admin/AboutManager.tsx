@@ -930,7 +930,7 @@ export default function AboutManager() {
       )}
 
       {/* Bottom Save Action */}
-      <div className="flex justify-end pt-4">
+      <div className="flex justify-start pt-4">
         <button
           type="button"
           onClick={handleSave}

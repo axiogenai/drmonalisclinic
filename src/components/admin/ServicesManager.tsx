@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, X, ExternalLink, Tag, Check, Layers, AlertCircle, Upload, Image as ImageIcon, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, X, ExternalLink, Tag, Check, Layers, AlertCircle, Upload, Image as ImageIcon, Clock, ChevronLeft, ChevronRight, Stethoscope } from 'lucide-react';
 import { useAdminData, Service } from '@/context/AdminContext';
 import { useDialog } from '@/context/DialogContext';
 import { uploadImageToSupabase } from '@/lib/supabase';
@@ -261,38 +261,56 @@ export default function ServicesManager() {
   return (
     <div className="space-y-6">
       {/* Top Banner & Quick Links */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-gray-100 shadow-xs">
-        <div>
-          <h2 className="text-xl font-['Playfair_Display'] font-bold text-gray-900">
-            Services Pages Management
-          </h2>
-          <p className="text-xs text-gray-500 font-['Source_Sans_3'] mt-1">
-            Manage treatments published live on <strong className="text-teal-700">/homeopathy</strong>, <strong className="text-teal-700">/cosmetic-treatments</strong>, and <strong className="text-teal-700">/hair-and-skin</strong>.
-          </p>
-          {/* Quick Page Links */}
-          <div className="flex flex-wrap items-center gap-2 mt-3">
-            <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Live Pages:</span>
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs space-y-3.5">
+        {/* Header Row with Title and Add Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="p-1.5 rounded-lg bg-teal-50 text-[#108283]">
+                <Stethoscope size={20} />
+              </span>
+              <h2 className="text-lg sm:text-xl font-['Playfair_Display'] font-bold text-gray-900">
+                Services Pages Management
+              </h2>
+            </div>
+            <p className="text-xs text-gray-500 font-['Source_Sans_3']">
+              Manage treatments published live on <strong className="text-teal-700">/homeopathy</strong>, <strong className="text-teal-700">/cosmetic-treatments</strong>, and <strong className="text-teal-700">/hair-and-skin</strong>.
+            </p>
+          </div>
+
+          <button 
+            onClick={() => handleOpenModal()}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#108283] text-white rounded-xl hover:bg-[#0c6b6c] transition-colors shrink-0 font-['Source_Sans_3'] text-sm font-semibold shadow-xs cursor-pointer active:scale-98"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Service</span>
+          </button>
+        </div>
+
+        {/* Quick Page Links Bar */}
+        <div className="pt-3 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-start gap-2">
+            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider shrink-0">
+              Live Pages:
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
             {CATEGORIES.map(cat => (
               <Link 
                 key={cat.key}
                 href={cat.path}
                 target="_blank"
-                className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-50 hover:bg-[#FAEDDA]/70 border border-gray-200 text-gray-700 hover:text-[#108283] text-xs rounded-lg transition-colors font-['Source_Sans_3']"
+                className="inline-flex items-center justify-center gap-1 px-2.5 py-1.5 bg-gray-50 hover:bg-[#FAEDDA]/70 border border-gray-200 text-gray-700 hover:text-[#108283] text-xs font-semibold rounded-lg transition-colors font-['Source_Sans_3'] text-center"
+                title={`View ${cat.label}`}
               >
-                <span>{cat.label}</span>
-                <ExternalLink className="w-3 h-3 opacity-60" />
+                <span className="truncate hidden sm:inline">{cat.label}</span>
+                <span className="truncate sm:hidden">{cat.label.replace(' Treatments', '')}</span>
+                <ExternalLink className="w-3 h-3 opacity-60 shrink-0" />
               </Link>
             ))}
           </div>
         </div>
-
-        <button 
-          onClick={() => handleOpenModal()}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#108283] text-white rounded-xl hover:bg-[#0c6b6c] transition-colors shrink-0 font-['Source_Sans_3'] text-sm font-semibold shadow-xs cursor-pointer self-start md:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Service</span>
-        </button>
       </div>
 
       {/* Category Tabs & Search Row */}

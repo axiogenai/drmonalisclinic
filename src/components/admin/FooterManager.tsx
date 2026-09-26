@@ -400,7 +400,7 @@ export default function FooterManager() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex justify-start gap-3 pt-2">
               <button
                 type="submit"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#108283] hover:bg-[#0c6b6c] text-white text-sm font-bold transition-all shadow-lg shadow-[#108283]/25 active:scale-95 cursor-pointer"

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
-import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2, TicketPercent } from 'lucide-react';
+import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2, TicketPercent, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardOverview() {
@@ -131,16 +131,22 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Appointments Table */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* Recent Appointments Table - Grows naturally with rows */}
         <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Appointments</h3>
+          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Appointments</h3>
+              <p className="text-xs text-gray-400 font-['Source_Sans_3']">
+                {recentAppointments.length === 0 ? 'No bookings logged yet' : `${recentAppointments.length} most recent patient booking${recentAppointments.length === 1 ? '' : 's'}`}
+              </p>
+            </div>
             <button 
               onClick={() => router.push('?tab=appointments')}
-              className="text-sm font-medium text-teal-600 hover:text-teal-700 flex items-center"
+              className="text-xs sm:text-sm font-semibold text-[#108283] hover:text-[#0c6b6c] flex items-center gap-1 cursor-pointer transition-colors"
             >
-              View All <ArrowRight className="h-4 w-4 ml-1" />
+              <span>View All</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
           <div className="overflow-x-auto no-scrollbar">
@@ -148,29 +154,29 @@ export default function DashboardOverview() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Condition</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Name</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Phone</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Condition</th>
+                    <th className="px-5 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-100 font-['Source_Sans_3']">
                   {recentAppointments.map((apt) => (
-                    <tr key={apt.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{apt.fullName || (apt as any).name}</div>
+                    <tr key={apt.id} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <div className="text-xs sm:text-sm font-semibold text-gray-900">{apt.fullName || (apt as any).name}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{apt.phone}</div>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <div className="text-xs text-gray-500">{apt.phone}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{apt.date}</div>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <div className="text-xs text-gray-500">{apt.date}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{apt.condition}</div>
+                      <td className="px-5 py-3 whitespace-nowrap">
+                        <div className="text-xs text-gray-500">{apt.condition}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-5 py-3 whitespace-nowrap">
                         {getStatusBadge(apt.status)}
                       </td>
                     </tr>
@@ -178,113 +184,101 @@ export default function DashboardOverview() {
                 </tbody>
               </table>
             ) : (
-              <div className="py-12 flex flex-col items-center justify-center text-center px-4">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                  <Calendar className="h-8 w-8 text-gray-400" />
+              <div className="py-8 px-4 flex flex-col items-center justify-center text-center">
+                <div className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mb-2.5 text-gray-400">
+                  <Calendar className="h-6 w-6" />
                 </div>
-                <h4 className="text-base font-medium text-gray-900 mb-1">No appointments yet</h4>
-                <p className="text-sm text-gray-500 max-w-sm">When patients book appointments, they will appear here.</p>
+                <h4 className="text-sm font-semibold text-gray-800 mb-0.5">No appointments yet</h4>
+                <p className="text-xs text-gray-400 max-w-xs font-['Source_Sans_3']">
+                  When patients book appointments, they will appear here.
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Slim modern cards without scrolling */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Quick Actions</h3>
+            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Shortcuts</span>
           </div>
-          <div className="p-4 space-y-3">
-            <button 
-              onClick={() => router.push('?tab=appointments')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors">
-                <Calendar className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-teal-700">Patient Appointments</h4>
-                <p className="text-xs text-gray-500 mt-1">Review scheduled patient visits and consultation requests.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=services')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center group-hover:bg-violet-500 group-hover:text-white transition-colors">
-                <Stethoscope className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-violet-700">Manage Services</h4>
-                <p className="text-xs text-gray-500 mt-1">Update treatments across Homeopathy, Cosmetic, and Hair &amp; Skin.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=products')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                <PlusCircle className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-emerald-700">Manage Products</h4>
-                <p className="text-xs text-gray-500 mt-1">Add or update skincare products, pricing, and stock status.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=coupons')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-[#108283]/10 text-[#108283] flex items-center justify-center group-hover:bg-[#108283] group-hover:text-white transition-colors">
-                <TicketPercent className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-[#108283]">Coupons &amp; Discounts</h4>
-                <p className="text-xs text-gray-500 mt-1">Issue limited-time promo codes and track usage limits.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=results')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                <Images className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-rose-700">Before &amp; After Results</h4>
-                <p className="text-xs text-gray-500 mt-1">Manage clinical before/after photo transformations and metrics.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=about')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                <GraduationCap className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-amber-700">About &amp; Doctors CMS</h4>
-                <p className="text-xs text-gray-500 mt-1">Edit doctor degrees, council reg numbers, clinical bios, and stats.</p>
-              </div>
-            </button>
-
-            <button 
-              onClick={() => router.push('?tab=footer')}
-              className="w-full text-left p-4 rounded-xl border border-gray-100 hover:border-teal-500 hover:bg-teal-50 transition-all group flex items-start"
-            >
-              <div className="mt-1 mr-4 w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                <Building2 className="h-5 w-5" />
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-blue-700">Footer &amp; Clinic Hours</h4>
-                <p className="text-xs text-gray-500 mt-1">Update phone, timings, address, social handles, and credits.</p>
-              </div>
-            </button>
+          <div className="p-3 space-y-2">
+            {[
+              {
+                tab: 'appointments',
+                label: 'Patient Appointments',
+                desc: 'Review scheduled visits & consultation requests',
+                icon: Calendar,
+                iconBg: 'bg-teal-50 text-teal-700',
+              },
+              {
+                tab: 'services',
+                label: 'Manage Services',
+                desc: 'Homeopathy, Cosmetic & Hair treatments',
+                icon: Stethoscope,
+                iconBg: 'bg-violet-50 text-violet-700',
+              },
+              {
+                tab: 'products',
+                label: 'Manage Products',
+                desc: 'Skincare products, pricing & stock status',
+                icon: PlusCircle,
+                iconBg: 'bg-emerald-50 text-emerald-700',
+              },
+              {
+                tab: 'coupons',
+                label: 'Coupons & Discounts',
+                desc: 'Issue limited-time promo codes & track usage',
+                icon: TicketPercent,
+                iconBg: 'bg-teal-50 text-[#108283]',
+              },
+              {
+                tab: 'results',
+                label: 'Before & After Results',
+                desc: 'Manage clinical before/after transformations',
+                icon: Images,
+                iconBg: 'bg-rose-50 text-rose-700',
+              },
+              {
+                tab: 'about',
+                label: 'About & Doctors CMS',
+                desc: 'Doctor degrees, council numbers & clinical bios',
+                icon: GraduationCap,
+                iconBg: 'bg-amber-50 text-amber-700',
+              },
+              {
+                tab: 'footer',
+                label: 'Footer & Clinic Hours',
+                desc: 'Update clinic phone, timings & address',
+                icon: Building2,
+                iconBg: 'bg-blue-50 text-blue-700',
+              },
+            ].map((action) => {
+              const ActionIcon = action.icon;
+              return (
+                <button
+                  key={action.tab}
+                  onClick={() => router.push(`?tab=${action.tab}`)}
+                  className="w-full text-left px-3 py-2 rounded-xl border border-gray-100 hover:border-[#108283]/40 hover:bg-[#108283]/5 transition-all group flex items-center justify-between cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${action.iconBg} group-hover:scale-105 transition-transform`}>
+                      <ActionIcon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-900 group-hover:text-[#108283] transition-colors leading-tight truncate">
+                        {action.label}
+                      </h4>
+                      <p className="text-[11px] text-gray-400 font-['Source_Sans_3'] truncate leading-tight">
+                        {action.desc}
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#108283] group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
