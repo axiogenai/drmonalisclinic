@@ -76,9 +76,9 @@ export default function CTABanner() {
         </div>
 
         {/* Newsletter Subscription Card */}
-        <div className="max-w-md mx-auto">
-          <p className="text-xs uppercase tracking-widest text-white/80 font-['Source_Sans_3'] mb-3.5 font-medium flex items-center justify-center gap-1.5">
-            <Mail className="w-3.5 h-3.5 text-white/70" />
+        <div className="max-w-md mx-auto px-2">
+          <p className="text-xs uppercase tracking-wider sm:tracking-widest text-white/85 font-['Source_Sans_3'] mb-3.5 font-medium text-center leading-relaxed">
+            <Mail className="w-3.5 h-3.5 text-white/80 inline-block mr-1.5 -mt-0.5 align-middle shrink-0" />
             <span>Subscribe for Holistic Health &amp; Wellness Insights</span>
           </p>
 
