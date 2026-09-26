@@ -260,7 +260,7 @@ export default function AboutManager() {
         <button
           type="button"
           onClick={() => scrollTabs('left')}
-          className="flex sm:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+          className="flex sm:hidden w-7 h-7 rounded-lg bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
           title="Scroll sub-tabs left"
           aria-label="Scroll sub-tabs left"
         >
@@ -273,10 +273,10 @@ export default function AboutManager() {
         >
           <button
             onClick={() => setActiveTab('doctors')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'doctors'
                 ? 'bg-[#108283] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <UserCheck size={16} className="shrink-0" />
@@ -285,10 +285,10 @@ export default function AboutManager() {
 
           <button
             onClick={() => setActiveTab('stats')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'stats'
                 ? 'bg-[#108283] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <BarChart3 size={16} className="shrink-0" />
@@ -297,10 +297,10 @@ export default function AboutManager() {
 
           <button
             onClick={() => setActiveTab('philosophy')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'philosophy'
                 ? 'bg-[#108283] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <Quote size={16} className="shrink-0" />
@@ -309,10 +309,10 @@ export default function AboutManager() {
 
           <button
             onClick={() => setActiveTab('about_page')}
-            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeTab === 'about_page'
                 ? 'bg-[#108283] text-white shadow-xs'
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <Layers size={16} className="shrink-0" />
@@ -323,7 +323,7 @@ export default function AboutManager() {
         <button
           type="button"
           onClick={() => scrollTabs('right')}
-          className="flex sm:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+          className="flex sm:hidden w-7 h-7 rounded-lg bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
           title="Scroll sub-tabs right"
           aria-label="Scroll sub-tabs right"
         >

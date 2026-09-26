@@ -20,7 +20,8 @@ import {
   XCircle,
   RotateCcw,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  HelpCircle
 } from 'lucide-react';
 import { useAdminData } from '@/context/AdminDataContext';
 import { useDialog } from '@/context/DialogContext';
@@ -65,6 +66,7 @@ export default function CouponsManager() {
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
 
   // Form State
   const [code, setCode] = useState('');
@@ -310,6 +312,7 @@ export default function CouponsManager() {
   const expiredOrExhaustedCount = coupons.filter(
     (c) => new Date(c.expiresAt).getTime() <= nowTime || c.usedCount >= c.maxUses
   ).length;
+  const totalCouponsUsedCount = coupons.reduce((sum, c) => sum + (c.usedCount || 0), 0);
 
   // Filtered List
   const filteredCoupons = coupons.filter((coupon) => {
@@ -353,7 +356,17 @@ export default function CouponsManager() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={() => setIsGuideOpen(true)}
+            className="px-3.5 py-2.5 rounded-xl border border-[#108283]/30 bg-[#108283]/5 hover:bg-[#108283]/10 text-[#108283] text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+            title="How to Use Coupons Guide"
+          >
+            <HelpCircle className="w-4 h-4 text-[#108283]" />
+            <span>How to Use Coupons</span>
+          </button>
+
           <button
             type="button"
             onClick={handleResetDefaults}
@@ -375,11 +388,11 @@ export default function CouponsManager() {
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+      {/* Metrics Row - 4 Balanced Cards on Desktop & Mobile */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         
         {/* Metric 1: Total Coupons */}
-        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+        <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
           <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#108283]/10 text-[#108283] flex items-center justify-center shrink-0">
             <TicketPercent className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
@@ -392,7 +405,7 @@ export default function CouponsManager() {
         </div>
 
         {/* Metric 2: Active & Ready */}
-        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+        <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
           <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
@@ -405,7 +418,7 @@ export default function CouponsManager() {
         </div>
 
         {/* Metric 3: Expired / Exhausted */}
-        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+        <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
           <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
             <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
@@ -413,6 +426,19 @@ export default function CouponsManager() {
             <p className="text-[10px] sm:text-xs font-medium text-gray-500 font-['Source_Sans_3'] truncate">Expired</p>
             <p className="text-base sm:text-2xl font-bold text-amber-700 font-['Playfair_Display']">
               {expiredOrExhaustedCount}
+            </p>
+          </div>
+        </div>
+
+        {/* Metric 4: People Used */}
+        <div className="bg-white p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-teal-50 text-[#108283] flex items-center justify-center shrink-0">
+            <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs font-medium text-gray-500 font-['Source_Sans_3'] truncate">People Used</p>
+            <p className="text-base sm:text-2xl font-bold text-[#108283] font-['Playfair_Display']">
+              {totalCouponsUsedCount}
             </p>
           </div>
         </div>
@@ -980,6 +1006,108 @@ export default function CouponsManager() {
           </div>
 
         </form>
+      </AdminModal>
+
+      {/* How to Use Coupons Guide Modal */}
+      <AdminModal
+        isOpen={isGuideOpen}
+        onClose={() => setIsGuideOpen(false)}
+        title="How to Use & Apply Coupons"
+        maxWidth="max-w-xl"
+      >
+        <div className="space-y-4 font-['Source_Sans_3'] text-gray-700">
+          <div className="bg-teal-50/60 border border-teal-200/80 rounded-2xl p-4 flex items-start gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#108283] text-white flex items-center justify-center shrink-0 mt-0.5">
+              <TicketPercent className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-sm">Automated Cart &amp; Checkout Coupons</h3>
+              <p className="text-xs text-gray-600 mt-0.5">
+                Coupons created in this manager are instantly valid and applied by patients on the clinic website.
+              </p>
+            </div>
+          </div>
+
+          {/* Steps */}
+          <div className="space-y-2.5">
+            <div className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white">
+              <div className="w-6 h-6 rounded-full bg-teal-100 text-[#108283] text-xs font-bold flex items-center justify-center shrink-0">
+                1
+              </div>
+              <div className="text-xs">
+                <p className="font-bold text-gray-900">Issue or Share Coupon Code</p>
+                <p className="text-gray-600 mt-0.5">
+                  Click <strong>&quot;Issue New Coupon&quot;</strong> to create a code (e.g. <span className="font-mono bg-gray-100 px-1 py-0.5 rounded text-gray-900 font-bold">MONALI10</span>). Set a percentage or ₹ flat discount, minimum spend, and expiration date.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white">
+              <div className="w-6 h-6 rounded-full bg-teal-100 text-[#108283] text-xs font-bold flex items-center justify-center shrink-0">
+                2
+              </div>
+              <div className="text-xs">
+                <p className="font-bold text-gray-900">Patient Adds Items to Bag</p>
+                <p className="text-gray-600 mt-0.5">
+                  Patients visit the live shop (<span className="text-[#108283] font-semibold">/shop</span>) and add their skincare formulations, serums, or creams to the cart.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white">
+              <div className="w-6 h-6 rounded-full bg-teal-100 text-[#108283] text-xs font-bold flex items-center justify-center shrink-0">
+                3
+              </div>
+              <div className="text-xs">
+                <p className="font-bold text-gray-900">Apply Code Inside the Cart Drawer</p>
+                <p className="text-gray-600 mt-0.5">
+                  In the slide-out Cart Drawer, under the items subtotal, there is a dedicated coupon box: <span className="font-semibold text-gray-800">&quot;Have a coupon code?&quot;</span>. The patient types the code and clicks <span className="font-semibold text-[#108283]">&quot;Apply&quot;</span>.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 bg-white">
+              <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center justify-center shrink-0">
+                4
+              </div>
+              <div className="text-xs">
+                <p className="font-bold text-gray-900">Instant Real-Time Discount</p>
+                <p className="text-gray-600 mt-0.5">
+                  The discount is calculated and subtracted instantly from the order total. Minimum spend and expiry date are validated automatically in real time.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-amber-50/80 border border-amber-200/70 rounded-xl p-3 text-xs text-amber-800 space-y-1">
+            <p className="font-bold flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              <span>Coupon Limits &amp; Control</span>
+            </p>
+            <p>
+              You can toggle any coupon <strong>Active</strong> or <strong>Disabled</strong> with one click, or set a maximum usage limit so the code expires automatically once reached.
+            </p>
+          </div>
+
+          <div className="pt-2 flex items-center justify-between gap-3">
+            <a
+              href="/shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-[#108283] hover:underline flex items-center gap-1 font-semibold"
+            >
+              <span>Test in Live Shop &amp; Cart Drawer</span>
+              <span>↗</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => setIsGuideOpen(false)}
+              className="px-4 py-2 bg-[#108283] text-white rounded-xl text-xs font-semibold hover:bg-[#0c6b6c] transition-colors cursor-pointer"
+            >
+              Got It
+            </button>
+          </div>
+        </div>
       </AdminModal>
 
     </div>

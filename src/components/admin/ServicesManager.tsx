@@ -584,11 +584,13 @@ export default function ServicesManager() {
           {/* Treatment Image (Upload & Preview) */}
           <div>
             <label className="flex items-center text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 h-4 font-['Source_Sans_3']">
-              Featured Image (Upload File or Enter URL)
+              Featured Image <span className="text-rose-500 ml-1">*</span>
             </label>
-            <div className="flex items-center gap-2">
+
+            {/* Touch-Friendly Image Upload & Preview Row */}
+            <div className="flex items-center gap-3 mb-2.5">
               {formData.image ? (
-                <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white shrink-0 border border-gray-200 shadow-xs group">
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0 border border-gray-200 shadow-2xs group">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={formData.image} 
@@ -602,29 +604,21 @@ export default function ServicesManager() {
                     className="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                     title="Remove image"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
-                <div className="w-10 h-10 rounded-lg border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
-                  <ImageIcon className="w-4 h-4" />
+                <div className="w-12 h-12 rounded-xl border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
+                  <ImageIcon className="w-5 h-5" />
                 </div>
               )}
 
-              <input 
-                type="text"
-                value={formData.image}
-                onChange={(e) => setFormData({...formData, image: e.target.value})}
-                className="flex-1 min-w-0 px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] text-gray-700 outline-none focus:ring-1 focus:ring-[#108283] focus:border-[#108283] transition-all"
-                placeholder="Upload file or enter /services/... or https://"
-              />
-
               <label 
-                className="px-3.5 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs font-semibold cursor-pointer transition-colors shrink-0 flex items-center gap-1.5 font-['Source_Sans_3'] shadow-xs" 
-                title="Upload image from computer"
+                className="flex-1 py-2.5 px-4 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 font-['Source_Sans_3'] shadow-xs active:scale-98"
+                title="Upload image from device"
               >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Upload</span>
+                <Upload className="w-4 h-4" />
+                <span>Choose Photo to Upload</span>
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -633,8 +627,17 @@ export default function ServicesManager() {
                 />
               </label>
             </div>
+
+            {/* Paste URL fallback */}
+            <input 
+              type="text"
+              value={formData.image}
+              onChange={(e) => setFormData({...formData, image: e.target.value})}
+              className="w-full px-3 py-2 bg-gray-50/80 hover:bg-white border border-gray-200 rounded-xl text-xs font-['Source_Sans_3'] text-gray-700 outline-none focus:ring-1 focus:ring-[#108283] focus:border-[#108283] transition-all"
+              placeholder="Or paste image URL (/services/... or https://)"
+            />
             <p className="text-[10px] text-gray-400 font-['Source_Sans_3'] mt-1">
-              Supports any image size (JPEG, PNG, WEBP) — auto-scaled &amp; properly fitted.
+              Supports camera capture &amp; photos (JPEG, PNG, WEBP) — auto-scaled &amp; optimized.
             </p>
           </div>
 

@@ -730,12 +730,14 @@ export default function ProductsManager() {
 
               {/* Product Image (Slim Compact Upload & Preview) */}
               <div>
-                <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1 font-['Source_Sans_3']">
+                <label className="block text-[11px] font-semibold text-gray-700 uppercase tracking-wider mb-1.5 font-['Source_Sans_3']">
                   Product Image <span className="text-rose-500">*</span>
                 </label>
-                <div className="flex items-center gap-2">
+
+                {/* Touch-Friendly Image Upload & Preview Row */}
+                <div className="flex items-center gap-3 mb-2.5">
                   {formData.image ? (
-                    <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white shrink-0 border border-gray-200 shadow-xs group">
+                    <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0 border border-gray-200 shadow-2xs group">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img 
                         src={formData.image} 
@@ -749,30 +751,21 @@ export default function ProductsManager() {
                         className="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                         title="Remove image"
                       >
-                        <X className="w-3.5 h-3.5" />
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
-                    <div className="w-10 h-10 rounded-lg border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
-                      <ImageIcon className="w-4 h-4" />
+                    <div className="w-12 h-12 rounded-xl border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
+                      <ImageIcon className="w-5 h-5" />
                     </div>
                   )}
 
-                  <input
-                    type="text"
-                    required
-                    placeholder="Upload image or enter /products/... or https://"
-                    value={formData.image || ''}
-                    onChange={e => setFormData({...formData, image: e.target.value})}
-                    className="flex-1 min-w-0 px-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs sm:text-sm font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all"
-                  />
-
                   <label 
-                    className={`px-3 py-2 ${isUploading ? 'bg-gray-400 cursor-wait' : 'bg-[#108283] hover:bg-[#0c6b6c] cursor-pointer'} text-white rounded-xl text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 font-['Source_Sans_3'] shadow-xs`}
-                    title="Upload product image to Supabase storage"
+                    className={`flex-1 py-2.5 px-4 ${isUploading ? 'bg-gray-400 cursor-wait' : 'bg-[#108283] hover:bg-[#0c6b6c] cursor-pointer'} text-white rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2 font-['Source_Sans_3'] shadow-xs active:scale-98`}
+                    title="Upload product image from device"
                   >
-                    <Upload className={`w-3.5 h-3.5 ${isUploading ? 'animate-bounce' : ''}`} />
-                    <span>{isUploading ? 'Uploading...' : 'Upload'}</span>
+                    <Upload className={`w-4 h-4 ${isUploading ? 'animate-bounce' : ''}`} />
+                    <span>{isUploading ? 'Uploading...' : 'Choose Photo to Upload'}</span>
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -782,8 +775,18 @@ export default function ProductsManager() {
                     />
                   </label>
                 </div>
+
+                {/* Paste URL fallback */}
+                <input
+                  type="text"
+                  required
+                  placeholder="Or paste image URL (/products/... or https://)"
+                  value={formData.image || ''}
+                  onChange={e => setFormData({...formData, image: e.target.value})}
+                  className="w-full px-3 py-2 bg-gray-50/70 hover:bg-white border border-gray-200 rounded-xl text-xs font-['Source_Sans_3'] focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] focus:bg-white outline-none transition-all"
+                />
                 <p className="text-[10px] text-gray-400 font-['Source_Sans_3'] mt-1">
-                  Supports any image size (JPEG, PNG, WEBP) — auto-scaled &amp; properly fitted.
+                  Supports camera capture &amp; photos (JPEG, PNG, WEBP) — auto-scaled &amp; optimized.
                 </p>
               </div>
             </div>

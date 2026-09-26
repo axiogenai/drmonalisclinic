@@ -222,20 +222,20 @@ export default function MarqueeManager() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2.5 shrink-0 w-full sm:w-auto">
           <button
             onClick={() => openAddModal('product')}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#108283] text-white rounded-xl hover:bg-[#0c6b6c] transition-all text-sm font-semibold shadow-xs cursor-pointer active:scale-98"
+            className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#108283] text-white rounded-xl hover:bg-[#0c6b6c] transition-all text-xs sm:text-sm font-semibold shadow-xs cursor-pointer active:scale-98"
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Select Product</span>
+            <ShoppingBag className="w-4 h-4 shrink-0" />
+            <span className="truncate">Select Product</span>
           </button>
           <button
             onClick={() => openAddModal('custom')}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#FAEDDA] text-[#108283] hover:bg-[#f3e1c4] rounded-xl transition-all text-sm font-semibold border border-[#108283]/20 shadow-xs cursor-pointer active:scale-98"
+            className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#FAEDDA] text-[#108283] hover:bg-[#f3e1c4] rounded-xl transition-all text-xs sm:text-sm font-semibold border border-[#108283]/20 shadow-xs cursor-pointer active:scale-98"
           >
-            <Tag className="w-4 h-4 text-[#108283]" />
-            <span>Add Offer / Promo</span>
+            <Tag className="w-4 h-4 text-[#108283] shrink-0" />
+            <span className="truncate">Add Offer / Promo</span>
           </button>
         </div>
       </div>
@@ -320,7 +320,125 @@ export default function MarqueeManager() {
           </span>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar">
+        {/* Mobile View: Clean, intuitive item cards (No horizontal scrolling required!) */}
+        <div className="block md:hidden divide-y divide-gray-100">
+          {marqueeItems.length === 0 ? (
+            <div className="py-8 text-center text-gray-400 text-xs">
+              No announcement items yet. Tap &quot;Select Product&quot; or &quot;Add Offer&quot; above.
+            </div>
+          ) : (
+            marqueeItems.map((item, index) => (
+              <div 
+                key={item.id} 
+                className={`py-3 px-1 sm:px-3 flex items-center justify-between gap-2.5 transition-colors ${!item.isActive ? 'opacity-60 bg-gray-50/50' : 'bg-white'}`}
+              >
+                {/* Left: Reorder arrows & Image & Name */}
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  {/* Reorder Buttons */}
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => moveItem(index, 'up')}
+                      disabled={index === 0}
+                      className="w-6 h-6 rounded bg-gray-100 text-gray-600 disabled:opacity-20 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+                      title="Move Up"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveItem(index, 'down')}
+                      disabled={index === marqueeItems.length - 1}
+                      className="w-6 h-6 rounded bg-gray-100 text-gray-600 disabled:opacity-20 flex items-center justify-center active:scale-95 transition-all cursor-pointer"
+                      title="Move Down"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Thumbnail */}
+                  <div className="w-10 h-10 rounded-xl overflow-hidden border border-gray-200 bg-white shrink-0 shadow-2xs flex items-center justify-center">
+                    <img 
+                      src={item.image || '/clinic-logo-icon.png'} 
+                      alt={item.name} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/clinic-logo-icon.png'; }}
+                    />
+                  </div>
+
+                  {/* Info */}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-xs text-gray-900 truncate leading-snug">{item.name}</p>
+                    <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                      <span className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-2xs ${getBadgeStyle(item.badgeColor)}`}>
+                        {item.badge}
+                      </span>
+                      <span className="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded capitalize">
+                        {item.type}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Actions */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {/* Status Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => updateMarqueeItem(item.id, { isActive: !item.isActive })}
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                      item.isActive 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        : 'bg-gray-100 text-gray-400 border border-gray-200'
+                    }`}
+                    title={item.isActive ? 'Active (Click to hide)' : 'Hidden (Click to show)'}
+                  >
+                    {item.isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                  </button>
+
+                  {/* Edit */}
+                  <button
+                    type="button"
+                    onClick={() => openEditModal(item)}
+                    className="w-8 h-8 rounded-lg bg-gray-50 hover:bg-[#108283]/10 text-gray-600 hover:text-[#108283] border border-gray-200 flex items-center justify-center transition-colors cursor-pointer"
+                    title="Edit Item"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Delete */}
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const ok = await confirm({
+                        title: 'Remove Marquee Item',
+                        message: `Are you sure you want to remove "${item.name}" from the live announcement marquee?`,
+                        confirmText: 'Remove Item',
+                        cancelText: 'Cancel',
+                        type: 'danger',
+                      });
+                      if (ok) {
+                        deleteMarqueeItem(item.id);
+                        toast({
+                          title: 'Item Removed',
+                          message: `"${item.name}" has been removed from the marquee.`,
+                          type: 'success',
+                        });
+                      }
+                    }}
+                    className="w-8 h-8 rounded-lg bg-gray-50 hover:bg-rose-50 text-gray-400 hover:text-rose-600 border border-gray-200 flex items-center justify-center transition-colors cursor-pointer"
+                    title="Delete Item"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Full Table */}
+        <div className="hidden md:block overflow-x-auto no-scrollbar">
           <table className="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr className="bg-gray-50/75 border-b border-gray-100 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
@@ -607,11 +725,13 @@ export default function MarqueeManager() {
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Thumbnail Image (Upload File or Enter URL)
+                Thumbnail Image
               </label>
-              <div className="flex items-center gap-2">
+
+              {/* Touch-Friendly Image Upload & Preview Row */}
+              <div className="flex items-center gap-3 mb-2.5">
                 {customImage ? (
-                  <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white shrink-0 border border-gray-200 shadow-xs group">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0 border border-gray-200 shadow-2xs group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={customImage} 
@@ -625,29 +745,21 @@ export default function MarqueeManager() {
                       className="absolute inset-0 bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                       title="Remove image"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  <div className="w-10 h-10 rounded-lg border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
-                    <ImageIcon className="w-4 h-4" />
+                  <div className="w-12 h-12 rounded-xl border border-dashed border-gray-300 bg-gray-50 shrink-0 flex items-center justify-center text-gray-400">
+                    <ImageIcon className="w-5 h-5" />
                   </div>
                 )}
 
-                <input
-                  type="text"
-                  value={customImage}
-                  onChange={(e) => setCustomImage(e.target.value)}
-                  placeholder="Upload image or enter /products/... or https://"
-                  className="flex-1 min-w-0 px-3 py-2 border border-gray-200 rounded-xl text-xs sm:text-sm focus:border-[#108283] focus:ring-2 focus:ring-[#108283]/20 outline-none"
-                />
-
                 <label 
-                  className="px-3 py-2 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs font-semibold cursor-pointer transition-colors shrink-0 flex items-center gap-1.5 shadow-xs"
-                  title="Upload image from computer"
+                  className="flex-1 py-2.5 px-4 bg-[#108283] hover:bg-[#0c6b6c] text-white rounded-xl text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 shadow-xs active:scale-98"
+                  title="Choose image from device"
                 >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>Upload</span>
+                  <Upload className="w-4 h-4" />
+                  <span>Choose Photo to Upload</span>
                   <input 
                     type="file" 
                     accept="image/*" 
@@ -656,8 +768,17 @@ export default function MarqueeManager() {
                   />
                 </label>
               </div>
+
+              {/* Paste URL fallback */}
+              <input
+                type="text"
+                value={customImage}
+                onChange={(e) => setCustomImage(e.target.value)}
+                placeholder="Or paste image URL (/products/... or https://)"
+                className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:border-[#108283] focus:ring-2 focus:ring-[#108283]/20 outline-none"
+              />
               <p className="text-[10px] text-gray-400 mt-1">
-                Supports any image size (JPEG, PNG, WEBP) — auto-scaled &amp; properly fitted.
+                Supports camera capture &amp; photos (JPEG, PNG, WEBP) — auto-scaled &amp; optimized.
               </p>
             </div>
 
