@@ -1,33 +1,43 @@
-import { Metadata } from 'next';
-import React from 'react';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Cosmetic & Aesthetic Treatments in Kolhapur | Medifacials, Peels & Anti-Aging',
+  title: 'Cosmetic Treatments Kolhapur | Medifacial, Chemical Peel, Anti-Aging | Dr. Monali',
   description:
-    'Advanced cosmetology clinic in Kolhapur. Dermatologist-grade Hydra-Derm medifacials, chemical peels, hyperpigmentation removal, anti-aging collagen therapy & acne scar remodeling by Dr. Monali Subhedar.',
+    'Advanced cosmetic treatments at Dr. Monali\'s Clinic Kolhapur. Medifacial, Chemical Peel, Anti-Acne, Anti-Aging, Pigmentation, Mole & Wart Removal by Dr. Monali Subhedar. Book: +91 92094 72224.',
   keywords: [
-    'cosmetic clinic kolhapur',
-    'cosmetology clinic kolhapur',
+    'cosmetic treatments kolhapur',
     'medifacial kolhapur',
     'chemical peel kolhapur',
-    'skin glow treatment kolhapur',
-    'anti aging clinic kolhapur',
-    'pigmentation removal kolhapur',
+    'anti acne treatment kolhapur',
+    'acne treatment kolhapur',
+    'pimple treatment kolhapur',
     'acne scar treatment kolhapur',
-    'aesthetic dermatologist kolhapur',
+    'anti aging treatment kolhapur',
+    'pigmentation treatment kolhapur',
+    'melasma treatment kolhapur',
+    'mole removal kolhapur',
+    'wart removal kolhapur',
+    'skin tag removal kolhapur',
+    'cosmetologist kolhapur',
+    'cosmetic clinic kolhapur',
+    'skin booster kolhapur',
+    'glow facial kolhapur',
+    'medical facial kolhapur',
+    'dr monali cosmetic clinic',
+    'best cosmetic clinic kolhapur',
+    'skin specialist kolhapur',
   ],
   alternates: {
     canonical: '/cosmetic-treatments',
   },
   openGraph: {
-    title: 'Cosmetic & Aesthetic Treatments in Kolhapur | Dr. Monali Clinic',
+    title: 'Cosmetic Treatments Kolhapur | Dr. Monali\'s Clinic',
     description:
-      'Premier cosmetic clinic in Kolhapur for medifacials, chemical peels, skin rejuvenation, and scar remodeling.',
-    url: 'https://drmonalisclinic.com/cosmetic-treatments',
-    images: [{ url: '/hero-model.png', width: 1200, height: 630, alt: 'Cosmetic Treatments Kolhapur' }],
+      'Medical-grade cosmetic procedures: Medifacials, Chemical Peels, Pigmentation, Anti-Aging, Acne Scars & Mole Removal at Dr. Monali\'s Clinic Kolhapur.',
+    url: 'https://www.drmonalisclinic.com/cosmetic-treatments',
   },
 };
 
-export default function CosmeticLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+export default function CosmeticTreatmentsLayout({ children }: { children: React.ReactNode }) {
+  return children;
 }

@@ -23,30 +23,97 @@ export const metadata: Metadata = {
     template: "%s | Dr. Monali's Clinic Kolhapur",
   },
   description:
-    'Ranked #1 Homeopathy, Skin Care & Hair Clinic in Kolhapur. Led by Dr. Monali Subhedar & Dr. Sachin Subhedar. Specializing in constitutional homeopathy, hair fall PRP, acne scars, psoriasis, vitiligo & clinical medifacials near Ring Road, Kolhapur.',
+    'Dr. Monali\'s Homeopathy, Skin & Hair Clinic Kolhapur — Ranked #1 by patients. Led by Dr. Monali Subhedar & Dr. Sachin Subhedar (BHMS Mumbai). Specialized in constitutional homeopathy, acne, psoriasis, hair fall PRP, medifacials, chemical peels, PCOD, kidney stones & height growth therapy. Serving Kolhapur, Ichalkaranji, Sangli, Satara & all of Maharashtra.',
   keywords: [
-    'best clinic in kolhapur',
-    'best homeopathy clinic in kolhapur',
-    'homeopathic doctor in kolhapur',
-    'best skin clinic in kolhapur',
-    'dermatologist in kolhapur',
-    'skin specialist in kolhapur',
+    // Doctor Name Searches
     'dr monali subhedar',
+    'dr monali subhedar kolhapur',
+    'dr monali homeopathy',
+    'dr monali skin clinic',
+    'dr monali hair clinic',
+    'dr monali cosmetologist',
     'dr sachin subhedar',
-    'dr monali homeopathy clinic kolhapur',
+    'dr sachin subhedar kolhapur',
+    'dr monali and sachin subhedar',
+    'monali clinic',
+    'monali clinic kolhapur',
+    'monali homeopathy clinic',
+    'monali skin clinic kolhapur',
+    // Clinic Name Searches
+    'dr monalis clinic',
+    'dr monalis homeopathy clinic',
+    'drmonalisclinic',
+    'drmonalisclinic.com',
+    'drmonali clinic kolhapur',
+    'dr monalis clinic kolhapur',
+    // Kolhapur Local Searches
+    'best clinic in kolhapur',
+    'top clinic kolhapur',
+    'best doctor in kolhapur',
+    'best homeopathy clinic in kolhapur',
+    'homeopathic doctor kolhapur',
+    'homeopathy doctor near me kolhapur',
+    'best skin clinic in kolhapur',
+    'skin specialist in kolhapur',
+    'dermatologist in kolhapur',
+    'best hair clinic in kolhapur',
+    'hair specialist in kolhapur',
+    'cosmetologist in kolhapur',
+    'cosmetic clinic kolhapur',
+    'cosmetology clinic kolhapur',
+    'trichologist kolhapur',
+    'clinic near ring road kolhapur',
+    'clinic golden spring apartment kolhapur',
+    'doctor near me kolhapur',
+    // Treatment Searches
+    'acne treatment kolhapur',
+    'acne scar treatment kolhapur',
+    'pimple treatment kolhapur',
+    'pigmentation treatment kolhapur',
+    'melasma treatment kolhapur',
+    'medifacial kolhapur',
+    'chemical peel kolhapur',
     'hair fall treatment kolhapur',
     'hair prp in kolhapur',
-    'acne scar treatment kolhapur',
-    'medifacial kolhapur',
+    'hair prp therapy kolhapur',
+    'hair loss treatment kolhapur',
+    'hair thinning treatment kolhapur',
     'psoriasis treatment kolhapur',
-    'vitiligo homeopathy kolhapur',
+    'eczema treatment kolhapur',
+    'vitiligo treatment kolhapur',
+    'skin disease treatment kolhapur',
+    'pcod treatment kolhapur',
+    'pcos treatment kolhapur',
     'pcod homeopathy kolhapur',
     'kidney stone treatment kolhapur',
-    'near ring road kolhapur clinic',
-    'cosmetic clinic kolhapur',
-    'trichologist kolhapur',
-    'homeopathy doctor near me kolhapur',
-    'cosmetology clinic kolhapur',
+    'kidney stone homeopathy kolhapur',
+    'piles treatment kolhapur',
+    'height growth treatment kolhapur',
+    'weight loss treatment kolhapur',
+    'weight gain treatment kolhapur',
+    'anti aging treatment kolhapur',
+    'botox alternative kolhapur',
+    'skin booster kolhapur',
+    'microneedling kolhapur',
+    'mesotherapy kolhapur',
+    'skin prp kolhapur',
+    'mole removal kolhapur',
+    'wart removal kolhapur',
+    // Nearby City Searches
+    'homeopathy clinic ichalkaranji',
+    'skin clinic ichalkaranji',
+    'best clinic sangli',
+    'homeopathy doctor satara',
+    'best homeopathy clinic maharashtra',
+    // Google/Search Intent Phrases
+    'best homeopathy doctor for skin',
+    'homeopathy for hair fall',
+    'constitutional homeopathy treatment',
+    'safe skin treatment without steroids',
+    'natural treatment for psoriasis',
+    'homeopathy clinic near me',
+    'online homeopathy consultation kolhapur',
+    'book appointment kolhapur clinic',
   ],
   authors: [
     { name: 'Dr. Monali Subhedar', url: 'https://drmonalisclinic.com/about' },
@@ -99,15 +166,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
-      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
-      { url: '/favicon.png', type: 'image/png', sizes: '512x512' },
       { url: '/clinic-logo-icon.png', type: 'image/png' },
+      { url: '/clinic-logo-icon.png', type: 'image/png', sizes: '32x32' },
+      { url: '/clinic-logo-icon.png', type: 'image/png', sizes: '16x16' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/clinic-logo-icon.png',
     apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/clinic-logo-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 };
@@ -116,12 +181,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
-        <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" />
+        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="16x16" />
+        <link rel="apple-touch-icon" href="/clinic-logo-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/clinic-logo-icon.png" />
         
         {/* Geo Meta Tags for Kolhapur Local Pack #1 Ranking */}
         <meta name="geo.region" content="IN-MH" />
