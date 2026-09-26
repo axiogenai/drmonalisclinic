@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { 
   Search, 
@@ -13,7 +13,9 @@ import {
   PhoneCall, 
   HelpCircle,
   ArrowRight,
-  Clock
+  Clock,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -41,6 +43,16 @@ export default function ShopPage() {
     { id: 'hair', label: 'Hair & Scalp' },
     { id: 'upcoming', label: 'Upcoming Drops' },
   ];
+
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const scrollCategories = (dir: 'left' | 'right') => {
+    if (categoryScrollRef.current) {
+      categoryScrollRef.current.scrollBy({
+        left: dir === 'left' ? -140 : 140,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
@@ -74,21 +86,46 @@ export default function ShopPage() {
           
           {/* Controls: Search & Category Pills (Static In-Place) */}
           <div className="bg-white rounded-2xl p-4 md:p-5 border border-gray-200/90 mb-10 flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Category Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id as any)}
-                  className={`px-4 py-2 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer ${
-                    selectedCategory === cat.id
-                      ? 'bg-[#108283] text-white'
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
+            {/* Category Tabs with Mobile Left & Right Arrows */}
+            <div className="flex items-center gap-1.5 w-full md:w-auto">
+              <button
+                type="button"
+                onClick={() => scrollCategories('left')}
+                className="flex md:hidden w-7 h-7 rounded-full bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+                title="Scroll categories left"
+                aria-label="Scroll categories left"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+
+              <div 
+                ref={categoryScrollRef}
+                className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none scroll-smooth"
+              >
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id as any)}
+                    className={`px-4 py-2 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer ${
+                      selectedCategory === cat.id
+                        ? 'bg-[#108283] text-white shadow-xs'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => scrollCategories('right')}
+                className="flex md:hidden w-7 h-7 rounded-full bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+                title="Scroll categories right"
+                aria-label="Scroll categories right"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
             {/* Search Box */}

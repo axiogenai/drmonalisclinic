@@ -87,17 +87,26 @@ export default function AboutPage() {
   } catch {}
   const aboutSettings = adminData?.aboutSettings || defaultAboutSettings;
 
-  // Hero background slideshow
+  // Hero background slideshow (Ultra-fast WebP assets)
   const heroSlides = [
-    '/docbg.png',
-    '/docbg2.png',
+    '/docbg.webp',
+    '/docbg2.webp',
   ];
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
 
+  // Eagerly preload background images for instantaneous rendering
+  useEffect(() => {
+    heroSlides.forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+    });
+  }, [heroSlides]);
+
+  // Slideshow interval: rotates every 2.5 seconds (1-3s range)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, 2500);
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
@@ -189,7 +198,7 @@ export default function AboutPage() {
         {heroSlides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
+            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ease-in-out ${
               currentHeroSlide === idx ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'
             }`}
             style={{ backgroundImage: `url(${slide})` }}

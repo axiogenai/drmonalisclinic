@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { 
   Plus, 
@@ -14,7 +14,9 @@ import {
   AlertCircle, 
   Check, 
   ExternalLink,
-  X
+  X,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useAdminData, ResultItem } from '@/context/AdminContext';
 import { useDialog } from '@/context/DialogContext';
@@ -60,6 +62,17 @@ export default function ResultsManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const categoryScrollRef = useRef<HTMLDivElement>(null);
+  const scrollCategories = (dir: 'left' | 'right') => {
+    if (categoryScrollRef.current) {
+      categoryScrollRef.current.scrollBy({
+        left: dir === 'left' ? -140 : 140,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -327,33 +340,58 @@ export default function ResultsManager() {
 
       {/* Category Tabs & Search Row (Exact same as ServicesManager) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        {/* Category Pill Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+        {/* Category Pill Tabs with Mobile Left & Right Arrows */}
+        <div className="flex items-center gap-1.5 w-full sm:w-auto">
           <button
-            onClick={() => setCategoryFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-['Source_Sans_3'] transition-colors whitespace-nowrap cursor-pointer ${
-              categoryFilter === 'all'
-                ? 'bg-[#108283] text-white shadow-xs'
-                : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-            }`}
+            type="button"
+            onClick={() => scrollCategories('left')}
+            className="flex sm:hidden w-7 h-7 rounded-lg bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+            title="Scroll categories left"
+            aria-label="Scroll categories left"
           >
-            All Results ({counts.all})
+            <ChevronLeft className="w-3.5 h-3.5" />
           </button>
-          {CATEGORIES.map(cat => (
+
+          <div 
+            ref={categoryScrollRef}
+            className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar scroll-smooth flex-1 sm:flex-initial"
+          >
             <button
-              key={cat.key}
-              onClick={() => setCategoryFilter(cat.key)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-['Source_Sans_3'] transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
-                categoryFilter === cat.key
+              onClick={() => setCategoryFilter('all')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-['Source_Sans_3'] transition-colors whitespace-nowrap cursor-pointer ${
+                categoryFilter === 'all'
                   ? 'bg-[#108283] text-white shadow-xs'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${cat.dotColor}`} />
-              <span>{cat.label}</span>
-              <span className="opacity-75">({counts[cat.key]})</span>
+              All Results ({counts.all})
             </button>
-          ))}
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.key}
+                onClick={() => setCategoryFilter(cat.key)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold font-['Source_Sans_3'] transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  categoryFilter === cat.key
+                    ? 'bg-[#108283] text-white shadow-xs'
+                    : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${cat.dotColor}`} />
+                <span>{cat.label}</span>
+                <span className="opacity-75">({counts[cat.key]})</span>
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollCategories('right')}
+            className="flex sm:hidden w-7 h-7 rounded-lg bg-white border border-gray-200/90 shadow-2xs text-gray-700 hover:text-[#108283] hover:border-[#108283] items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+            title="Scroll categories right"
+            aria-label="Scroll categories right"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         {/* Search */}

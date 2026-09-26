@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
 import { 
   Award, 
@@ -18,7 +18,9 @@ import {
   Layers,
   ChevronDown,
   ChevronUp,
-  ExternalLink
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { AboutSettings, DoctorProfile } from '@/types/admin';
 import { useDialog } from '@/context/DialogContext';
@@ -30,6 +32,14 @@ export default function AboutManager() {
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<'doctors' | 'stats' | 'philosophy' | 'about_page'>('doctors');
+
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -180 : 180;
+      tabScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   const [countdown, setCountdown] = useState<number>(0);
 
@@ -245,54 +255,79 @@ export default function AboutManager() {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
+      {/* Tabs with Horizontal Scroll and Mobile Navigation Arrows */}
+      <div className="flex items-center gap-1.5 border-b border-gray-200 pb-2 w-full">
         <button
-          onClick={() => setActiveTab('doctors')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'doctors'
-              ? 'bg-[#108283] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          type="button"
+          onClick={() => scrollTabs('left')}
+          className="flex sm:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+          title="Scroll sub-tabs left"
+          aria-label="Scroll sub-tabs left"
         >
-          <UserCheck size={16} />
-          <span>Doctors &amp; Degrees</span>
+          <ChevronLeft className="w-3.5 h-3.5" />
         </button>
 
-        <button
-          onClick={() => setActiveTab('stats')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'stats'
-              ? 'bg-[#108283] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+        <div
+          ref={tabScrollRef}
+          className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth flex-1 py-1"
         >
-          <BarChart3 size={16} />
-          <span>Clinic Statistics (4 Counters)</span>
-        </button>
+          <button
+            onClick={() => setActiveTab('doctors')}
+            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              activeTab === 'doctors'
+                ? 'bg-[#108283] text-white shadow-xs'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+            }`}
+          >
+            <UserCheck size={16} className="shrink-0" />
+            <span>Doctors &amp; Degrees</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('stats')}
+            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              activeTab === 'stats'
+                ? 'bg-[#108283] text-white shadow-xs'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+            }`}
+          >
+            <BarChart3 size={16} className="shrink-0" />
+            <span>Clinic Statistics (4 Counters)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('philosophy')}
+            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              activeTab === 'philosophy'
+                ? 'bg-[#108283] text-white shadow-xs'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+            }`}
+          >
+            <Quote size={16} className="shrink-0" />
+            <span>Philosophy &amp; Story Quotes</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('about_page')}
+            className={`flex items-center gap-2 px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+              activeTab === 'about_page'
+                ? 'bg-[#108283] text-white shadow-xs'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 bg-gray-50 sm:bg-transparent'
+            }`}
+          >
+            <Layers size={16} className="shrink-0" />
+            <span>/about Page Exclusive Content</span>
+          </button>
+        </div>
 
         <button
-          onClick={() => setActiveTab('philosophy')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'philosophy'
-              ? 'bg-[#108283] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
+          type="button"
+          onClick={() => scrollTabs('right')}
+          className="flex sm:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+          title="Scroll sub-tabs right"
+          aria-label="Scroll sub-tabs right"
         >
-          <Quote size={16} />
-          <span>Philosophy &amp; Story Quotes</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('about_page')}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-            activeTab === 'about_page'
-              ? 'bg-[#108283] text-white shadow-xs'
-              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-          }`}
-        >
-          <Layers size={16} />
-          <span>/about Page Exclusive Content</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
 

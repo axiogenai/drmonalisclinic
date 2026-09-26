@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   TicketPercent, 
   Plus, 
@@ -18,7 +18,9 @@ import {
   Calendar,
   CheckCircle2,
   XCircle,
-  RotateCcw
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { useAdminData } from '@/context/AdminDataContext';
 import { useDialog } from '@/context/DialogContext';
@@ -51,6 +53,14 @@ export default function CouponsManager() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'expired' | 'exhausted' | 'inactive'>('all');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (tabScrollRef.current) {
+      const scrollAmount = direction === 'left' ? -120 : 120;
+      tabScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -366,42 +376,42 @@ export default function CouponsManager() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         
         {/* Metric 1: Total Coupons */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-[#108283]/10 text-[#108283] flex items-center justify-center shrink-0">
-            <TicketPercent className="w-5 h-5" />
+        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#108283]/10 text-[#108283] flex items-center justify-center shrink-0">
+            <TicketPercent className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 font-['Source_Sans_3']">Total Coupons</p>
-            <p className="text-xl sm:text-2xl font-bold text-gray-900 font-['Playfair_Display']">
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs font-medium text-gray-500 font-['Source_Sans_3'] truncate">Total Coupons</p>
+            <p className="text-base sm:text-2xl font-bold text-gray-900 font-['Playfair_Display']">
               {totalCouponsCount}
             </p>
           </div>
         </div>
 
         {/* Metric 2: Active & Ready */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-5 h-5" />
+        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 font-['Source_Sans_3']">Active &amp; Ready</p>
-            <p className="text-xl sm:text-2xl font-bold text-emerald-600 font-['Playfair_Display']">
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs font-medium text-gray-500 font-['Source_Sans_3'] truncate">Active &amp; Ready</p>
+            <p className="text-base sm:text-2xl font-bold text-emerald-600 font-['Playfair_Display']">
               {activeCouponsCount}
             </p>
           </div>
         </div>
 
         {/* Metric 3: Expired / Exhausted */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-            <Clock className="w-5 h-5" />
+        <div className="bg-white p-2.5 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 shadow-xs flex flex-col sm:flex-row items-center sm:items-center text-center sm:text-left gap-1.5 sm:gap-3.5">
+          <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 font-['Source_Sans_3']">Expired / Exhausted</p>
-            <p className="text-xl sm:text-2xl font-bold text-amber-700 font-['Playfair_Display']">
+          <div className="min-w-0">
+            <p className="text-[10px] sm:text-xs font-medium text-gray-500 font-['Source_Sans_3'] truncate">Expired</p>
+            <p className="text-base sm:text-2xl font-bold text-amber-700 font-['Playfair_Display']">
               {expiredOrExhaustedCount}
             </p>
           </div>
@@ -424,27 +434,52 @@ export default function CouponsManager() {
           />
         </div>
 
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0 text-xs">
-          {[
-            { id: 'all', label: 'All Codes' },
-            { id: 'active', label: 'Active' },
-            { id: 'expired', label: 'Expired' },
-            { id: 'exhausted', label: 'Limit Reached' },
-            { id: 'inactive', label: 'Disabled' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setStatusFilter(tab.id as any)}
-              className={`px-3 py-1.5 rounded-lg font-semibold transition-all whitespace-nowrap cursor-pointer ${
-                statusFilter === tab.id
-                  ? 'bg-[#108283] text-white shadow-xs'
-                  : 'text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        {/* Filter Tabs with Mobile Left & Right Arrows */}
+        <div className="flex items-center gap-1.5 w-full md:w-auto">
+          <button
+            type="button"
+            onClick={() => scrollTabs('left')}
+            className="flex md:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+            title="Scroll filters left"
+            aria-label="Scroll filters left"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+          </button>
+
+          <div 
+            ref={tabScrollRef}
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth flex-1 md:flex-initial pb-1 md:pb-0 text-xs"
+          >
+            {[
+              { id: 'all', label: 'All Codes' },
+              { id: 'active', label: 'Active' },
+              { id: 'expired', label: 'Expired' },
+              { id: 'exhausted', label: 'Limit Reached' },
+              { id: 'inactive', label: 'Disabled' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id as any)}
+                className={`px-3 py-1.5 rounded-lg font-semibold transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                  statusFilter === tab.id
+                    ? 'bg-[#108283] text-white shadow-xs'
+                    : 'text-gray-600 hover:bg-gray-100 bg-gray-50 md:bg-transparent'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => scrollTabs('right')}
+            className="flex md:hidden w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 items-center justify-center shrink-0 active:scale-90 transition-all cursor-pointer"
+            title="Scroll filters right"
+            aria-label="Scroll filters right"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
         </div>
 
       </div>
