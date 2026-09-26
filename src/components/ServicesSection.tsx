@@ -554,7 +554,7 @@ export default function ServicesSection() {
           <h2 className="font-['Playfair_Display'] text-4xl sm:text-5xl md:text-[58px] text-gray-950 font-normal mb-4 leading-tight">
             Our Treatments
           </h2>
-          <p className="max-w-3xl mx-auto font-['Source_Sans_3'] text-gray-500 text-base md:text-lg leading-relaxed md:whitespace-nowrap">
+          <p className="max-w-3xl mx-auto font-['Source_Sans_3'] text-gray-500 text-base md:text-lg leading-relaxed">
             Homeopathy &amp; Modern Cosmetology under one roof &mdash; first of its kind in Kolhapur.
           </p>
         </div>

@@ -415,7 +415,7 @@ export default function Footer() {
                     <Mail className="w-4 h-4 text-[#108283] shrink-0" />
                     <a 
                       href={`mailto:${footerSettings.email || 'info@drmonalisclinic.com'}?subject=Consultation%20Inquiry%20-%20Dr.%20Monali%27s%20Homeopathy%20Clinic`} 
-                      className="hover:text-white transition-colors"
+                      className="hover:text-white transition-colors break-all"
                       title={`Send an email to ${footerSettings.email}`}
                     >
                       {footerSettings.email}

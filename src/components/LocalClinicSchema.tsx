@@ -14,11 +14,27 @@ export default function LocalClinicSchema() {
           "Dr. Monali Clinic",
           "Dr. Monali Homeopathy",
           "Dr Monali Subhedar Clinic",
-          "Dr. Monali Cosmetology & Skin Care"
+          "Dr. Monali Cosmetology & Skin Care",
+          "drmonalisclinic",
+          "drmonalisclinic.com",
+          "Dr Monali Sachin Subhedar Clinic",
+          "Monali Homeopathy Clinic Kolhapur",
+          "Dr Monali Skin Clinic Kolhapur",
+          "Best Homeopathy Clinic Kolhapur",
+          "Homeopathy Clinic Near Ring Road Kolhapur",
+          "Skin Hair Clinic Kolhapur",
+          "Golden Spring Clinic Kolhapur"
         ],
         url: 'https://www.drmonalisclinic.com',
-        logo: 'https://www.drmonalisclinic.com/clinic-logo.png',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.drmonalisclinic.com/clinic-logo-icon.png',
+          width: '512',
+          height: '512',
+          caption: "Dr. Monali's Homeopathy Clinic Official Logo",
+        },
         image: [
+          'https://www.drmonalisclinic.com/clinic-logo-icon.png',
           'https://www.drmonalisclinic.com/clinic-logo.png',
           'https://www.drmonalisclinic.com/hero-model.png',
           'https://www.drmonalisclinic.com/aboutdoc.png'
@@ -198,6 +214,44 @@ export default function LocalClinicSchema() {
             },
           },
         ],
+      },
+      // 4. WebSite Schema with SearchAction (enables Google Sitelinks Search Box)
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.drmonalisclinic.com/#website',
+        url: 'https://www.drmonalisclinic.com',
+        name: "Dr. Monali's Homeopathy Clinic Kolhapur",
+        alternateName: ['drmonalisclinic.com', 'drmonalisclinic'],
+        description: "Official website of Dr. Monali's Homeopathy, Skin & Hair Clinic in Kolhapur, Maharashtra.",
+        publisher: { '@id': 'https://www.drmonalisclinic.com/#clinic' },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://www.drmonalisclinic.com/?q={search_term_string}',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+        inLanguage: 'en-IN',
+      },
+
+      // 5. Doctor Entity: Dr. Sachin Subhedar
+      {
+        '@type': 'Physician',
+        '@id': 'https://drmonalisclinic.com/#drsachin',
+        name: 'Dr. Sachin Subhedar',
+        url: 'https://drmonalisclinic.com/about',
+        telephone: '+919209472224',
+        medicalSpecialty: ['Homeopathy', 'FamilyMedicine'],
+        worksFor: { '@id': 'https://drmonalisclinic.com/#clinic' },
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Golden Spring Apartment, Near Ring Road',
+          addressLocality: 'Kolhapur',
+          addressRegion: 'Maharashtra',
+          postalCode: '416012',
+          addressCountry: 'IN',
+        },
       },
     ],
   };

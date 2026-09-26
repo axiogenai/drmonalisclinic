@@ -19,7 +19,7 @@ import ContactWidget from '@/components/ContactWidget';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white overflow-x-hidden w-full">
       <Navbar />
       <HeroSection />
       <ProductAnnouncementBanner />

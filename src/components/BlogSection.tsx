@@ -27,7 +27,7 @@ export default function BlogSection() {
 
   return (
     <section id="blogs" className="py-20 md:py-28 bg-white relative scroll-mt-20">
-      <div className="max-w-[1140px] mx-auto px-5 md:px-8">
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-6 md:px-8">
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-14 md:mb-16">
           <div className="inline-block bg-[#FAEDDA] text-[#108283] text-xs md:text-sm font-['Source_Sans_3'] font-medium px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider">
@@ -42,7 +42,7 @@ export default function BlogSection() {
         </div>
 
         {/* Cards Grid - Navigates directly to dedicated article pages */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1080px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1080px] mx-auto">
           {displayBlogs.map((blog) => (
             <Link
               key={blog.slug}

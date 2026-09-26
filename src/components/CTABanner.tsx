@@ -55,7 +55,7 @@ export default function CTABanner() {
           <span>Begin Your Transformation</span>
         </div>
 
-        <h2 className="font-['Playfair_Display'] text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-normal leading-[1.15] mb-6 max-w-3xl mx-auto">
+        <h2 className="font-['Playfair_Display'] text-2xl sm:text-3xl md:text-4xl lg:text-[48px] font-normal leading-[1.2] mb-6 max-w-3xl mx-auto">
           Rediscover Your Skin, Redefine Your Confidence
         </h2>
 
@@ -68,7 +68,7 @@ export default function CTABanner() {
           <button
             type="button"
             onClick={handleBookingClick}
-            className="inline-flex items-center gap-3 bg-white hover:bg-[#FAEDDA] text-[#108283] px-9 py-4 rounded-full font-['Source_Sans_3'] font-bold text-base transition-all active:scale-95 group shadow-lg hover:shadow-xl cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-white hover:bg-[#FAEDDA] text-[#108283] px-9 py-4 rounded-full font-['Source_Sans_3'] font-bold text-base transition-all active:scale-95 group shadow-lg hover:shadow-xl cursor-pointer"
           >
             <span>Book Consultation</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />

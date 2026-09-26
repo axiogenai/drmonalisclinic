@@ -20,7 +20,7 @@ export default function AboutDoctorSection() {
   return (
     <section id="about" className="relative bg-white pt-24 md:pt-32 pb-24 md:pb-32 overflow-hidden">
       <div className="max-w-[1140px] mx-auto px-5 md:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-10 lg:gap-16 items-center">
           {/* Left: Doctor Portrait with Floating Credential Badges */}
           <div className="lg:col-span-5 flex justify-center lg:justify-start">
             <div className="relative max-w-[420px] w-full">
@@ -102,7 +102,7 @@ export default function AboutDoctorSection() {
               {activeTab === 'bio' && (
                 <div className="space-y-4 animate-in fade-in duration-200">
                   <div>
-                    <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg whitespace-nowrap">
+                    <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg">
                       {aboutSettings.doctor1.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#108283] tracking-wide mb-1">
@@ -113,7 +113,7 @@ export default function AboutDoctorSection() {
                     </p>
                   </div>
                   <div>
-                    <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg whitespace-nowrap">
+                    <h3 className="font-['Playfair_Display'] font-bold text-gray-950 text-base md:text-lg">
                       {aboutSettings.doctor2.name}
                     </h3>
                     <p className="text-xs font-semibold text-[#108283] tracking-wide mb-1">
@@ -159,7 +159,7 @@ export default function AboutDoctorSection() {
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="#booking"
-                className="inline-flex items-center gap-3 bg-[#108283] hover:bg-[#0c6b6c] text-white px-8 py-3.5 rounded-full font-['Source_Sans_3'] font-semibold text-sm transition-all active:scale-95"
+                className="w-full sm:w-auto inline-flex items-center justify-center sm:justify-start gap-3 bg-[#108283] hover:bg-[#0c6b6c] text-white px-8 py-3.5 rounded-full font-['Source_Sans_3'] font-semibold text-sm transition-all active:scale-95"
               >
                 <span>Book Consultation with Our Doctors</span>
                 <ArrowRight className="w-4 h-4" />

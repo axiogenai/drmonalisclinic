@@ -195,3 +195,21 @@ html.modal-open::-webkit-scrollbar {
   background-color: #108283;
 }
 
+/* === Responsive Safety Net === */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+img, video, iframe {
+  max-width: 100%;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+

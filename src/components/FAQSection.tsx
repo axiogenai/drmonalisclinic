@@ -72,9 +72,9 @@ export default function FAQSection() {
               >
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full flex items-center justify-between p-6 text-left focus:outline-none cursor-pointer group"
+                  className="w-full flex items-center justify-between p-4 sm:p-6 text-left focus:outline-none cursor-pointer group"
                 >
-                  <span className="font-['Playfair_Display'] text-lg md:text-xl font-medium text-gray-900 group-hover:text-[#108283] transition-colors pr-6">
+                  <span className="font-['Playfair_Display'] text-base sm:text-lg md:text-xl font-medium text-gray-900 group-hover:text-[#108283] transition-colors pr-4 sm:pr-6 break-words">
                     {faq.question}
                   </span>
                   <div className="w-8 h-8 rounded-full bg-[#FAF0DD] text-[#108283] flex items-center justify-center shrink-0 transition-transform duration-200">
@@ -83,7 +83,7 @@ export default function FAQSection() {
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-6 pt-1 font-['Source_Sans_3'] text-gray-600 text-base leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-1 font-['Source_Sans_3'] text-gray-600 text-base leading-relaxed animate-in fade-in slide-in-from-top-1 duration-200">
                     {faq.answer}
                   </div>
                 )}

@@ -100,7 +100,7 @@ export default function ConfidenceSection() {
 
         {/* Short, Clean Headline */}
         <h2
-          className="font-playfair text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-normal leading-[1.22] text-gray-950 max-w-4xl mb-4 md:whitespace-nowrap"
+          className="font-playfair text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-normal leading-[1.22] text-gray-950 max-w-4xl mb-4"
           style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
         >
           Skin, Hair &amp; Holistic Health.{' '}
@@ -109,7 +109,7 @@ export default function ConfidenceSection() {
 
         {/* Concise Subtitle */}
         <p
-          className="font-source text-gray-600 text-base sm:text-lg font-light max-w-3xl mb-12 md:mb-16 leading-relaxed md:whitespace-nowrap"
+          className="font-source text-gray-600 text-base sm:text-lg font-light max-w-3xl mb-12 md:mb-16 leading-relaxed"
           style={{ fontFamily: "'Source Sans 3', sans-serif" }}
         >
           Personalized, gentle care at <strong className="font-semibold text-gray-900">Dr. Monali&apos;s Homeopathy Clinic</strong> to restore natural well-being.
@@ -124,7 +124,7 @@ export default function ConfidenceSection() {
             >
               {/* Number on top in teal italic serif */}
               <div
-                className="text-[#108283] text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[86px] font-normal leading-none mb-3 font-playfair"
+                className="text-[#108283] text-[32px] xs:text-4xl sm:text-5xl md:text-6xl lg:text-[80px] font-normal leading-none mb-3 font-playfair"
                 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
               >
                 <AnimatedCounter end={stat.value} suffix={stat.suffix} />

@@ -372,7 +372,7 @@ export default function AppointmentSection() {
             </div>
 
             {/* Teal Contact Card with Glassmorphic Highlight (Slim Design) */}
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#108283] to-[#0c6b6c] text-white p-4 sm:p-4.5 shadow-[0_10px_30px_rgba(16,130,131,0.2)] shrink-0">
+            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#108283] to-[#0c6b6c] text-white p-4 sm:p-5 shadow-[0_10px_30px_rgba(16,130,131,0.2)] shrink-0">
               <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
               
               <div className="flex items-center gap-3.5">
@@ -392,7 +392,7 @@ export default function AppointmentSection() {
                     <span className="truncate">Golden Spring Apt, Near Ring Road, Kolhapur</span>
                     <ExternalLink className="w-3 h-3 shrink-0 opacity-70 group-hover/addr:opacity-100" />
                   </a>
-                  <div className="mt-1 flex flex-col xs:flex-row xs:items-center gap-x-3 gap-y-0.5">
+                  <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-x-3 gap-y-0.5">
                     <a 
                       href="tel:+919209472224" 
                       className="font-['Source_Sans_3'] text-sm sm:text-base font-bold text-white hover:underline whitespace-nowrap block"

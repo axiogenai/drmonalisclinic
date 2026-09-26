@@ -166,13 +166,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/clinic-logo-icon.png', type: 'image/png' },
-      { url: '/clinic-logo-icon.png', type: 'image/png', sizes: '32x32' },
-      { url: '/clinic-logo-icon.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-48x48.png', type: 'image/png', sizes: '48x48' },
+      { url: '/favicon-96x96.png', type: 'image/png', sizes: '96x96' },
+      { url: '/favicon-192x192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/clinic-logo-icon.png', type: 'image/png', sizes: '512x512' },
     ],
-    shortcut: '/clinic-logo-icon.png',
+    shortcut: '/favicon.ico',
     apple: [
-      { url: '/clinic-logo-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
   },
 };
@@ -181,11 +183,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" />
-        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="16x16" />
-        <link rel="apple-touch-icon" href="/clinic-logo-icon.png" sizes="180x180" />
-        <link rel="shortcut icon" href="/clinic-logo-icon.png" />
+        {/* Google Search Favicon Guidelines Standard (Multi-resolution + multiples of 48px) */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-48x48.png" type="image/png" sizes="48x48" />
+        <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+        <link rel="icon" href="/favicon-192x192.png" type="image/png" sizes="192x192" />
+        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         
         {/* Geo Meta Tags for Kolhapur Local Pack #1 Ranking */}
         <meta name="geo.region" content="IN-MH" />
