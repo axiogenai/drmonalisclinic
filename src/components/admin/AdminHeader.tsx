@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, LogOut } from 'lucide-react';
 import { useAdminAuth } from '@/context/AdminAuthContext';
 
 interface AdminHeaderProps {
@@ -11,7 +11,7 @@ interface AdminHeaderProps {
 
 export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
   const searchParams = useSearchParams();
-  const { user } = useAdminAuth();
+  const { user, signOut } = useAdminAuth();
   const tab = searchParams.get('tab') || 'dashboard';
   
   // Convert tab to Title Case
@@ -51,6 +51,14 @@ export default function AdminHeader({ onMenuToggle }: AdminHeaderProps) {
           <div className="w-9 h-9 rounded-full bg-[#108283] text-white flex items-center justify-center font-['Playfair_Display'] font-semibold text-xs shadow-xs ring-2 ring-[#FAEDDA]/60">
             {userInitials}
           </div>
+          <button
+            onClick={() => signOut()}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-lg border border-red-200 transition-colors cursor-pointer"
+            title="Sign out of Admin Panel"
+          >
+            <LogOut size={14} />
+            <span className="hidden sm:inline">Logout</span>
+          </button>
         </div>
       </div>
     </header>
