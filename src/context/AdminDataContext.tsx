@@ -1,14 +1,31 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Product } from '@/types/product';
-import { Service, Testimonial, FAQ, BlogPost, Appointment, SiteSettings, MarqueeItem, MarqueeSettings, ResultItem, FooterSettings, AboutSettings, Coupon, CouponValidationResult } from '@/types/admin';
+import { 
+  Service, 
+  Testimonial, 
+  FAQ, 
+  BlogPost, 
+  Appointment, 
+  SiteSettings, 
+  MarqueeItem, 
+  MarqueeSettings, 
+  ResultItem, 
+  FooterSettings, 
+  AboutSettings, 
+  Coupon, 
+  CouponValidationResult 
+} from '@/types/admin';
 import { 
   getAppointmentsFromDb, 
   saveAppointmentToDb, 
   updateAppointmentStatusInDb, 
   deleteAppointmentFromDb, 
-  isSupabaseConfigured 
+  isSupabaseConfigured,
+  getAllSettingsFromDb,
+  saveSettingToDb,
+  supabase
 } from '@/lib/supabase';
 import { products as defaultProducts } from '@/data/products';
 import { defaultServices } from '@/data/services';
@@ -17,72 +34,81 @@ import { defaultResults } from '@/data/results';
 import { defaultFooterSettings, defaultAboutSettings } from '@/data/defaultAboutAndFooter';
 import { defaultCoupons } from '@/data/defaultCoupons';
 
+interface LiveUpdateInfo {
+  timestamp: number;
+  key: string;
+  label: string;
+}
+
 interface AdminDataContextType {
+  lastLiveUpdate: LiveUpdateInfo | null;
+  clearLiveUpdate: () => void;
+
   coupons: Coupon[];
-  addCoupon: (coupon: Coupon) => void;
-  updateCoupon: (id: string, coupon: Partial<Coupon>) => void;
-  deleteCoupon: (id: string) => void;
+  addCoupon: (coupon: Coupon) => Promise<void>;
+  updateCoupon: (id: string, coupon: Partial<Coupon>) => Promise<void>;
+  deleteCoupon: (id: string) => Promise<void>;
   recordCouponUse: (code: string) => boolean;
   validateCoupon: (code: string, cartTotal: number) => CouponValidationResult;
-  resetCoupons: () => void;
+  resetCoupons: () => Promise<void>;
 
   products: Product[];
-  addProduct: (product: Product) => void;
-  updateProduct: (id: string, product: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
+  addProduct: (product: Product) => Promise<void>;
+  updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
 
   services: Service[];
-  addService: (service: Service) => void;
-  updateService: (id: string, service: Partial<Service>) => void;
-  deleteService: (id: string) => void;
+  addService: (service: Service) => Promise<void>;
+  updateService: (id: string, service: Partial<Service>) => Promise<void>;
+  deleteService: (id: string) => Promise<void>;
 
   testimonials: Testimonial[];
-  addTestimonial: (testimonial: Testimonial) => void;
-  updateTestimonial: (id: string, testimonial: Partial<Testimonial>) => void;
-  deleteTestimonial: (id: string) => void;
+  addTestimonial: (testimonial: Testimonial) => Promise<void>;
+  updateTestimonial: (id: string, testimonial: Partial<Testimonial>) => Promise<void>;
+  deleteTestimonial: (id: string) => Promise<void>;
 
   faqs: FAQ[];
-  addFaq: (faq: FAQ) => void;
-  updateFaq: (id: string, faq: Partial<FAQ>) => void;
-  deleteFaq: (id: string) => void;
-  reorderFaqs: (newFaqs: FAQ[]) => void;
+  addFaq: (faq: FAQ) => Promise<void>;
+  updateFaq: (id: string, faq: Partial<FAQ>) => Promise<void>;
+  deleteFaq: (id: string) => Promise<void>;
+  reorderFaqs: (newFaqs: FAQ[]) => Promise<void>;
 
   blogs: BlogPost[];
-  addBlog: (blog: BlogPost) => void;
-  updateBlog: (id: string, blog: Partial<BlogPost>) => void;
-  deleteBlog: (id: string) => void;
+  addBlog: (blog: BlogPost) => Promise<void>;
+  updateBlog: (id: string, blog: Partial<BlogPost>) => Promise<void>;
+  deleteBlog: (id: string) => Promise<void>;
 
   appointments: Appointment[];
-  addAppointment: (appointment: Appointment) => void;
-  updateAppointmentStatus: (id: string, status: Appointment['status']) => void;
-  deleteAppointment: (id: string) => void;
+  addAppointment: (appointment: Appointment) => Promise<void>;
+  updateAppointmentStatus: (id: string, status: Appointment['status']) => Promise<void>;
+  deleteAppointment: (id: string) => Promise<void>;
   clearAppointments: () => void;
 
   siteSettings: SiteSettings;
-  updateSiteSettings: (settings: Partial<SiteSettings>) => void;
+  updateSiteSettings: (settings: Partial<SiteSettings>) => Promise<void>;
 
   footerSettings: FooterSettings;
-  updateFooterSettings: (settings: Partial<FooterSettings>) => void;
-  resetFooterSettings: () => void;
+  updateFooterSettings: (settings: Partial<FooterSettings>) => Promise<void>;
+  resetFooterSettings: () => Promise<void>;
 
   aboutSettings: AboutSettings;
-  updateAboutSettings: (settings: Partial<AboutSettings>) => void;
-  resetAboutSettings: () => void;
+  updateAboutSettings: (settings: Partial<AboutSettings>) => Promise<void>;
+  resetAboutSettings: () => Promise<void>;
 
   marqueeItems: MarqueeItem[];
-  addMarqueeItem: (item: MarqueeItem) => void;
-  updateMarqueeItem: (id: string, item: Partial<MarqueeItem>) => void;
-  deleteMarqueeItem: (id: string) => void;
-  reorderMarqueeItems: (items: MarqueeItem[]) => void;
+  addMarqueeItem: (item: MarqueeItem) => Promise<void>;
+  updateMarqueeItem: (id: string, item: Partial<MarqueeItem>) => Promise<void>;
+  deleteMarqueeItem: (id: string) => Promise<void>;
+  reorderMarqueeItems: (items: MarqueeItem[]) => Promise<void>;
 
   marqueeSettings: MarqueeSettings;
-  updateMarqueeSettings: (settings: Partial<MarqueeSettings>) => void;
+  updateMarqueeSettings: (settings: Partial<MarqueeSettings>) => Promise<void>;
 
   results: ResultItem[];
-  addResult: (result: ResultItem) => void;
-  updateResult: (id: string, result: Partial<ResultItem>) => void;
-  deleteResult: (id: string) => void;
-  restoreDefaultResults: () => void;
+  addResult: (result: ResultItem) => Promise<void>;
+  updateResult: (id: string, result: Partial<ResultItem>) => Promise<void>;
+  deleteResult: (id: string) => Promise<void>;
+  restoreDefaultResults: () => Promise<void>;
 }
 
 const defaultTestimonials: Testimonial[] = [
@@ -119,6 +145,48 @@ const defaultSettings: SiteSettings = {
   heroSubtext: 'Personalized constitutional healing & aesthetic cosmetology with Dr. Monali Subhedar & Dr. Sachin Subhedar'
 };
 
+const KEY_LABELS: Record<string, string> = {
+  about_settings: 'Physician Profiles & Statistics',
+  footer_settings: 'Footer & Clinic Info',
+  site_settings: 'Clinic Contact & Headlines',
+  coupons: 'Discount Coupons',
+  products: 'Skincare & Wellness Products',
+  services: 'Clinical Treatments',
+  testimonials: 'Patient Testimonials',
+  faqs: 'Frequently Asked Questions',
+  blogs: 'Health Articles & Blogs',
+  marquee_items: 'Product Announcement Marquee',
+  marquee_settings: 'Marquee Strip Configuration',
+  results: 'Clinical Before & After Results',
+};
+
+// Universal helper to persist settings to Supabase and API fallback
+async function persistSetting<T>(key: string, data: T): Promise<boolean> {
+  let ok = false;
+  if (isSupabaseConfigured()) {
+    try {
+      ok = await saveSettingToDb(key, data);
+    } catch (e) {
+      console.warn(`Direct save for ${key} failed, attempting API fallback:`, e);
+    }
+  }
+
+  if (!ok && typeof window !== 'undefined') {
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, data }),
+      });
+      const json = await res.json();
+      ok = Boolean(json.success);
+    } catch (err) {
+      console.warn(`API fallback save for ${key} failed:`, err);
+    }
+  }
+  return ok;
+}
+
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
 
 export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
@@ -136,9 +204,19 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   const [marqueeSettings, setMarqueeSettings] = useState<MarqueeSettings>(defaultMarqueeSettings);
   const [results, setResults] = useState<ResultItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [lastLiveUpdate, setLastLiveUpdate] = useState<LiveUpdateInfo | null>(null);
+
+  const clearLiveUpdate = useCallback(() => {
+    setLastLiveUpdate(null);
+  }, []);
+
+  const triggerUpdateNotice = useCallback((key: string, fallbackLabel?: string) => {
+    const label = KEY_LABELS[key] || fallbackLabel || 'Clinic Content';
+    setLastLiveUpdate({ timestamp: Date.now(), key, label });
+  }, []);
 
   useEffect(() => {
-    // Load from localStorage on mount
+    // 1. Initial synchronous hydration from localStorage for zero layout shift
     const loadData = <T,>(key: string, defaultData: T): T => {
       try {
         const saved = localStorage.getItem(key);
@@ -151,14 +229,12 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
     setCoupons(loadData<Coupon[]>('admin_coupons_v1', defaultCoupons));
     setProducts(loadData<Product[]>('admin_products', defaultProducts || []));
 
-    // For services: validate that services belong to the 3 service pages (homeopathy, cosmetic, hair-skin)
     const loadedServices = loadData<Service[]>('admin_services_pages_v1', []);
     const isServicePagesFormat = loadedServices && loadedServices.length > 0 && loadedServices.some(s => 
       s.category === 'homeopathy' || s.category === 'cosmetic' || s.category === 'hair-skin'
     );
 
     if (isServicePagesFormat) {
-      // Ensure price and duration are populated even if older cache exists
       const mergedServices = loadedServices.map((srv) => {
         const defaultMatch = defaultServices.find((ds) => ds.id === srv.id);
         return {
@@ -170,178 +246,421 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       setServices(mergedServices);
     } else {
       setServices(defaultServices);
-      try {
-        localStorage.setItem('admin_services_pages_v1', JSON.stringify(defaultServices));
-        localStorage.removeItem('admin_services_v2');
-        localStorage.removeItem('admin_services');
-      } catch {}
     }
 
     setTestimonials(loadData<Testimonial[]>('admin_testimonials', defaultTestimonials));
     setFaqs(loadData<FAQ[]>('admin_faqs', defaultFaqs));
     setBlogs(loadData<BlogPost[]>('admin_blogs', defaultBlogs));
-    // Clean appointments list: purge any dummy/fake test bookings and load clean state
-    const loadedAppointments = loadData<Appointment[]>('admin_appointments_v2', []);
-    setAppointments(loadedAppointments);
-    try {
-      localStorage.removeItem('admin_appointments');
-    } catch {}
+    setAppointments(loadData<Appointment[]>('admin_appointments_v2', []));
     setSiteSettings(loadData<SiteSettings>('admin_settings', defaultSettings));
     setFooterSettings(loadData<FooterSettings>('admin_footer_settings_v1', defaultFooterSettings));
     setAboutSettings(loadData<AboutSettings>('admin_about_settings_v1', defaultAboutSettings));
-    // For marquee items: ensure valid images and purge broken cached items like stroke-logo.png
+
     const loadedMarquee = loadData<MarqueeItem[]>('admin_marquee_items_v2', []);
     const hasBrokenMarquee = !loadedMarquee || loadedMarquee.length === 0 || loadedMarquee.some(m => 
       !m.image || m.image.includes('stroke-logo')
     );
-
     if (!hasBrokenMarquee) {
       setMarqueeItems(loadedMarquee);
     } else {
       setMarqueeItems(defaultMarqueeItems);
-      try {
-        localStorage.setItem('admin_marquee_items_v2', JSON.stringify(defaultMarqueeItems));
-        localStorage.removeItem('admin_marquee_items');
-      } catch {}
     }
 
     setMarqueeSettings(loadData<MarqueeSettings>('admin_marquee_settings', defaultMarqueeSettings));
 
-    // For before/after results:
     const loadedResults = loadData<ResultItem[]>('admin_results_v1', []);
     if (loadedResults && loadedResults.length > 0) {
       setResults(loadedResults);
     } else {
       setResults(defaultResults);
-      try {
-        localStorage.setItem('admin_results_v1', JSON.stringify(defaultResults));
-      } catch {}
     }
 
-    // Asynchronously sync appointments with Supabase if configured
+    // 2. Asynchronously sync from Supabase Central Database
     if (isSupabaseConfigured()) {
+      // Sync appointments
       getAppointmentsFromDb().then(dbAppts => {
         if (dbAppts && dbAppts.length > 0) {
           setAppointments(prev => {
             const map = new Map();
             prev.forEach(a => map.set(a.id, a));
             dbAppts.forEach(a => map.set(a.id, a));
-            return Array.from(map.values());
+            const merged = Array.from(map.values());
+            try { localStorage.setItem('admin_appointments_v2', JSON.stringify(merged)); } catch {}
+            return merged;
           });
         }
       });
+
+      // Sync all clinic_settings (About, Footer, Services, Products, etc.)
+      getAllSettingsFromDb().then(settingsMap => {
+        if (!settingsMap) return;
+
+        // About Settings
+        if (settingsMap.about_settings) {
+          setAboutSettings(settingsMap.about_settings);
+          try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(settingsMap.about_settings)); } catch {}
+        } else {
+          persistSetting('about_settings', defaultAboutSettings);
+        }
+
+        // Footer Settings
+        if (settingsMap.footer_settings) {
+          setFooterSettings(settingsMap.footer_settings);
+          try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(settingsMap.footer_settings)); } catch {}
+        } else {
+          persistSetting('footer_settings', defaultFooterSettings);
+        }
+
+        // Site Settings
+        if (settingsMap.site_settings) {
+          setSiteSettings(settingsMap.site_settings);
+          try { localStorage.setItem('admin_settings', JSON.stringify(settingsMap.site_settings)); } catch {}
+        } else {
+          persistSetting('site_settings', defaultSettings);
+        }
+
+        // Coupons
+        if (settingsMap.coupons && Array.isArray(settingsMap.coupons) && settingsMap.coupons.length > 0) {
+          setCoupons(settingsMap.coupons);
+          try { localStorage.setItem('admin_coupons_v1', JSON.stringify(settingsMap.coupons)); } catch {}
+        } else if (!settingsMap.coupons) {
+          persistSetting('coupons', defaultCoupons);
+        }
+
+        // Products
+        if (settingsMap.products && Array.isArray(settingsMap.products) && settingsMap.products.length > 0) {
+          setProducts(settingsMap.products);
+          try { localStorage.setItem('admin_products', JSON.stringify(settingsMap.products)); } catch {}
+        } else if (!settingsMap.products) {
+          persistSetting('products', defaultProducts || []);
+        }
+
+        // Services
+        if (settingsMap.services && Array.isArray(settingsMap.services) && settingsMap.services.length > 0) {
+          setServices(settingsMap.services);
+          try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(settingsMap.services)); } catch {}
+        } else if (!settingsMap.services) {
+          persistSetting('services', defaultServices);
+        }
+
+        // Testimonials
+        if (settingsMap.testimonials && Array.isArray(settingsMap.testimonials) && settingsMap.testimonials.length > 0) {
+          setTestimonials(settingsMap.testimonials);
+          try { localStorage.setItem('admin_testimonials', JSON.stringify(settingsMap.testimonials)); } catch {}
+        } else if (!settingsMap.testimonials) {
+          persistSetting('testimonials', defaultTestimonials);
+        }
+
+        // FAQs
+        if (settingsMap.faqs && Array.isArray(settingsMap.faqs) && settingsMap.faqs.length > 0) {
+          setFaqs(settingsMap.faqs);
+          try { localStorage.setItem('admin_faqs', JSON.stringify(settingsMap.faqs)); } catch {}
+        } else if (!settingsMap.faqs) {
+          persistSetting('faqs', defaultFaqs);
+        }
+
+        // Blogs
+        if (settingsMap.blogs && Array.isArray(settingsMap.blogs) && settingsMap.blogs.length > 0) {
+          setBlogs(settingsMap.blogs);
+          try { localStorage.setItem('admin_blogs', JSON.stringify(settingsMap.blogs)); } catch {}
+        } else if (!settingsMap.blogs) {
+          persistSetting('blogs', defaultBlogs);
+        }
+
+        // Marquee Items
+        if (settingsMap.marquee_items && Array.isArray(settingsMap.marquee_items) && settingsMap.marquee_items.length > 0) {
+          setMarqueeItems(settingsMap.marquee_items);
+          try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(settingsMap.marquee_items)); } catch {}
+        } else if (!settingsMap.marquee_items) {
+          persistSetting('marquee_items', defaultMarqueeItems);
+        }
+
+        // Marquee Settings
+        if (settingsMap.marquee_settings) {
+          setMarqueeSettings(settingsMap.marquee_settings);
+          try { localStorage.setItem('admin_marquee_settings', JSON.stringify(settingsMap.marquee_settings)); } catch {}
+        } else if (!settingsMap.marquee_settings) {
+          persistSetting('marquee_settings', defaultMarqueeSettings);
+        }
+
+        // Results
+        if (settingsMap.results && Array.isArray(settingsMap.results) && settingsMap.results.length > 0) {
+          setResults(settingsMap.results);
+          try { localStorage.setItem('admin_results_v1', JSON.stringify(settingsMap.results)); } catch {}
+        } else if (!settingsMap.results) {
+          persistSetting('results', defaultResults);
+        }
+      });
+
+      // 3. Supabase Realtime channel subscription for instant live updates
+      if (supabase) {
+        const channel = supabase
+          .channel('clinic_settings_sync')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'clinic_settings' },
+            (payload: any) => {
+              const row = payload.new;
+              if (!row || !row.key) return;
+              const { key, data } = row;
+
+              if (key === 'about_settings' && data) {
+                setAboutSettings(data);
+                try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'footer_settings' && data) {
+                setFooterSettings(data);
+                try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'site_settings' && data) {
+                setSiteSettings(data);
+                try { localStorage.setItem('admin_settings', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'coupons' && Array.isArray(data)) {
+                setCoupons(data);
+                try { localStorage.setItem('admin_coupons_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'products' && Array.isArray(data)) {
+                setProducts(data);
+                try { localStorage.setItem('admin_products', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'services' && Array.isArray(data)) {
+                setServices(data);
+                try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'testimonials' && Array.isArray(data)) {
+                setTestimonials(data);
+                try { localStorage.setItem('admin_testimonials', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'faqs' && Array.isArray(data)) {
+                setFaqs(data);
+                try { localStorage.setItem('admin_faqs', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'blogs' && Array.isArray(data)) {
+                setBlogs(data);
+                try { localStorage.setItem('admin_blogs', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'marquee_items' && Array.isArray(data)) {
+                setMarqueeItems(data);
+                try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'marquee_settings' && data) {
+                setMarqueeSettings(data);
+                try { localStorage.setItem('admin_marquee_settings', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              } else if (key === 'results' && Array.isArray(data)) {
+                setResults(data);
+                try { localStorage.setItem('admin_results_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          if (supabase) {
+            supabase.removeChannel(channel);
+          }
+        };
+      }
     }
 
     setIsLoaded(true);
-  }, []);
+  }, [triggerUpdateNotice]);
 
-  // Save to localStorage whenever state changes, after initial load
+  // 4. Active 5-second polling interval (guarantees cross-domain updates show within 5 seconds on main website)
   useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_coupons_v1', JSON.stringify(coupons));
-    }
-  }, [coupons, isLoaded]);
+    if (!isSupabaseConfigured()) return;
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_products', JSON.stringify(products));
-    }
-  }, [products, isLoaded]);
+    const intervalId = setInterval(() => {
+      // Only execute query if tab is visible in browser to avoid wasted cycles
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
+        return;
+      }
 
-  useEffect(() => {
-    if (isLoaded && services.length > 0) {
-      localStorage.setItem('admin_services_pages_v1', JSON.stringify(services));
-    }
-  }, [services, isLoaded]);
+      getAllSettingsFromDb().then(settingsMap => {
+        if (!settingsMap) return;
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_testimonials', JSON.stringify(testimonials));
-    }
-  }, [testimonials, isLoaded]);
+        // Check About Settings
+        if (settingsMap.about_settings) {
+          const newStr = JSON.stringify(settingsMap.about_settings);
+          const currentStr = localStorage.getItem('admin_about_settings_v1');
+          if (newStr !== currentStr) {
+            setAboutSettings(settingsMap.about_settings);
+            try { localStorage.setItem('admin_about_settings_v1', newStr); } catch {}
+            triggerUpdateNotice('about_settings');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_faqs', JSON.stringify(faqs));
-    }
-  }, [faqs, isLoaded]);
+        // Check Footer Settings
+        if (settingsMap.footer_settings) {
+          const newStr = JSON.stringify(settingsMap.footer_settings);
+          const currentStr = localStorage.getItem('admin_footer_settings_v1');
+          if (newStr !== currentStr) {
+            setFooterSettings(settingsMap.footer_settings);
+            try { localStorage.setItem('admin_footer_settings_v1', newStr); } catch {}
+            triggerUpdateNotice('footer_settings');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_blogs', JSON.stringify(blogs));
-    }
-  }, [blogs, isLoaded]);
+        // Check Site Settings
+        if (settingsMap.site_settings) {
+          const newStr = JSON.stringify(settingsMap.site_settings);
+          const currentStr = localStorage.getItem('admin_settings');
+          if (newStr !== currentStr) {
+            setSiteSettings(settingsMap.site_settings);
+            try { localStorage.setItem('admin_settings', newStr); } catch {}
+            triggerUpdateNotice('site_settings');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_appointments_v2', JSON.stringify(appointments));
-    }
-  }, [appointments, isLoaded]);
+        // Check Coupons
+        if (settingsMap.coupons && Array.isArray(settingsMap.coupons)) {
+          const newStr = JSON.stringify(settingsMap.coupons);
+          const currentStr = localStorage.getItem('admin_coupons_v1');
+          if (newStr !== currentStr) {
+            setCoupons(settingsMap.coupons);
+            try { localStorage.setItem('admin_coupons_v1', newStr); } catch {}
+            triggerUpdateNotice('coupons');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_settings', JSON.stringify(siteSettings));
-    }
-  }, [siteSettings, isLoaded]);
+        // Check Products
+        if (settingsMap.products && Array.isArray(settingsMap.products)) {
+          const newStr = JSON.stringify(settingsMap.products);
+          const currentStr = localStorage.getItem('admin_products');
+          if (newStr !== currentStr) {
+            setProducts(settingsMap.products);
+            try { localStorage.setItem('admin_products', newStr); } catch {}
+            triggerUpdateNotice('products');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_footer_settings_v1', JSON.stringify(footerSettings));
-    }
-  }, [footerSettings, isLoaded]);
+        // Check Services
+        if (settingsMap.services && Array.isArray(settingsMap.services)) {
+          const newStr = JSON.stringify(settingsMap.services);
+          const currentStr = localStorage.getItem('admin_services_pages_v1');
+          if (newStr !== currentStr) {
+            setServices(settingsMap.services);
+            try { localStorage.setItem('admin_services_pages_v1', newStr); } catch {}
+            triggerUpdateNotice('services');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_about_settings_v1', JSON.stringify(aboutSettings));
-    }
-  }, [aboutSettings, isLoaded]);
+        // Check Testimonials
+        if (settingsMap.testimonials && Array.isArray(settingsMap.testimonials)) {
+          const newStr = JSON.stringify(settingsMap.testimonials);
+          const currentStr = localStorage.getItem('admin_testimonials');
+          if (newStr !== currentStr) {
+            setTestimonials(settingsMap.testimonials);
+            try { localStorage.setItem('admin_testimonials', newStr); } catch {}
+            triggerUpdateNotice('testimonials');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_marquee_items_v2', JSON.stringify(marqueeItems));
-    }
-  }, [marqueeItems, isLoaded]);
+        // Check FAQs
+        if (settingsMap.faqs && Array.isArray(settingsMap.faqs)) {
+          const newStr = JSON.stringify(settingsMap.faqs);
+          const currentStr = localStorage.getItem('admin_faqs');
+          if (newStr !== currentStr) {
+            setFaqs(settingsMap.faqs);
+            try { localStorage.setItem('admin_faqs', newStr); } catch {}
+            triggerUpdateNotice('faqs');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem('admin_marquee_settings', JSON.stringify(marqueeSettings));
-    }
-  }, [marqueeSettings, isLoaded]);
+        // Check Blogs
+        if (settingsMap.blogs && Array.isArray(settingsMap.blogs)) {
+          const newStr = JSON.stringify(settingsMap.blogs);
+          const currentStr = localStorage.getItem('admin_blogs');
+          if (newStr !== currentStr) {
+            setBlogs(settingsMap.blogs);
+            try { localStorage.setItem('admin_blogs', newStr); } catch {}
+            triggerUpdateNotice('blogs');
+          }
+        }
 
-  useEffect(() => {
-    if (isLoaded && results.length > 0) {
-      localStorage.setItem('admin_results_v1', JSON.stringify(results));
-    }
-  }, [results, isLoaded]);
+        // Check Marquee Items
+        if (settingsMap.marquee_items && Array.isArray(settingsMap.marquee_items)) {
+          const newStr = JSON.stringify(settingsMap.marquee_items);
+          const currentStr = localStorage.getItem('admin_marquee_items_v2');
+          if (newStr !== currentStr) {
+            setMarqueeItems(settingsMap.marquee_items);
+            try { localStorage.setItem('admin_marquee_items_v2', newStr); } catch {}
+            triggerUpdateNotice('marquee_items');
+          }
+        }
+
+        // Check Marquee Settings
+        if (settingsMap.marquee_settings) {
+          const newStr = JSON.stringify(settingsMap.marquee_settings);
+          const currentStr = localStorage.getItem('admin_marquee_settings');
+          if (newStr !== currentStr) {
+            setMarqueeSettings(settingsMap.marquee_settings);
+            try { localStorage.setItem('admin_marquee_settings', newStr); } catch {}
+            triggerUpdateNotice('marquee_settings');
+          }
+        }
+
+        // Check Results
+        if (settingsMap.results && Array.isArray(settingsMap.results)) {
+          const newStr = JSON.stringify(settingsMap.results);
+          const currentStr = localStorage.getItem('admin_results_v1');
+          if (newStr !== currentStr) {
+            setResults(settingsMap.results);
+            try { localStorage.setItem('admin_results_v1', newStr); } catch {}
+            triggerUpdateNotice('results');
+          }
+        }
+      });
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [triggerUpdateNotice]);
 
   // Coupon actions
-  const addCoupon = (coupon: Coupon) => setCoupons(prev => [coupon, ...prev]);
+  const addCoupon = async (coupon: Coupon) => {
+    const updated = [coupon, ...coupons];
+    setCoupons(updated);
+    try { localStorage.setItem('admin_coupons_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('coupons', updated);
+  };
 
-  const updateCoupon = (id: string, updated: Partial<Coupon>) =>
-    setCoupons(prev => prev.map(c => c.id === id ? { ...c, ...updated } : c));
+  const updateCoupon = async (id: string, partial: Partial<Coupon>) => {
+    const updated = coupons.map(c => c.id === id ? { ...c, ...partial } : c);
+    setCoupons(updated);
+    try { localStorage.setItem('admin_coupons_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('coupons', updated);
+  };
 
-  const deleteCoupon = (id: string) =>
-    setCoupons(prev => prev.filter(c => c.id !== id));
+  const deleteCoupon = async (id: string) => {
+    const updated = coupons.filter(c => c.id !== id);
+    setCoupons(updated);
+    try { localStorage.setItem('admin_coupons_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('coupons', updated);
+  };
 
-  const resetCoupons = () => {
+  const resetCoupons = async () => {
     setCoupons(defaultCoupons);
-    try {
-      localStorage.setItem('admin_coupons_v1', JSON.stringify(defaultCoupons));
-    } catch {}
+    try { localStorage.setItem('admin_coupons_v1', JSON.stringify(defaultCoupons)); } catch {}
+    await persistSetting('coupons', defaultCoupons);
   };
 
   const recordCouponUse = (code: string): boolean => {
     const cleanCode = (code || '').trim().toUpperCase();
     let recorded = false;
-    setCoupons(prev =>
-      prev.map(c => {
-        if (c.code.toUpperCase() === cleanCode) {
-          recorded = true;
-          return { ...c, usedCount: c.usedCount + 1 };
-        }
-        return c;
-      })
-    );
+    const updated = coupons.map(c => {
+      if (c.code.toUpperCase() === cleanCode) {
+        recorded = true;
+        return { ...c, usedCount: c.usedCount + 1 };
+      }
+      return c;
+    });
+    if (recorded) {
+      setCoupons(updated);
+      try { localStorage.setItem('admin_coupons_v1', JSON.stringify(updated)); } catch {}
+      persistSetting('coupons', updated);
+    }
     return recorded;
   };
 
@@ -407,48 +726,133 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Product actions
-  const addProduct = (product: Product) => setProducts([...products, product]);
-  const updateProduct = (id: string, updated: Partial<Product>) => 
-    setProducts(products.map(p => p.id === id ? { ...p, ...updated } : p));
-  const deleteProduct = (id: string) => setProducts(products.filter(p => p.id !== id));
+  const addProduct = async (product: Product) => {
+    const updated = [...products, product];
+    setProducts(updated);
+    try { localStorage.setItem('admin_products', JSON.stringify(updated)); } catch {}
+    await persistSetting('products', updated);
+  };
+
+  const updateProduct = async (id: string, partial: Partial<Product>) => {
+    const updated = products.map(p => p.id === id ? { ...p, ...partial } : p);
+    setProducts(updated);
+    try { localStorage.setItem('admin_products', JSON.stringify(updated)); } catch {}
+    await persistSetting('products', updated);
+  };
+
+  const deleteProduct = async (id: string) => {
+    const updated = products.filter(p => p.id !== id);
+    setProducts(updated);
+    try { localStorage.setItem('admin_products', JSON.stringify(updated)); } catch {}
+    await persistSetting('products', updated);
+  };
 
   // Service actions
-  const addService = (service: Service) => setServices([...services, service]);
-  const updateService = (id: string, updated: Partial<Service>) => 
-    setServices(services.map(s => s.id === id ? { ...s, ...updated } : s));
-  const deleteService = (id: string) => setServices(services.filter(s => s.id !== id));
+  const addService = async (service: Service) => {
+    const updated = [...services, service];
+    setServices(updated);
+    try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('services', updated);
+  };
+
+  const updateService = async (id: string, partial: Partial<Service>) => {
+    const updated = services.map(s => s.id === id ? { ...s, ...partial } : s);
+    setServices(updated);
+    try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('services', updated);
+  };
+
+  const deleteService = async (id: string) => {
+    const updated = services.filter(s => s.id !== id);
+    setServices(updated);
+    try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('services', updated);
+  };
 
   // Testimonial actions
-  const addTestimonial = (testimonial: Testimonial) => setTestimonials([...testimonials, testimonial]);
-  const updateTestimonial = (id: string, updated: Partial<Testimonial>) => 
-    setTestimonials(testimonials.map(t => t.id === id ? { ...t, ...updated } : t));
-  const deleteTestimonial = (id: string) => setTestimonials(testimonials.filter(t => t.id !== id));
+  const addTestimonial = async (testimonial: Testimonial) => {
+    const updated = [...testimonials, testimonial];
+    setTestimonials(updated);
+    try { localStorage.setItem('admin_testimonials', JSON.stringify(updated)); } catch {}
+    await persistSetting('testimonials', updated);
+  };
+
+  const updateTestimonial = async (id: string, partial: Partial<Testimonial>) => {
+    const updated = testimonials.map(t => t.id === id ? { ...t, ...partial } : t);
+    setTestimonials(updated);
+    try { localStorage.setItem('admin_testimonials', JSON.stringify(updated)); } catch {}
+    await persistSetting('testimonials', updated);
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    const updated = testimonials.filter(t => t.id !== id);
+    setTestimonials(updated);
+    try { localStorage.setItem('admin_testimonials', JSON.stringify(updated)); } catch {}
+    await persistSetting('testimonials', updated);
+  };
 
   // FAQ actions
-  const addFaq = (faq: FAQ) => setFaqs([...faqs, faq]);
-  const updateFaq = (id: string, updated: Partial<FAQ>) => 
-    setFaqs(faqs.map(f => f.id === id ? { ...f, ...updated } : f));
-  const deleteFaq = (id: string) => setFaqs(faqs.filter(f => f.id !== id));
-  const reorderFaqs = (newFaqs: FAQ[]) => setFaqs(newFaqs);
+  const addFaq = async (faq: FAQ) => {
+    const updated = [...faqs, faq];
+    setFaqs(updated);
+    try { localStorage.setItem('admin_faqs', JSON.stringify(updated)); } catch {}
+    await persistSetting('faqs', updated);
+  };
+
+  const updateFaq = async (id: string, partial: Partial<FAQ>) => {
+    const updated = faqs.map(f => f.id === id ? { ...f, ...partial } : f);
+    setFaqs(updated);
+    try { localStorage.setItem('admin_faqs', JSON.stringify(updated)); } catch {}
+    await persistSetting('faqs', updated);
+  };
+
+  const deleteFaq = async (id: string) => {
+    const updated = faqs.filter(f => f.id !== id);
+    setFaqs(updated);
+    try { localStorage.setItem('admin_faqs', JSON.stringify(updated)); } catch {}
+    await persistSetting('faqs', updated);
+  };
+
+  const reorderFaqs = async (newFaqs: FAQ[]) => {
+    setFaqs(newFaqs);
+    try { localStorage.setItem('admin_faqs', JSON.stringify(newFaqs)); } catch {}
+    await persistSetting('faqs', newFaqs);
+  };
 
   // Blog actions
-  const addBlog = (blog: BlogPost) => setBlogs([...blogs, blog]);
-  const updateBlog = (id: string, updated: Partial<BlogPost>) => 
-    setBlogs(blogs.map(b => b.id === id ? { ...b, ...updated } : b));
-  const deleteBlog = (id: string) => setBlogs(blogs.filter(b => b.id !== id));
+  const addBlog = async (blog: BlogPost) => {
+    const updated = [...blogs, blog];
+    setBlogs(updated);
+    try { localStorage.setItem('admin_blogs', JSON.stringify(updated)); } catch {}
+    await persistSetting('blogs', updated);
+  };
+
+  const updateBlog = async (id: string, partial: Partial<BlogPost>) => {
+    const updated = blogs.map(b => b.id === id ? { ...b, ...partial } : b);
+    setBlogs(updated);
+    try { localStorage.setItem('admin_blogs', JSON.stringify(updated)); } catch {}
+    await persistSetting('blogs', updated);
+  };
+
+  const deleteBlog = async (id: string) => {
+    const updated = blogs.filter(b => b.id !== id);
+    setBlogs(updated);
+    try { localStorage.setItem('admin_blogs', JSON.stringify(updated)); } catch {}
+    await persistSetting('blogs', updated);
+  };
 
   // Appointment actions
-  const addAppointment = (appointment: Appointment) => {
+  const addAppointment = async (appointment: Appointment) => {
     setAppointments(prev => [appointment, ...prev]);
     saveAppointmentToDb(appointment);
   };
 
-  const updateAppointmentStatus = (id: string, status: Appointment['status']) => {
+  const updateAppointmentStatus = async (id: string, status: Appointment['status']) => {
     setAppointments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
     updateAppointmentStatusInDb(id, status);
   };
 
-  const deleteAppointment = (id: string) => {
+  const deleteAppointment = async (id: string) => {
     setAppointments(prev => prev.filter(a => a.id !== id));
     deleteAppointmentFromDb(id);
   };
@@ -462,52 +866,108 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Settings actions
-  const updateSiteSettings = (settings: Partial<SiteSettings>) => 
-    setSiteSettings({ ...siteSettings, ...settings });
+  const updateSiteSettings = async (settings: Partial<SiteSettings>) => {
+    const updated = { ...siteSettings, ...settings };
+    setSiteSettings(updated);
+    try { localStorage.setItem('admin_settings', JSON.stringify(updated)); } catch {}
+    await persistSetting('site_settings', updated);
+  };
 
   // Footer actions
-  const updateFooterSettings = (settings: Partial<FooterSettings>) =>
-    setFooterSettings(prev => ({ ...prev, ...settings }));
-  const resetFooterSettings = () => {
+  const updateFooterSettings = async (settings: Partial<FooterSettings>) => {
+    const updated = { ...footerSettings, ...settings };
+    setFooterSettings(updated);
+    try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('footer_settings', updated);
+  };
+
+  const resetFooterSettings = async () => {
     setFooterSettings(defaultFooterSettings);
-    try {
-      localStorage.setItem('admin_footer_settings_v1', JSON.stringify(defaultFooterSettings));
-    } catch {}
+    try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(defaultFooterSettings)); } catch {}
+    await persistSetting('footer_settings', defaultFooterSettings);
   };
 
   // About actions
-  const updateAboutSettings = (settings: Partial<AboutSettings>) =>
-    setAboutSettings(prev => ({ ...prev, ...settings }));
-  const resetAboutSettings = () => {
+  const updateAboutSettings = async (settings: Partial<AboutSettings>) => {
+    const updated = { ...aboutSettings, ...settings };
+    setAboutSettings(updated);
+    try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('about_settings', updated);
+  };
+
+  const resetAboutSettings = async () => {
     setAboutSettings(defaultAboutSettings);
-    try {
-      localStorage.setItem('admin_about_settings_v1', JSON.stringify(defaultAboutSettings));
-    } catch {}
+    try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(defaultAboutSettings)); } catch {}
+    await persistSetting('about_settings', defaultAboutSettings);
   };
 
   // Marquee actions
-  const addMarqueeItem = (item: MarqueeItem) => setMarqueeItems([...marqueeItems, item]);
-  const updateMarqueeItem = (id: string, updated: Partial<MarqueeItem>) =>
-    setMarqueeItems(marqueeItems.map(m => m.id === id ? { ...m, ...updated } : m));
-  const deleteMarqueeItem = (id: string) => setMarqueeItems(marqueeItems.filter(m => m.id !== id));
-  const reorderMarqueeItems = (items: MarqueeItem[]) => setMarqueeItems(items);
-  const updateMarqueeSettings = (settings: Partial<MarqueeSettings>) =>
-    setMarqueeSettings({ ...marqueeSettings, ...settings });
+  const addMarqueeItem = async (item: MarqueeItem) => {
+    const updated = [...marqueeItems, item];
+    setMarqueeItems(updated);
+    try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(updated)); } catch {}
+    await persistSetting('marquee_items', updated);
+  };
+
+  const updateMarqueeItem = async (id: string, partial: Partial<MarqueeItem>) => {
+    const updated = marqueeItems.map(m => m.id === id ? { ...m, ...partial } : m);
+    setMarqueeItems(updated);
+    try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(updated)); } catch {}
+    await persistSetting('marquee_items', updated);
+  };
+
+  const deleteMarqueeItem = async (id: string) => {
+    const updated = marqueeItems.filter(m => m.id !== id);
+    setMarqueeItems(updated);
+    try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(updated)); } catch {}
+    await persistSetting('marquee_items', updated);
+  };
+
+  const reorderMarqueeItems = async (items: MarqueeItem[]) => {
+    setMarqueeItems(items);
+    try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(items)); } catch {}
+    await persistSetting('marquee_items', items);
+  };
+
+  const updateMarqueeSettings = async (settings: Partial<MarqueeSettings>) => {
+    const updated = { ...marqueeSettings, ...settings };
+    setMarqueeSettings(updated);
+    try { localStorage.setItem('admin_marquee_settings', JSON.stringify(updated)); } catch {}
+    await persistSetting('marquee_settings', updated);
+  };
 
   // Result actions
-  const addResult = (result: ResultItem) => setResults([...results, result]);
-  const updateResult = (id: string, updated: Partial<ResultItem>) =>
-    setResults(results.map(r => r.id === id ? { ...r, ...updated } : r));
-  const deleteResult = (id: string) => setResults(results.filter(r => r.id !== id));
-  const restoreDefaultResults = () => {
+  const addResult = async (result: ResultItem) => {
+    const updated = [...results, result];
+    setResults(updated);
+    try { localStorage.setItem('admin_results_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('results', updated);
+  };
+
+  const updateResult = async (id: string, partial: Partial<ResultItem>) => {
+    const updated = results.map(r => r.id === id ? { ...r, ...partial } : r);
+    setResults(updated);
+    try { localStorage.setItem('admin_results_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('results', updated);
+  };
+
+  const deleteResult = async (id: string) => {
+    const updated = results.filter(r => r.id !== id);
+    setResults(updated);
+    try { localStorage.setItem('admin_results_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('results', updated);
+  };
+
+  const restoreDefaultResults = async () => {
     setResults(defaultResults);
-    try {
-      localStorage.setItem('admin_results_v1', JSON.stringify(defaultResults));
-    } catch {}
+    try { localStorage.setItem('admin_results_v1', JSON.stringify(defaultResults)); } catch {}
+    await persistSetting('results', defaultResults);
   };
 
   return (
     <AdminDataContext.Provider value={{
+      lastLiveUpdate,
+      clearLiveUpdate,
       coupons, addCoupon, updateCoupon, deleteCoupon, recordCouponUse, validateCoupon, resetCoupons,
       products, addProduct, updateProduct, deleteProduct,
       services, addService, updateService, deleteService,

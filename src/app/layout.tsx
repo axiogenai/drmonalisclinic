@@ -6,8 +6,9 @@ import { AdminDataProvider } from '@/context/AdminDataContext';
 import { DialogProvider } from '@/context/DialogContext';
 import CartDrawer from '@/components/CartDrawer';
 import LocalClinicSchema from '@/components/LocalClinicSchema';
+import LiveUpdateNotifier from '@/components/LiveUpdateNotifier';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drmonalisclinic.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.drmonalisclinic.com';
 
 export const viewport: Viewport = {
   themeColor: '#108283',
@@ -98,12 +99,16 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon.png', type: 'image/png', sizes: '512x512' },
       { url: '/clinic-logo-icon.png', type: 'image/png' },
-      { url: '/icon.png', type: 'image/png' },
-      { url: '/favicon.ico' },
     ],
-    shortcut: '/clinic-logo-icon.png',
-    apple: '/clinic-logo-icon.png',
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
@@ -111,8 +116,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/clinic-logo-icon.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/clinic-logo-icon.png" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         
         {/* Geo Meta Tags for Kolhapur Local Pack #1 Ranking */}
         <meta name="geo.region" content="IN-MH" />
@@ -135,6 +144,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SmoothScroll />
               {children}
               <CartDrawer />
+              <LiveUpdateNotifier />
             </DialogProvider>
           </CartProvider>
         </AdminDataProvider>

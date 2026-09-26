@@ -138,3 +138,65 @@ export async function uploadImageToSupabase(file: File | Blob, fileName: string,
     return null;
   }
 }
+
+// =========================================================
+// Universal Clinic Settings API (Multi-domain Sync)
+// =========================================================
+
+export async function getSettingFromDb<T>(key: string): Promise<T | null> {
+  if (!supabase) return null;
+  try {
+    const { data, error } = await supabase
+      .from('clinic_settings')
+      .select('data')
+      .eq('key', key)
+      .maybeSingle();
+
+    if (error || !data) return null;
+    return data.data as T;
+  } catch (err) {
+    console.warn(`Failed to fetch setting ${key} from Supabase:`, err);
+    return null;
+  }
+}
+
+export async function getAllSettingsFromDb(): Promise<Record<string, any>> {
+  if (!supabase) return {};
+  try {
+    const { data, error } = await supabase
+      .from('clinic_settings')
+      .select('key, data');
+
+    if (error || !data) return {};
+    const map: Record<string, any> = {};
+    for (const row of data) {
+      map[row.key] = row.data;
+    }
+    return map;
+  } catch (err) {
+    console.warn('Failed to fetch all settings from Supabase:', err);
+    return {};
+  }
+}
+
+export async function saveSettingToDb(key: string, data: any): Promise<boolean> {
+  if (!supabase) return false;
+  try {
+    const { error } = await supabase
+      .from('clinic_settings')
+      .upsert({
+        key,
+        data,
+        updated_at: new Date().toISOString(),
+      });
+
+    if (error) {
+      console.warn(`Failed to save setting ${key} to Supabase:`, error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn(`Failed to save setting ${key} to Supabase:`, err);
+    return false;
+  }
+}

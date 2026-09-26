@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
 import { 
   Building2, 
@@ -24,28 +24,55 @@ export default function FooterManager() {
   const { footerSettings, updateFooterSettings, resetFooterSettings } = useAdminData();
   const [formData, setFormData] = useState<FooterSettings>(footerSettings);
   const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const [countdown, setCountdown] = useState<number>(0);
 
   // Sync if context updates
   React.useEffect(() => {
     setFormData(footerSettings);
   }, [footerSettings]);
 
+  useEffect(() => {
+    if (countdown <= 0) {
+      setIsSaved(false);
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
+
   const handleChange = (field: keyof FooterSettings, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     setIsSaved(false);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateFooterSettings(formData);
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+    setIsSaving(true);
+    try {
+      await updateFooterSettings(formData);
+      setIsSaved(true);
+      setCountdown(5);
+    } catch (err) {
+      console.error('Failed to save footer settings:', err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (confirm('Are you sure you want to reset all footer and clinic contact settings to original clinic defaults?')) {
-      resetFooterSettings();
-      setIsSaved(false);
+      setIsSaving(true);
+      try {
+        await resetFooterSettings();
+        setIsSaved(true);
+        setCountdown(5);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -78,20 +105,49 @@ export default function FooterManager() {
           <button
             type="button"
             onClick={handleSave}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#108283] hover:bg-[#0c6b6c] text-white text-xs font-bold transition-all shadow-md shadow-[#108283]/20 active:scale-95 cursor-pointer"
+            disabled={isSaving}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#108283] hover:bg-[#0c6b6c] disabled:opacity-60 text-white text-xs font-bold transition-all shadow-md shadow-[#108283]/20 active:scale-95 cursor-pointer"
           >
-            <Save size={15} />
-            <span>Save All Changes</span>
+            {isSaving ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Saving to Cloud...</span>
+              </>
+            ) : (
+              <>
+                <Save size={15} />
+                <span>Save All Changes</span>
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {isSaved && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3 animate-in fade-in duration-200 shadow-xs">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <div>
-            <strong>Changes Saved!</strong> The footer component across the whole website now reflects your new contact details and hours.
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in duration-200 shadow-xs">
+          <div className="flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+            <div>
+              <div className="flex items-center gap-2">
+                <strong>Saved to Database &amp; Live on drmonalisclinic.com in &lt; 5s! ✓</strong>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                  {countdown}s
+                </span>
+              </div>
+              <p className="text-xs text-emerald-700 mt-0.5">
+                Footer settings, working hours, and clinic contact information are now live for all visitors across www.drmonalisclinic.com.
+              </p>
+            </div>
           </div>
+          <a
+            href="https://www.drmonalisclinic.com#footer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shrink-0 shadow-xs"
+          >
+            <span>Open Live Footer</span>
+            <ExternalLink size={13} />
+          </a>
         </div>
       )}
 

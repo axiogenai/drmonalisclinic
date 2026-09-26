@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { blogArticles } from '@/data/blogArticles';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drmonalisclinic.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.drmonalisclinic.com';
   const currentDate = new Date().toISOString();
 
   // Static core routes with priority hierarchy
@@ -30,6 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/appointment`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/about`,

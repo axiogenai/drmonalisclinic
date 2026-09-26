@@ -7,7 +7,7 @@ export default function LocalClinicSchema() {
       // 1. Medical & Homeopathic Clinic Entity (Local Business)
       {
         '@type': ['MedicalClinic', 'HomeopathicClinic', 'LocalBusiness', 'HealthAndBeautyBusiness'],
-        '@id': 'https://drmonalisclinic.com/#clinic',
+        '@id': 'https://www.drmonalisclinic.com/#clinic',
         name: "Dr. Monali's Homeopathy, Skin & Hair Clinic",
         alternateName: [
           "Dr. Monali's Clinic Kolhapur",
@@ -16,12 +16,12 @@ export default function LocalClinicSchema() {
           "Dr Monali Subhedar Clinic",
           "Dr. Monali Cosmetology & Skin Care"
         ],
-        url: 'https://drmonalisclinic.com',
-        logo: 'https://drmonalisclinic.com/clinic-logo.png',
+        url: 'https://www.drmonalisclinic.com',
+        logo: 'https://www.drmonalisclinic.com/clinic-logo.png',
         image: [
-          'https://drmonalisclinic.com/clinic-logo.png',
-          'https://drmonalisclinic.com/hero-model.png',
-          'https://drmonalisclinic.com/aboutdoc.png'
+          'https://www.drmonalisclinic.com/clinic-logo.png',
+          'https://www.drmonalisclinic.com/hero-model.png',
+          'https://www.drmonalisclinic.com/aboutdoc.png'
         ],
         description:
           "Ranked #1 Homeopathy, Skin Care & Hair Clinic in Kolhapur. Led by Dr. Monali Subhedar (BHMS, MD Homeopathy, Cosmetologist) & Dr. Sachin Subhedar. Specializing in constitutional homeopathy, chronic skin diseases, hair fall PRP, and clinical medifacials.",
