@@ -21,9 +21,11 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { AboutSettings, DoctorProfile } from '@/types/admin';
+import { useDialog } from '@/context/DialogContext';
 
 export default function AboutManager() {
   const { aboutSettings, updateAboutSettings, resetAboutSettings } = useAdminData();
+  const { confirm: dialogConfirm } = useDialog();
   const [formData, setFormData] = useState<AboutSettings>(aboutSettings);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -62,15 +64,25 @@ export default function AboutManager() {
   };
 
   const handleReset = async () => {
-    if (confirm('Are you sure you want to reset all doctor bios, degrees, and about page content to original clinic defaults?')) {
-      setIsSaving(true);
-      try {
-        await resetAboutSettings();
-        setIsSaved(true);
-        setCountdown(5);
-      } finally {
-        setIsSaving(false);
-      }
+    const ok = await dialogConfirm({
+      title: 'Reset Doctor Credentials & About Content?',
+      message: 'Are you sure you want to reset all doctor bios, degrees, and about page content back to the original clinic defaults? This will update the live website within 5 seconds.',
+      confirmText: 'Reset to Defaults',
+      cancelText: 'Cancel',
+      type: 'warning',
+    });
+
+    if (!ok) return;
+
+    setIsSaving(true);
+    try {
+      await resetAboutSettings();
+      setIsSaved(true);
+      setCountdown(5);
+    } catch (err) {
+      console.error('Failed to reset about settings:', err);
+    } finally {
+      setIsSaving(false);
     }
   };
 

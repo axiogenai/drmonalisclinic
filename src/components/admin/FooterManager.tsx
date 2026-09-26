@@ -19,9 +19,11 @@ import {
   Info
 } from 'lucide-react';
 import { FooterSettings } from '@/types/admin';
+import { useDialog } from '@/context/DialogContext';
 
 export default function FooterManager() {
   const { footerSettings, updateFooterSettings, resetFooterSettings } = useAdminData();
+  const { confirm: dialogConfirm } = useDialog();
   const [formData, setFormData] = useState<FooterSettings>(footerSettings);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -64,15 +66,25 @@ export default function FooterManager() {
   };
 
   const handleReset = async () => {
-    if (confirm('Are you sure you want to reset all footer and clinic contact settings to original clinic defaults?')) {
-      setIsSaving(true);
-      try {
-        await resetFooterSettings();
-        setIsSaved(true);
-        setCountdown(5);
-      } finally {
-        setIsSaving(false);
-      }
+    const ok = await dialogConfirm({
+      title: 'Reset Footer & Contact Settings?',
+      message: 'Are you sure you want to reset all footer information, working hours, and clinic contact settings back to original clinic defaults? This will update the live website within 5 seconds.',
+      confirmText: 'Reset Defaults',
+      cancelText: 'Cancel',
+      type: 'warning',
+    });
+
+    if (!ok) return;
+
+    setIsSaving(true);
+    try {
+      await resetFooterSettings();
+      setIsSaved(true);
+      setCountdown(5);
+    } catch (err) {
+      console.error('Failed to reset footer settings:', err);
+    } finally {
+      setIsSaving(false);
     }
   };
 

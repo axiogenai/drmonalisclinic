@@ -297,7 +297,6 @@ export default function CouponsManager() {
   const activeCouponsCount = coupons.filter(
     (c) => c.isActive && new Date(c.expiresAt).getTime() > nowTime && c.usedCount < c.maxUses
   ).length;
-  const totalRedemptions = coupons.reduce((acc, c) => acc + (c.usedCount || 0), 0);
   const expiredOrExhaustedCount = coupons.filter(
     (c) => new Date(c.expiresAt).getTime() <= nowTime || c.usedCount >= c.maxUses
   ).length;
@@ -367,9 +366,9 @@ export default function CouponsManager() {
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         
-        {/* Metric 1 */}
+        {/* Metric 1: Total Coupons */}
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-xl bg-[#108283]/10 text-[#108283] flex items-center justify-center shrink-0">
             <TicketPercent className="w-5 h-5" />
@@ -382,7 +381,7 @@ export default function CouponsManager() {
           </div>
         </div>
 
-        {/* Metric 2 */}
+        {/* Metric 2: Active & Ready */}
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-5 h-5" />
@@ -395,20 +394,7 @@ export default function CouponsManager() {
           </div>
         </div>
 
-        {/* Metric 3 */}
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
-            <Users className="w-5 h-5" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 font-['Source_Sans_3']">Total Redemptions</p>
-            <p className="text-xl sm:text-2xl font-bold text-teal-800 font-['Playfair_Display']">
-              {totalRedemptions}
-            </p>
-          </div>
-        </div>
-
-        {/* Metric 4 */}
+        {/* Metric 3: Expired / Exhausted */}
         <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs flex items-center gap-3.5">
           <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
             <Clock className="w-5 h-5" />
