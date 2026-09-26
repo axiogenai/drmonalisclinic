@@ -162,75 +162,97 @@ export default function FAQManager() {
 
       {filteredFaqs.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 p-6">
+          <HelpCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500 font-source text-sm">
             {searchTerm ? 'No FAQs match your search.' : 'No FAQs found. Add your first frequently asked question.'}
           </p>
         </div>
       ) : (
-        <div className="space-y-3.5">
-          {filteredFaqs.map((item: FAQ, index: number) => (
-            <div
-              key={item.id}
-              className="bg-white border border-gray-200/80 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row gap-4 group hover:border-[#108283]/40 hover:shadow-xs transition-all"
-            >
-              {/* Reordering Controls */}
-              <div className="flex flex-row sm:flex-col gap-1 text-gray-400 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => moveFaq(index, 'up')}
-                  disabled={index === 0}
-                  className="p-1.5 hover:text-[#108283] hover:bg-[#FAEDDA] rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-not-allowed"
-                  title="Move Up"
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => moveFaq(index, 'down')}
-                  disabled={index === faqs.length - 1}
-                  className="p-1.5 hover:text-[#108283] hover:bg-[#FAEDDA] rounded-lg transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-not-allowed"
-                  title="Move Down"
-                >
-                  <ArrowDown className="w-4 h-4" />
-                </button>
-              </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200/90 overflow-hidden">
+          {/* Table Header */}
+          <div className="hidden sm:grid sm:grid-cols-12 gap-4 px-6 py-3.5 bg-gray-50/80 border-b border-gray-200/80 text-[11px] font-bold text-gray-500 uppercase tracking-wider font-source">
+            <div className="col-span-2 text-center">Order</div>
+            <div className="col-span-8">Question &amp; Answer</div>
+            <div className="col-span-2 text-right">Actions</div>
+          </div>
 
-              {/* Question & Answer Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start gap-2 mb-1.5">
-                  <span className="w-5 h-5 rounded-full bg-[#108283]/10 text-[#108283] flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                    Q
-                  </span>
-                  <h3 className="text-sm sm:text-base font-bold text-gray-900 font-source leading-snug">
-                    {item.question}
-                  </h3>
+          {/* List items with clean dividing borders */}
+          <div className="divide-y divide-gray-100">
+            {filteredFaqs.map((item: FAQ, index: number) => (
+              <div
+                key={item.id}
+                className="px-4 sm:px-6 py-3.5 hover:bg-slate-50/80 transition-colors flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-4 sm:items-center group"
+              >
+                {/* Order & Reorder Arrows */}
+                <div className="sm:col-span-2 flex items-center justify-between sm:justify-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-1 bg-gray-100/90 rounded-lg p-0.5 border border-gray-200/70">
+                    <button
+                      type="button"
+                      onClick={() => moveFaq(index, 'up')}
+                      disabled={index === 0}
+                      className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-[#108283] hover:bg-white rounded transition-colors disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                      title="Move Up"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="text-[11px] font-bold text-gray-700 px-1.5 font-mono">
+                      #{index + 1}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => moveFaq(index, 'down')}
+                      disabled={index === faqs.length - 1}
+                      className="w-5 h-5 flex items-center justify-center text-gray-500 hover:text-[#108283] hover:bg-white rounded transition-colors disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed"
+                      title="Move Down"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 font-source leading-relaxed pl-7 line-clamp-3">
-                  {item.answer}
-                </p>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex sm:flex-col gap-2 border-t sm:border-t-0 sm:border-l border-gray-100 pt-3 sm:pt-0 sm:pl-4 justify-end shrink-0 items-center">
-                <button
-                  type="button"
-                  onClick={() => handleOpenModal(item)}
-                  className="p-2 text-gray-500 hover:text-[#108283] hover:bg-[#FAEDDA]/60 rounded-lg transition-colors border border-gray-200/80 cursor-pointer"
-                  title="Edit FAQ"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(item.id, item.question)}
-                  className="p-2 text-gray-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors border border-rose-200/80 cursor-pointer"
-                  title="Delete FAQ"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                {/* Question & Answer Content */}
+                <div className="sm:col-span-8 min-w-0 pr-2 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="w-4 h-4 rounded bg-[#108283]/10 text-[#108283] flex items-center justify-center font-bold text-[10px] shrink-0">
+                      Q
+                    </span>
+                    <h3 className="text-sm font-bold text-gray-900 font-source truncate group-hover:text-[#108283] transition-colors">
+                      {item.question}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-gray-500 font-source line-clamp-2 pl-6 leading-relaxed">
+                    {item.answer}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="sm:col-span-2 flex items-center justify-end gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(item)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-200/90 rounded-lg shadow-2xs hover:border-[#108283] hover:text-[#108283] transition-all cursor-pointer"
+                  >
+                    <Pencil className="w-3 h-3 text-[#108283]" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(item.id, item.question)}
+                    className="p-1.5 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-transparent hover:border-rose-200 transition-all cursor-pointer"
+                    title="Delete FAQ"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Table Footer Stats */}
+          <div className="bg-gray-50/70 px-6 py-2.5 border-t border-gray-200/80 flex items-center justify-between text-xs text-gray-500 font-source">
+            <span>Showing {filteredFaqs.length} of {faqs.length} FAQs</span>
+            <span className="hidden sm:inline">Use arrows to adjust display order</span>
+          </div>
         </div>
       )}
 

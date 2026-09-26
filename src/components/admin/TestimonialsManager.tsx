@@ -240,13 +240,13 @@ export default function TestimonialsManager() {
             return (
               <div
                 key={item.id}
-                className="bg-white border border-gray-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-[#108283]/40 hover:shadow-md transition-all shadow-xs min-h-[250px] group"
+                className="bg-white border border-gray-200/80 rounded-2xl p-4 sm:p-4.5 flex flex-col hover:border-[#108283]/40 hover:shadow-md transition-all shadow-xs group"
               >
-                <div>
+                <div className="flex-1">
                   {/* Header: Photo / Avatar + Name + Stars */}
-                  <div className="flex items-start gap-3 mb-3">
+                  <div className="flex items-start gap-2.5 mb-2.5">
                     <div 
-                      className="w-10 h-10 rounded-full overflow-hidden border flex items-center justify-center shrink-0 font-bold font-playfair text-sm shadow-2xs"
+                      className="w-9 h-9 rounded-full overflow-hidden border flex items-center justify-center shrink-0 font-bold font-playfair text-xs shadow-2xs"
                       style={{
                         backgroundColor: avatarTheme.bg,
                         color: avatarTheme.text,
@@ -269,7 +269,7 @@ export default function TestimonialsManager() {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <h3 className="text-base font-playfair font-bold text-gray-900 truncate">
+                      <h3 className="text-sm sm:text-base font-playfair font-bold text-gray-900 truncate">
                         {item.name}
                       </h3>
                       {/* Google Review Stars */}
@@ -292,10 +292,10 @@ export default function TestimonialsManager() {
                     </div>
 
                     {/* Pills: Tag & Concern */}
-                    <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                    <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                       {item.tag && (
                         <span 
-                          className="inline-block px-2 py-0.5 text-[9px] font-bold rounded-md uppercase tracking-wider border shadow-2xs"
+                          className="inline-block px-1.5 py-0.5 text-[8.5px] font-bold rounded-md uppercase tracking-wider border shadow-2xs"
                           style={{
                             backgroundColor: avatarTheme.bg,
                             color: avatarTheme.text,
@@ -306,7 +306,7 @@ export default function TestimonialsManager() {
                         </span>
                       )}
                       {item.concern && item.concern !== item.tag && (
-                        <span className="inline-block px-2 py-0.5 bg-gray-50 text-gray-700 text-[9px] font-semibold rounded-md border border-gray-200">
+                        <span className="inline-block px-1.5 py-0.5 bg-gray-50 text-gray-700 text-[8.5px] font-semibold rounded-md border border-gray-200">
                           {item.concern}
                         </span>
                       )}
@@ -315,18 +315,18 @@ export default function TestimonialsManager() {
                 </div>
 
                 {/* Review Text */}
-                <div className="relative mb-4 pl-3.5 border-l-2 border-[#108283]/30">
-                  <p className="text-gray-600 text-xs sm:text-sm font-source italic leading-relaxed line-clamp-4">
+                <div className="relative mb-2.5 pl-3 border-l-2 border-[#108283]/30">
+                  <p className="text-gray-600 text-xs sm:text-sm font-source italic leading-relaxed line-clamp-3">
                     "{item.review}"
                   </p>
                 </div>
               </div>
 
               {/* Action Buttons: Anchored to Bottom */}
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 mt-auto">
+              <div className="flex items-center justify-end gap-2 pt-2.5 border-t border-gray-100 mt-1">
                 <button
                   onClick={() => handleOpenModal(item)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:text-[#108283] hover:bg-[#FAEDDA]/60 rounded-lg transition-colors border border-gray-200/80 cursor-pointer font-source"
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-gray-700 hover:text-[#108283] hover:bg-[#FAEDDA]/60 rounded-lg transition-colors border border-gray-200/80 cursor-pointer font-source"
                   title="Edit story"
                 >
                   <Pencil className="w-3.5 h-3.5" />
@@ -334,7 +334,7 @@ export default function TestimonialsManager() {
                 </button>
                 <button
                   onClick={() => handleDelete(item.id, item.name)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors border border-rose-200/80 cursor-pointer font-source"
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors border border-rose-200/80 cursor-pointer font-source"
                   title="Delete story"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

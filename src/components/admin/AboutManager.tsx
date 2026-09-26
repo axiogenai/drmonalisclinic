@@ -384,11 +384,11 @@ export default function AboutManager() {
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
                   Subheading
                 </label>
-                <input
-                  type="text"
+                <textarea
+                  rows={2}
                   value={formData.subheading}
                   onChange={(e) => setFormData({ ...formData, subheading: e.target.value })}
-                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
+                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
                   placeholder="Decades of combined clinical mastery..."
                 />
               </div>
@@ -471,7 +471,7 @@ export default function AboutManager() {
                   rows={4}
                   value={formData.doctor1.bio}
                   onChange={(e) => handleDoctorChange('doctor1', 'bio', e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed"
+                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
                 />
               </div>
 
@@ -586,7 +586,7 @@ export default function AboutManager() {
                   rows={4}
                   value={formData.doctor2.bio}
                   onChange={(e) => handleDoctorChange('doctor2', 'bio', e.target.value)}
-                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed"
+                  className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
                 />
               </div>
 
@@ -705,63 +705,114 @@ export default function AboutManager() {
 
       {/* TAB 3: PHILOSOPHY & STORY */}
       {activeTab === 'philosophy' && (
-        <div className="bg-white rounded-2xl border border-gray-200/90 p-6 shadow-xs space-y-6">
-          <div className="border-b border-gray-100 pb-3">
-            <h2 className="font-['Playfair_Display'] text-xl font-bold text-gray-900">
-              Core Philosophy &amp; Personal Story
-            </h2>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1">
-              Displayed in the interactive tabs on the Home Page and on the /about page.
-            </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Card 1: Core Clinical Philosophy */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 p-6 shadow-xs space-y-4 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-[#108283]/10 text-[#108283] flex items-center justify-center">
+                    <Quote className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-['Playfair_Display'] text-base sm:text-lg font-bold text-gray-900">
+                      Core Clinical Philosophy
+                    </h3>
+                    <p className="text-[11px] text-gray-500 font-source">
+                      Featured on the Home Page &amp; /about philosophy tabs
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#108283]/10 text-[#108283] font-bold shrink-0">
+                  Tab 1
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                  Main Philosophy Quote
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.philosophyQuote}
+                  onChange={(e) => setFormData({ ...formData, philosophyQuote: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-medium resize-y leading-relaxed"
+                  placeholder="Enter the primary clinical philosophy quote..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                  Explanatory Paragraph
+                </label>
+                <textarea
+                  rows={4}
+                  value={formData.philosophyText}
+                  onChange={(e) => setFormData({ ...formData, philosophyText: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
+                  placeholder="Provide constitutional case and treatment details..."
+                />
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+              <span>Syncs to Home &amp; /about</span>
+              <span className="font-mono text-[11px]">Philosophy Tab</span>
+            </div>
           </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Core Philosophy Main Quote
-              </label>
-              <textarea
-                rows={2}
-                value={formData.philosophyQuote}
-                onChange={(e) => setFormData({ ...formData, philosophyQuote: e.target.value })}
-                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-medium"
-              />
+          {/* Card 2: Personal Clinic Story */}
+          <div className="bg-white rounded-2xl border border-gray-200/90 p-6 shadow-xs space-y-4 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-['Playfair_Display'] text-base sm:text-lg font-bold text-gray-900">
+                      Personal Clinic Story
+                    </h3>
+                    <p className="text-[11px] text-gray-500 font-source">
+                      Featured on the Home Page &amp; /about story tabs
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold shrink-0">
+                  Tab 2
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                  Main Story Quote
+                </label>
+                <textarea
+                  rows={3}
+                  value={formData.storyQuote}
+                  onChange={(e) => setFormData({ ...formData, storyQuote: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-medium resize-y leading-relaxed"
+                  placeholder="Enter the personal clinic journey quote..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                  Explanatory Paragraph
+                </label>
+                <textarea
+                  rows={4}
+                  value={formData.storyText}
+                  onChange={(e) => setFormData({ ...formData, storyText: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
+                  placeholder="Describe patient care and clinical dedication..."
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Philosophy Explanatory Paragraph
-              </label>
-              <textarea
-                rows={3}
-                value={formData.philosophyText}
-                onChange={(e) => setFormData({ ...formData, philosophyText: e.target.value })}
-                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
-              />
-            </div>
-
-            <div className="pt-4 border-t border-gray-100">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Personal Story Main Quote
-              </label>
-              <textarea
-                rows={2}
-                value={formData.storyQuote}
-                onChange={(e) => setFormData({ ...formData, storyQuote: e.target.value })}
-                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-medium"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Personal Story Explanatory Paragraph
-              </label>
-              <textarea
-                rows={3}
-                value={formData.storyText}
-                onChange={(e) => setFormData({ ...formData, storyText: e.target.value })}
-                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
-              />
+            <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+              <span>Syncs to Home &amp; /about</span>
+              <span className="font-mono text-[11px]">Story Tab</span>
             </div>
           </div>
         </div>
@@ -769,16 +820,22 @@ export default function AboutManager() {
 
       {/* TAB 4: /about PAGE EXCLUSIVE */}
       {activeTab === 'about_page' && (
-        <div className="bg-white rounded-2xl border border-gray-200/90 p-6 shadow-xs space-y-6">
-          <div className="border-b border-gray-100 pb-3">
-            <h2 className="font-['Playfair_Display'] text-xl font-bold text-gray-900">
-              Dedicated /about Page Content
-            </h2>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1">
-              Customize hero headings, story paragraphs, and the credentials accordion on the separate /about route.
-            </p>
+        <div className="bg-white rounded-2xl border border-gray-200/90 p-5 sm:p-6 shadow-xs space-y-5">
+          <div className="border-b border-gray-100 pb-3 flex items-center justify-between">
+            <div>
+              <h2 className="font-['Playfair_Display'] text-base sm:text-lg font-bold text-gray-900">
+                Dedicated /about Page Content
+              </h2>
+              <p className="text-gray-500 text-xs mt-0.5">
+                Customize hero headings, story paragraphs, and credentials on the separate /about route.
+              </p>
+            </div>
+            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-[#108283]/10 text-[#108283] font-bold shrink-0">
+              Exclusive /about route
+            </span>
           </div>
 
+          {/* Clean 2-column row for headings */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
@@ -789,70 +846,81 @@ export default function AboutManager() {
                 value={formData.heroHeading}
                 onChange={(e) => setFormData({ ...formData, heroHeading: e.target.value })}
                 className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-bold"
+                placeholder="Behind Every Glow is a Story"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                Hero Subheading
+                Our Story Title
               </label>
               <input
                 type="text"
-                value={formData.heroSubheading}
-                onChange={(e) => setFormData({ ...formData, heroSubheading: e.target.value })}
-                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
+                value={formData.storyTitle}
+                onChange={(e) => setFormData({ ...formData, storyTitle: e.target.value })}
+                className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-bold"
+                placeholder="Welcome to Dr. Monali's Clinic"
               />
             </div>
           </div>
 
+          {/* Full width row for Hero Subheading */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-              Our Story Title
+              Hero Subheading
             </label>
-            <input
-              type="text"
-              value={formData.storyTitle}
-              onChange={(e) => setFormData({ ...formData, storyTitle: e.target.value })}
-              className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 font-bold"
+            <textarea
+              rows={2}
+              value={formData.heroSubheading}
+              onChange={(e) => setFormData({ ...formData, heroSubheading: e.target.value })}
+              className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900 leading-relaxed resize-y"
+              placeholder="Indulge in premium skincare solutions designed for beauty, health, and confidence."
             />
           </div>
 
-          {/* Educational Degrees Accordion */}
-          <div className="pt-4 border-t border-gray-100">
-            <div className="flex items-center justify-between mb-3">
+          {/* Educational Degrees Accordion - clean, full-width single-column list */}
+          <div className="pt-3 border-t border-gray-100 space-y-3">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-['Playfair_Display'] text-base font-bold text-gray-900">
+                <h3 className="font-['Playfair_Display'] text-sm sm:text-base font-bold text-gray-900">
                   Educational Background &amp; Degrees (Accordion on /about)
                 </h3>
-                <p className="text-xs text-gray-500">
-                  Items listed in the &ldquo;Educational Background &amp; Credentials&rdquo; dropdown.
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Credentials displayed in the interactive dropdown accordion.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleAddDegree}
-                className="text-xs text-[#108283] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#108283]/10 hover:bg-[#108283]/20 text-[#108283] text-xs font-bold transition-all cursor-pointer"
               >
-                <Plus size={13} />
+                <Plus size={14} />
                 <span>Add Degree</span>
               </button>
             </div>
 
             <div className="space-y-2">
               {formData.educationalDegreesList.map((deg, idx) => (
-                <div key={idx} className="flex items-center gap-2">
+                <div 
+                  key={idx} 
+                  className="flex items-center gap-2.5 p-2 px-3 bg-gray-50/80 hover:bg-white focus-within:bg-white border border-gray-200 rounded-xl transition-all shadow-2xs group"
+                >
+                  <span className="w-5 h-5 rounded-md bg-[#108283]/10 text-[#108283] flex items-center justify-center font-bold text-xs shrink-0">
+                    {idx + 1}
+                  </span>
                   <input
                     type="text"
                     value={deg}
                     onChange={(e) => handleUpdateDegree(idx, e.target.value)}
-                    className="flex-1 px-3 py-2 bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 rounded-lg text-sm text-gray-900"
+                    className="flex-1 bg-transparent text-xs sm:text-sm text-gray-900 font-medium outline-none"
+                    placeholder="Degree / Qualification title"
                   />
                   <button
                     type="button"
                     onClick={() => handleDeleteDegree(idx)}
-                    className="p-2 text-gray-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                    className="p-1.5 text-gray-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer shrink-0"
                     title="Delete degree"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={14} />
                   </button>
                 </div>
               ))}

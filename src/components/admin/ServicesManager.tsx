@@ -24,22 +24,22 @@ const CATEGORIES: CategoryMeta[] = [
     key: 'homeopathy',
     label: 'Homeopathy Treatments',
     path: '/homeopathy',
-    badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    dotColor: 'bg-emerald-500'
+    badgeColor: 'bg-[#108283] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#108283]'
   },
   {
     key: 'cosmetic',
     label: 'Cosmetic Treatments',
     path: '/cosmetic-treatments',
-    badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
-    dotColor: 'bg-amber-500'
+    badgeColor: 'bg-[#b45309] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#b45309]'
   },
   {
     key: 'hair-skin',
     label: 'Hair & Skin Treatments',
     path: '/hair-and-skin',
-    badgeColor: 'bg-teal-50 text-teal-800 border-teal-200',
-    dotColor: 'bg-teal-500'
+    badgeColor: 'bg-[#0f4c5c] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#0f4c5c]'
   }
 ];
 

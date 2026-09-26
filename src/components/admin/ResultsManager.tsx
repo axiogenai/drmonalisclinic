@@ -37,20 +37,20 @@ const CATEGORIES: CategoryMeta[] = [
   { 
     key: 'skin', 
     label: 'Skin & Scars', 
-    badgeColor: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    dotColor: 'bg-emerald-500'
+    badgeColor: 'bg-[#108283] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#108283]'
   },
   { 
     key: 'hair', 
     label: 'Hair Care', 
-    badgeColor: 'bg-teal-50 text-teal-800 border-teal-200',
-    dotColor: 'bg-teal-500'
+    badgeColor: 'bg-[#0f4c5c] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#0f4c5c]'
   },
   { 
     key: 'face', 
     label: 'Face & Anti-Aging', 
-    badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
-    dotColor: 'bg-amber-500'
+    badgeColor: 'bg-[#b45309] text-white border-white/20 shadow-xs',
+    dotColor: 'bg-[#b45309]'
   },
 ];
 

@@ -356,16 +356,7 @@ export default function CouponsManager() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
-          <button
-            type="button"
-            onClick={() => setIsGuideOpen(true)}
-            className="px-3.5 py-2.5 rounded-xl border border-[#108283]/30 bg-[#108283]/5 hover:bg-[#108283]/10 text-[#108283] text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
-            title="How to Use Coupons Guide"
-          >
-            <HelpCircle className="w-4 h-4 text-[#108283]" />
-            <span>How to Use Coupons</span>
-          </button>
+        <div className="flex items-center gap-2.5 shrink-0">
 
           <button
             type="button"
@@ -540,35 +531,35 @@ export default function CouponsManager() {
             const isUpcoming = coupon.startDate && new Date(coupon.startDate).getTime() > nowTime;
             const usagePercentage = Math.min(100, Math.round(((coupon.usedCount || 0) / coupon.maxUses) * 100));
 
-            // Status label & styling
+            // Status label & styling (Classic UI Badge)
             let statusBadge = {
               label: 'Active',
-              bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-              dot: 'bg-emerald-500',
+              bg: 'bg-emerald-50 text-emerald-800 border-emerald-300',
+              Icon: Check,
             };
             if (!coupon.isActive) {
               statusBadge = {
                 label: 'Disabled',
-                bg: 'bg-gray-100 text-gray-600 border-gray-200',
-                dot: 'bg-gray-400',
+                bg: 'bg-gray-100 text-gray-700 border-gray-300',
+                Icon: XCircle,
               };
             } else if (isExpired) {
               statusBadge = {
                 label: 'Expired',
-                bg: 'bg-rose-50 text-rose-700 border-rose-200',
-                dot: 'bg-rose-500',
+                bg: 'bg-rose-50 text-rose-800 border-rose-300',
+                Icon: Clock,
               };
             } else if (isExhausted) {
               statusBadge = {
                 label: 'Limit Reached',
-                bg: 'bg-amber-50 text-amber-700 border-amber-200',
-                dot: 'bg-amber-500',
+                bg: 'bg-amber-50 text-amber-800 border-amber-300',
+                Icon: AlertCircle,
               };
             } else if (isUpcoming) {
               statusBadge = {
                 label: 'Upcoming',
-                bg: 'bg-blue-50 text-blue-700 border-blue-200',
-                dot: 'bg-blue-500',
+                bg: 'bg-blue-50 text-blue-800 border-blue-300',
+                Icon: Calendar,
               };
             }
 
@@ -584,30 +575,30 @@ export default function CouponsManager() {
                 className="bg-white rounded-2xl border border-gray-200/90 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between overflow-hidden relative group"
               >
                 {/* Top Ticket Header */}
-                <div className="p-5 border-b border-dashed border-gray-200 bg-gradient-to-r from-gray-50/60 to-white">
+                <div className="p-3.5 sm:p-4 border-b border-dashed border-gray-200 bg-gradient-to-r from-gray-50/60 to-white">
                   
                   {/* Status Badge + Active Switch */}
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${statusBadge.bg}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${statusBadge.dot}`} />
-                      {statusBadge.label}
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${statusBadge.bg}`}>
+                      <statusBadge.Icon className="w-3 h-3 shrink-0" />
+                      <span>{statusBadge.label}</span>
                     </span>
 
                     <div className="flex items-center gap-1.5">
-                      <label className="text-[11px] font-medium text-gray-500 cursor-pointer font-['Source_Sans_3']">
+                      <label className="text-[10px] font-medium text-gray-500 cursor-pointer font-['Source_Sans_3']">
                         {coupon.isActive ? 'Enabled' : 'Paused'}
                       </label>
                       <button
                         type="button"
                         onClick={() => handleToggleActive(coupon)}
-                        className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
+                        className={`w-8 h-4.5 flex items-center rounded-full p-0.5 transition-colors cursor-pointer ${
                           coupon.isActive ? 'bg-[#108283]' : 'bg-gray-300'
                         }`}
                         title={coupon.isActive ? 'Click to disable' : 'Click to enable'}
                       >
                         <div
-                          className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-                            coupon.isActive ? 'translate-x-4' : 'translate-x-0'
+                          className={`bg-white w-3.5 h-3.5 rounded-full shadow-md transform transition-transform ${
+                            coupon.isActive ? 'translate-x-3.5' : 'translate-x-0'
                           }`}
                         />
                       </button>
@@ -617,7 +608,7 @@ export default function CouponsManager() {
                   {/* Code & Discount Value */}
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="px-3 py-1.5 bg-[#FAF0DD] border border-[#F0DAAA] rounded-xl font-mono font-bold text-base sm:text-lg text-gray-900 tracking-wider flex items-center gap-1.5 shadow-2xs">
+                      <div className="px-2.5 py-1 bg-[#FAF0DD] border border-[#F0DAAA] rounded-xl font-mono font-bold text-sm sm:text-base text-gray-900 tracking-wider flex items-center gap-1.5 shadow-2xs">
                         <span>{coupon.code}</span>
                         <button
                           type="button"
@@ -635,7 +626,7 @@ export default function CouponsManager() {
                     </div>
 
                     {/* Discount Value Pill */}
-                    <div className="px-3 py-1 rounded-xl bg-[#108283] text-white font-['Playfair_Display'] font-bold text-sm sm:text-base">
+                    <div className="px-2.5 py-1 rounded-xl bg-[#108283] text-white font-['Playfair_Display'] font-bold text-xs sm:text-sm">
                       {coupon.discountType === 'percentage'
                         ? `${coupon.discountValue}% OFF`
                         : `₹${coupon.discountValue} OFF`}
@@ -644,13 +635,13 @@ export default function CouponsManager() {
 
                   {/* Description */}
                   {coupon.description && (
-                    <p className="mt-2.5 text-xs text-gray-600 font-['Source_Sans_3'] leading-relaxed line-clamp-2">
+                    <p className="mt-2 text-xs text-gray-600 font-['Source_Sans_3'] leading-relaxed line-clamp-2">
                       {coupon.description}
                     </p>
                   )}
 
                   {/* Min order and cap metadata */}
-                  <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-['Source_Sans_3'] text-gray-500">
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5 text-[10.5px] font-['Source_Sans_3'] text-gray-500">
                     <span className="bg-gray-100/80 px-2 py-0.5 rounded-md font-medium">
                       {coupon.minOrderAmount > 0
                         ? `Min. Order: ₹${coupon.minOrderAmount}`
@@ -666,10 +657,10 @@ export default function CouponsManager() {
                 </div>
 
                 {/* Middle Section: Strict Limits Tracking */}
-                <div className="p-5 space-y-4 font-['Source_Sans_3'] bg-white flex-1">
+                <div className="p-3.5 sm:p-4 space-y-3 font-['Source_Sans_3'] bg-white flex-1">
                   
                   {/* LIMIT 1: Limited Uses Tracker */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-1">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-gray-700 flex items-center gap-1.5">
                         <Users className="w-3.5 h-3.5 text-[#108283]" />
@@ -681,7 +672,7 @@ export default function CouponsManager() {
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
                       <div 
                         className={`h-full transition-all duration-300 ${
                           isExhausted 
@@ -694,7 +685,7 @@ export default function CouponsManager() {
                       />
                     </div>
 
-                    <div className="flex justify-between items-center text-[11px] text-gray-500">
+                    <div className="flex justify-between items-center text-[10.5px] text-gray-500">
                       <span>{coupon.maxUses - (coupon.usedCount || 0)} redemptions left</span>
                       {isExhausted && (
                         <span className="text-rose-600 font-semibold">Exhausted</span>
@@ -714,7 +705,7 @@ export default function CouponsManager() {
                       </span>
                     </div>
 
-                    <p className="text-[11px] text-gray-500 flex items-center justify-between">
+                    <p className="text-[10.5px] text-gray-500 flex items-center justify-between">
                       <span>Start: {new Date(coupon.startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
                       {isExpired ? (
                         <span className="text-rose-600 font-semibold">Expired</span>
@@ -727,16 +718,16 @@ export default function CouponsManager() {
                 </div>
 
                 {/* Bottom Actions Bar */}
-                <div className="p-3.5 px-5 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-[11px] text-gray-400 font-mono">
+                <div className="py-2.5 px-3.5 sm:px-4 bg-gray-50/70 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-[10.5px] text-gray-400 font-mono">
                     ID: {coupon.id.slice(-6)}
                   </span>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => openEditModal(coupon)}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 hover:border-[#108283] hover:text-[#108283] text-gray-600 bg-white text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg border border-gray-200 hover:border-[#108283] hover:text-[#108283] text-gray-600 bg-white text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                       <span>Edit</span>

@@ -356,7 +356,7 @@ export default function FooterManager() {
               <div className="flex items-center gap-2 pb-3 border-b border-gray-100">
                 <Share2 className="w-5 h-5 text-[#108283]" />
                 <h2 className="font-['Playfair_Display'] text-lg font-bold text-gray-900">
-                  Social Channels &amp; Credits
+                  Social Channels
                 </h2>
               </div>
 
@@ -395,33 +395,6 @@ export default function FooterManager() {
                     onChange={(e) => handleChange('facebookUrl', e.target.value)}
                     className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
                     placeholder="https://facebook.com/..."
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Made by Credit Text
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.creditText}
-                    onChange={(e) => handleChange('creditText', e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
-                    placeholder="team.axiogen.in"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                    Made by Credit Link
-                  </label>
-                  <input
-                    type="url"
-                    value={formData.creditUrl}
-                    onChange={(e) => handleChange('creditUrl', e.target.value)}
-                    className="w-full px-3.5 py-2 bg-gray-50/80 hover:bg-white focus:bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#108283]/20 focus:border-[#108283] outline-none transition-all text-gray-900"
-                    placeholder="https://team.axiogen.in"
                   />
                 </div>
               </div>

@@ -221,7 +221,7 @@ export default function ResultsSection() {
             {/* Top Bar inside Card */}
             <div className="flex flex-wrap items-center justify-between gap-3 mb-4 px-2">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#108283]"></span>
                 <span className="font-['Playfair_Display'] text-gray-950 font-medium text-lg md:text-xl">
                   {activeData.name}
                 </span>
