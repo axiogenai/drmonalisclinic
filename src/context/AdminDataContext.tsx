@@ -842,18 +842,30 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
 
   // Appointment actions
   const addAppointment = async (appointment: Appointment) => {
-    setAppointments(prev => [appointment, ...prev]);
-    saveAppointmentToDb(appointment);
+    setAppointments(prev => {
+      const updated = [appointment, ...prev];
+      try { localStorage.setItem('admin_appointments_v2', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+    await saveAppointmentToDb(appointment);
   };
 
   const updateAppointmentStatus = async (id: string, status: Appointment['status']) => {
-    setAppointments(prev => prev.map(a => a.id === id ? { ...a, status } : a));
-    updateAppointmentStatusInDb(id, status);
+    setAppointments(prev => {
+      const updated = prev.map(a => a.id === id ? { ...a, status } : a);
+      try { localStorage.setItem('admin_appointments_v2', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+    await updateAppointmentStatusInDb(id, status);
   };
 
   const deleteAppointment = async (id: string) => {
-    setAppointments(prev => prev.filter(a => a.id !== id));
-    deleteAppointmentFromDb(id);
+    setAppointments(prev => {
+      const updated = prev.filter(a => a.id !== id);
+      try { localStorage.setItem('admin_appointments_v2', JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+    await deleteAppointmentFromDb(id);
   };
 
   const clearAppointments = () => {

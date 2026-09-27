@@ -387,13 +387,13 @@ export default function CartDrawer() {
                 items.map(({ product, quantity }) => (
                   <div 
                     key={product.id}
-                    className="flex gap-3.5 p-3.5 bg-gray-50/80 hover:bg-gray-50 rounded-2xl border border-gray-100 relative group transition-all"
+                    className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.03)] hover:border-[#108283]/30 transition-all group"
                   >
-                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-white shrink-0 border border-gray-200/80 p-0.5">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-slate-50 shrink-0 border border-gray-100 flex items-center justify-center p-1">
                       <img 
                         src={product.image} 
                         alt={product.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             'https://placehold.co/100x100/FAF0DD/108283?text=Rx';
@@ -401,43 +401,43 @@ export default function CartDrawer() {
                       />
                     </div>
                     
-                    <div className="flex-1 flex flex-col justify-between min-w-0 pr-1">
-                      <div className="flex justify-between items-start gap-2">
-                        <div className="min-w-0">
-                          <h4 className="font-['Playfair_Display'] text-sm font-bold text-gray-900 truncate" title={product.name}>
+                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                      <div className="flex justify-between items-start gap-1.5">
+                        <div className="min-w-0 pr-1">
+                          <h4 className="font-['Source_Sans_3'] text-sm font-semibold text-gray-900 truncate leading-snug" title={product.name}>
                             {product.name}
                           </h4>
-                          <span className="text-[11px] text-gray-400 font-medium block">
+                          <span className="text-[11px] text-gray-500 font-normal">
                             {product.volume || 'Standard Pack'}
                           </span>
                         </div>
                         <button 
                           onClick={() => removeFromCart(product.id)}
-                          className="text-gray-400 hover:text-rose-600 transition-colors p-1 -mr-1 cursor-pointer"
+                          className="text-gray-400 hover:text-rose-500 transition-colors p-1 -mr-1 -mt-0.5 cursor-pointer shrink-0"
                           title="Remove item"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="font-bold text-sm text-gray-950 font-['Source_Sans_3']">
+                      <div className="flex justify-between items-center mt-1.5">
+                        <span className="font-bold text-sm text-[#108283] font-['Source_Sans_3']">
                           ₹{product.price * quantity}
                         </span>
 
-                        <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-0.5 shadow-2xs">
+                        <div className="flex items-center bg-gray-50/80 border border-gray-200/90 rounded-full px-1 py-0.5 shadow-2xs">
                           <button 
                             onClick={() => updateQuantity(product.id, quantity - 1)}
-                            className="p-1 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors cursor-pointer rounded-full hover:bg-white"
                           >
                             <Minus className="w-3 h-3" />
                           </button>
-                          <span className="px-2 text-xs font-bold text-gray-800 font-mono">
+                          <span className="px-1.5 text-xs font-semibold text-gray-800 font-mono min-w-[16px] text-center">
                             {quantity}
                           </span>
                           <button 
                             onClick={() => updateQuantity(product.id, quantity + 1)}
-                            className="p-1 text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors cursor-pointer rounded-full hover:bg-white"
                           >
                             <Plus className="w-3 h-3" />
                           </button>

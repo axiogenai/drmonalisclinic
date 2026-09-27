@@ -62,7 +62,7 @@ export async function saveAppointmentToDb(appointment: Appointment): Promise<boo
       message: appointment.message || '',
       status: appointment.status,
       created_at: appointment.createdAt,
-    });
+    }, { onConflict: 'id' });
 
     if (error) {
       console.warn('Supabase saveAppointment error:', error.message);
@@ -188,7 +188,7 @@ export async function saveSettingToDb(key: string, data: any): Promise<boolean> 
         key,
         data,
         updated_at: new Date().toISOString(),
-      });
+      }, { onConflict: 'key' });
 
     if (error) {
       console.warn(`Failed to save setting ${key} to Supabase:`, error.message);

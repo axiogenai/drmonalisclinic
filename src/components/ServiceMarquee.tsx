@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import { useAdminData } from '@/context/AdminDataContext';
 
-const services = [
+const defaultServices = [
   'Homeopathy',
   'Skin Care',
   'Hair Care',
@@ -16,6 +17,14 @@ const services = [
 ];
 
 export default function ServiceMarquee() {
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {}
+  const adminServices = adminData?.services;
+  const services = adminServices && adminServices.length > 0
+    ? adminServices.map(s => s.title)
+    : defaultServices;
   return (
     <div className="w-full overflow-hidden bg-[#F0A070] py-2.5 md:py-3 select-none relative shadow-sm">
       <div className="flex w-max animate-marquee items-center">

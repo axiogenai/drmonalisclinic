@@ -6,7 +6,7 @@ import { useParams, notFound } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ContactWidget from '@/components/ContactWidget';
-import { blogArticles, getBlogBySlug } from '@/data/blogArticles';
+import { blogArticles, getBlogBySlug, BlogArticle } from '@/data/blogArticles';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -20,13 +20,48 @@ import {
   PhoneCall
 } from 'lucide-react';
 import { useDialog } from '@/context/DialogContext';
+import { useAdminData } from '@/context/AdminDataContext';
 
 export default function BlogArticlePage() {
   const { toast } = useDialog();
+  const { blogs: contextBlogs } = useAdminData();
   const params = useParams();
   const slug = params?.slug as string;
 
-  const article = getBlogBySlug(slug);
+  const staticArticle = getBlogBySlug(slug);
+  const adminArticle = contextBlogs?.find((b) => 
+    (b as any).slug === slug || 
+    b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') === slug ||
+    b.id === slug
+  );
+
+  const article: BlogArticle | null = staticArticle || (adminArticle ? {
+    id: adminArticle.id,
+    slug: (adminArticle as any).slug || slug,
+    title: adminArticle.title,
+    excerpt: adminArticle.excerpt,
+    lead: (adminArticle as any).lead || adminArticle.excerpt,
+    image: adminArticle.image,
+    category: adminArticle.category,
+    date: adminArticle.date,
+    readTime: (adminArticle as any).readTime || '4 min read',
+    author: (adminArticle as any).author || "Dr. Monali's Clinic",
+    authorRole: (adminArticle as any).authorRole || 'Homeopathy & Aesthetics',
+    contentSections: (adminArticle as any).contentSections || [
+      {
+        heading: 'Clinical Overview',
+        paragraphs: [(adminArticle as any).content || adminArticle.excerpt],
+      }
+    ],
+    doctorAdviceQuote: (adminArticle as any).doctorAdviceQuote || 'Consistent care and constitutional remedies offer gentle, permanent wellness.',
+    takeaways: (adminArticle as any).takeaways || [
+      'Constitutional approach treats root triggers, not just surface symptoms.',
+      'Natural, gentle care tailored to individual patient needs.',
+      'Safe for long-term health with no rebound effect.'
+    ],
+    treatmentLink: (adminArticle as any).treatmentLink || '/appointment',
+    treatmentName: (adminArticle as any).treatmentName || 'Consultation',
+  } : null);
 
   if (!article) {
     notFound();

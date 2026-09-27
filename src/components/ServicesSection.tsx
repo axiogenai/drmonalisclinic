@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import Link from 'next/link';
 import { motion, useScroll, useTransform, useMotionValueEvent, MotionValue } from 'framer-motion';
 import { ArrowRight, ChevronLeft, ChevronRight, X, Clock, Calendar, ShieldCheck, Check, Leaf, Droplets, Scissors, Syringe, Zap, Heart } from 'lucide-react';
+import { useAdminData } from '@/context/AdminDataContext';
 
 interface Service {
   title: string;
@@ -407,9 +408,45 @@ export default function ServicesSection() {
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
 
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {}
+  const adminServices = adminData?.services;
+
+  const allServices = useMemo(() => {
+    if (!adminServices || adminServices.length === 0) return SERVICES;
+    return SERVICES.map((base) => {
+      const found = adminServices.find(
+        (a) =>
+          (a as any).id === (base as any).id ||
+          a.title.toLowerCase() === base.title.toLowerCase() ||
+          base.title.toLowerCase().includes(a.title.toLowerCase()) ||
+          ((a as any).id && base.title.toLowerCase().includes((a as any).id.replace(/-/g, ' ')))
+      );
+      if (!found) return base;
+      return {
+        ...base,
+        title: found.title || base.title,
+        description: found.description || base.description,
+        image: found.image || base.image,
+        imagePosition: (found as any).imagePosition || base.imagePosition,
+        tagline: (found as any).tagline || base.tagline,
+        highlights: found.highlights && found.highlights.length > 0 ? found.highlights : base.highlights,
+        downtime: (found as any).downtime || (found as any).duration || base.downtime,
+        sessions: (found as any).sessions || base.sessions,
+        technology: (found as any).technology || base.technology,
+        cardBg: (found as any).cardBg || base.cardBg,
+        badge: (found as any).badge || base.badge,
+        accent: (found as any).accent || base.accent,
+        iconColor: (found as any).iconColor || base.iconColor,
+      };
+    });
+  }, [adminServices]);
+
   const visible = cat === 'all'
-    ? SERVICES
-    : SERVICES.filter(s => s.category === cat || (cat === 'body' && s.category === 'surgery'));
+    ? allServices
+    : allServices.filter(s => s.category === cat || (cat === 'body' && s.category === 'surgery'));
 
   const containerRef = useRef<HTMLElement>(null);
   const [isDesktop, setIsDesktop] = useState(true);
@@ -421,7 +458,7 @@ export default function ServicesSection() {
     mq.addEventListener("change", handler);
 
     // Warm up image cache and pre-decode into GPU memory
-    SERVICES.forEach(s => {
+    allServices.forEach(s => {
       const img = new window.Image();
       img.src = s.image;
       if (typeof img.decode === 'function') {
@@ -430,7 +467,7 @@ export default function ServicesSection() {
     });
 
     return () => mq.removeEventListener("change", handler);
-  }, []);
+  }, [allServices]);
 
   const config = isDesktop ? desktopConfig : mobileConfig;
 

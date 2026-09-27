@@ -10,20 +10,40 @@ export default function BlogSection() {
   const { blogs: contextBlogs } = useAdminData();
 
   // Merge context blogs if admin created any
-  const displayBlogs = blogArticles.map((defaultArticle) => {
-    const matched = contextBlogs?.find((b) => b.title === defaultArticle.title || b.id === defaultArticle.id);
-    if (matched) {
-      return {
-        ...defaultArticle,
-        title: matched.title || defaultArticle.title,
-        excerpt: matched.excerpt || defaultArticle.excerpt,
-        image: matched.image || defaultArticle.image,
-        category: matched.category || defaultArticle.category,
-        date: matched.date || defaultArticle.date,
-      };
-    }
-    return defaultArticle;
-  });
+  const displayBlogs = React.useMemo(() => {
+    const defaultMapped = blogArticles.map((defaultArticle) => {
+      const matched = contextBlogs?.find((b) => b.title === defaultArticle.title || b.id === defaultArticle.id);
+      if (matched) {
+        return {
+          ...defaultArticle,
+          title: matched.title || defaultArticle.title,
+          excerpt: matched.excerpt || defaultArticle.excerpt,
+          image: matched.image || defaultArticle.image,
+          category: matched.category || defaultArticle.category,
+          date: matched.date || defaultArticle.date,
+        };
+      }
+      return defaultArticle;
+    });
+
+    const customBlogs = (contextBlogs || [])
+      .filter((b) => !defaultMapped.some((dm) => dm.id === b.id || dm.title === b.title))
+      .map((b) => ({
+        id: b.id,
+        slug: (b as any).slug || b.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        title: b.title,
+        excerpt: b.excerpt,
+        image: b.image,
+        category: b.category,
+        date: b.date,
+        readTime: (b as any).readTime || '4 min read',
+        author: (b as any).author || "Dr. Monali's Clinic",
+        authorRole: (b as any).authorRole || 'Homeopathy & Aesthetics',
+        content: (b as any).content || b.excerpt,
+      }));
+
+    return [...defaultMapped, ...customBlogs];
+  }, [contextBlogs]);
 
   return (
     <section id="blogs" className="py-20 md:py-28 bg-white relative scroll-mt-20">
