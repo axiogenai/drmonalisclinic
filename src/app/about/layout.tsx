@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   description:
     'Meet Dr. Monali Subhedar (BHMS, MD Homeopathy, Cosmetologist) and Dr. Sachin Subhedar. Over 15+ years of constitutional homeopathic care and clinical aesthetics in Kolhapur, Maharashtra.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
+    'best homeopath Kolhapur',
+    'homeopathic doctor Kolhapur',
+    'skin specialist Kolhapur',
     'about dr monali subhedar',
     'dr monali subhedar qualifications',
     'dr sachin subhedar kolhapur',

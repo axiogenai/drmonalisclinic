@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   description:
     'Best constitutional homeopathy clinic in Kolhapur. Non-steroidal, natural root-cause treatment for Psoriasis, Vitiligo, Eczema, Kidney Stones, PCOD, Allergies, and Pediatric Growth by Dr. Monali Subhedar.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
+    'best homeopath Kolhapur',
+    'constitutional homeopathy treatment Kolhapur',
+    'chronic skin disease treatment Kolhapur',
+    'homeopathic doctor Kolhapur',
     'homeopathy clinic kolhapur',
     'best homeopathy doctor kolhapur',
     'psoriasis treatment kolhapur',

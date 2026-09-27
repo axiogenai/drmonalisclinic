@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   description:
     'Advanced cosmetology clinic in Kolhapur. Dermatologist-grade Hydra-Derm medifacials, chemical peels, hyperpigmentation removal, anti-aging collagen therapy & acne scar remodeling by Dr. Monali Subhedar.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
+    'medifacials Kolhapur',
+    'skin specialist Kolhapur',
+    'chronic skin disease treatment Kolhapur',
     'cosmetic clinic kolhapur',
     'cosmetology clinic kolhapur',
     'medifacial kolhapur',

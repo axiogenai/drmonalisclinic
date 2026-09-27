@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   description:
     'Schedule your appointment with Dr. Monali Subhedar & Dr. Sachin Subhedar in Kolhapur. Personalized consultations for skin diseases, hair fall, homeopathy & cosmetology. Mon–Sat: 10 AM–2 PM & 5–9 PM. Call: +91 92094 72224.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
+    'best homeopath Kolhapur',
+    'homeopathic doctor Kolhapur',
+    'skin specialist Kolhapur',
     'book appointment dr monali clinic',
     'doctor consultation kolhapur',
     'homeopathy doctor appointment kolhapur',

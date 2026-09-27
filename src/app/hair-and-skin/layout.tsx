@@ -6,6 +6,15 @@ export const metadata: Metadata = {
   description:
     'Best Hair & Skin Clinic in Kolhapur. Autologous Hair PRP Therapy, alopecia treatments, hair thinning reversal, acne control, and skin rejuvenation under expert supervision of Dr. Monali Subhedar.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
+    'hair fall PRP Kolhapur',
+    'hair loss treatment Kolhapur',
+    'skin specialist Kolhapur',
+    'chronic skin disease treatment Kolhapur',
     'hair clinic kolhapur',
     'hair fall treatment in kolhapur',
     'hair prp kolhapur',

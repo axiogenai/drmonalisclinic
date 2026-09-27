@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   description:
     'Shop dermatologist & homeopath-approved skin and hair care products. Gentle foaming cleansers, brightening vitamin serums, hair growth oils & mineral sunscreens. In-clinic pickup in Kolhapur & Maharashtra delivery.',
   keywords: [
+    'dr monali clinic',
+    'dr monali clinic kolhapur',
+    'Dr. Monali Clinic',
+    'Dr. Monali Clinic Kolhapur',
+    'Dr. Monali Subhedar Kolhapur',
     'skincare products kolhapur',
     'doctor recommended skincare kolhapur',
     'hair growth serum kolhapur',

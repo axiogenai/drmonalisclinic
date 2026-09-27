@@ -10,12 +10,18 @@ export default function LocalClinicSchema() {
         '@id': 'https://drmonalisclinic.com/#clinic',
         name: "Dr. Monali's Homeopathy, Skin & Hair Clinic",
         alternateName: [
-          "Dr. Monali's Clinic Kolhapur",
+          "dr monali clinic",
+          "dr monali clinic kolhapur",
           "Dr. Monali Clinic",
+          "Dr. Monali Clinic Kolhapur",
+          "Dr. Monali Subhedar Kolhapur",
+          "Dr. Monali's Clinic Kolhapur",
           "Dr. Monali Homeopathy",
           "Dr Monali Subhedar Clinic",
           "Dr. Monali Cosmetology & Skin Care"
         ],
+        keywords:
+          "dr monali clinic, dr monali clinic kolhapur, Dr. Monali Clinic, Dr. Monali Clinic Kolhapur, Dr. Monali Subhedar Kolhapur, best homeopath Kolhapur, constitutional homeopathy treatment Kolhapur, chronic skin disease treatment Kolhapur, hair fall PRP Kolhapur, medifacials Kolhapur, homeopathic doctor Kolhapur, skin specialist Kolhapur, hair loss treatment Kolhapur",
         url: 'https://drmonalisclinic.com',
         logo: 'https://drmonalisclinic.com/clinic-logo.png',
         image: [
@@ -98,18 +104,28 @@ export default function LocalClinicSchema() {
         availableService: [
           {
             '@type': 'MedicalProcedure',
-            name: 'Constitutional Homeopathy for Chronic Skin Diseases',
-            description: 'Root-cause treatment for Psoriasis, Vitiligo, Eczema, Lichen Planus, and Chronic Urticaria without steroid rebound.',
+            name: 'Constitutional Homeopathy Treatment Kolhapur',
+            description: 'Root-cause constitutional homeopathy treatment for Psoriasis, Vitiligo, Eczema, Lichen Planus, and Chronic Urticaria without steroid rebound.',
           },
           {
             '@type': 'MedicalProcedure',
-            name: 'Hair Fall & Hair PRP Growth Therapy',
-            description: 'Follicular regeneration with autologous Platelet-Rich Plasma and homeopathic constitutional remedies.',
+            name: 'Chronic Skin Disease Treatment Kolhapur',
+            description: 'Advanced homeopathic and dermatological treatment for chronic stubborn skin disorders by expert skin specialist Dr. Monali Subhedar.',
           },
           {
             '@type': 'MedicalProcedure',
-            name: 'Clinical Cosmetology & Medifacials',
-            description: 'Hydra-derm facials, medical chemical peels, pigmentation correction, and acne scar remodeling.',
+            name: 'Hair Fall PRP Kolhapur',
+            description: 'Follicular regeneration with autologous Platelet-Rich Plasma and homeopathic constitutional remedies for hair loss treatment in Kolhapur.',
+          },
+          {
+            '@type': 'MedicalProcedure',
+            name: 'Medifacials Kolhapur',
+            description: 'Hydra-derm facials, medical chemical peels, pigmentation correction, and acne scar remodeling at Dr. Monali Clinic Kolhapur.',
+          },
+          {
+            '@type': 'MedicalProcedure',
+            name: 'Hair Loss Treatment Kolhapur',
+            description: 'Targeted hair loss therapies, PRP growth factors, scalp rejuvenation, and homeopathic hair restoration.',
           },
           {
             '@type': 'MedicalProcedure',
