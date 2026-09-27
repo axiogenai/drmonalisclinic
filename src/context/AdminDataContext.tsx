@@ -41,6 +41,7 @@ interface LiveUpdateInfo {
 }
 
 interface AdminDataContextType {
+  isLoaded: boolean;
   lastLiveUpdate: LiveUpdateInfo | null;
   clearLiveUpdate: () => void;
 
@@ -160,8 +161,20 @@ const KEY_LABELS: Record<string, string> = {
   results: 'Clinical Before & After Results',
 };
 
-// Universal helper to persist settings to Supabase and API fallback
+// Universal helper to persist settings to Supabase and API fallback with instant cross-tab broadcast
 async function persistSetting<T>(key: string, data: T): Promise<boolean> {
+  // 1. Instant cross-tab broadcast (0ms local sync)
+  if (typeof window !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('drmonali_clinic_sync');
+      bc.postMessage({ key, data, timestamp: Date.now() });
+      bc.close();
+    } catch {}
+    try {
+      window.dispatchEvent(new CustomEvent('clinic_data_sync', { detail: { key, data } }));
+    } catch {}
+  }
+
   let ok = false;
   if (isSupabaseConfigured()) {
     try {
@@ -171,7 +184,7 @@ async function persistSetting<T>(key: string, data: T): Promise<boolean> {
     }
   }
 
-  if (!ok && typeof window !== 'undefined') {
+  if (typeof window !== 'undefined') {
     try {
       const res = await fetch('/api/settings', {
         method: 'POST',
@@ -179,7 +192,7 @@ async function persistSetting<T>(key: string, data: T): Promise<boolean> {
         body: JSON.stringify({ key, data }),
       });
       const json = await res.json();
-      ok = Boolean(json.success);
+      if (json.success) ok = true;
     } catch (err) {
       console.warn(`API fallback save for ${key} failed:`, err);
     }
@@ -468,153 +481,139 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
     setIsLoaded(true);
   }, [triggerUpdateNotice]);
 
-  // 4. Active 5-second polling interval (guarantees cross-domain updates show within 5 seconds on main website)
+  // 3. Instant local cross-tab and cross-window sync (BroadcastChannel & CustomEvent)
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
+    const handleDataUpdate = (key: string, data: any) => {
+      if (!key || data === undefined) return;
+      if (key === 'about_settings' && data) {
+        setAboutSettings(data);
+        try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'footer_settings' && data) {
+        setFooterSettings(data);
+        try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'site_settings' && data) {
+        setSiteSettings(data);
+        try { localStorage.setItem('admin_settings', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'coupons' && Array.isArray(data)) {
+        setCoupons(data);
+        try { localStorage.setItem('admin_coupons_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'products' && Array.isArray(data)) {
+        setProducts(data);
+        try { localStorage.setItem('admin_products', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'services' && Array.isArray(data)) {
+        setServices(data);
+        try { localStorage.setItem('admin_services_pages_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'testimonials' && Array.isArray(data)) {
+        setTestimonials(data);
+        try { localStorage.setItem('admin_testimonials', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'faqs' && Array.isArray(data)) {
+        setFaqs(data);
+        try { localStorage.setItem('admin_faqs', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'blogs' && Array.isArray(data)) {
+        setBlogs(data);
+        try { localStorage.setItem('admin_blogs', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'marquee_items' && Array.isArray(data)) {
+        setMarqueeItems(data);
+        try { localStorage.setItem('admin_marquee_items_v2', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'marquee_settings' && data) {
+        setMarqueeSettings(data);
+        try { localStorage.setItem('admin_marquee_settings', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'results' && Array.isArray(data)) {
+        setResults(data);
+        try { localStorage.setItem('admin_results_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      }
+    };
 
-    const intervalId = setInterval(() => {
-      // Only execute query if tab is visible in browser to avoid wasted cycles
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel('drmonali_clinic_sync');
+      bc.onmessage = (event) => {
+        if (event.data?.key && event.data?.data !== undefined) {
+          handleDataUpdate(event.data.key, event.data.data);
+        }
+      };
+    } catch {}
+
+    const onCustomEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.key && customEvent.detail?.data !== undefined) {
+        handleDataUpdate(customEvent.detail.key, customEvent.detail.data);
+      }
+    };
+    window.addEventListener('clinic_data_sync', onCustomEvent);
+
+    return () => {
+      if (bc) bc.close();
+      window.removeEventListener('clinic_data_sync', onCustomEvent);
+    };
+  }, [triggerUpdateNotice]);
+
+  // 4. Active 3-second universal polling (Supabase + API Fallback for guaranteed 3-5s multi-device sync)
+  useEffect(() => {
+    const fetchLatestSettings = async () => {
       if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
         return;
       }
 
-      getAllSettingsFromDb().then(settingsMap => {
-        if (!settingsMap) return;
+      let settingsMap: Record<string, any> | null = null;
+      if (isSupabaseConfigured()) {
+        try {
+          settingsMap = await getAllSettingsFromDb();
+        } catch {}
+      }
 
-        // Check About Settings
-        if (settingsMap.about_settings) {
-          const newStr = JSON.stringify(settingsMap.about_settings);
-          const currentStr = localStorage.getItem('admin_about_settings_v1');
+      if (!settingsMap || Object.keys(settingsMap).length === 0) {
+        try {
+          const res = await fetch('/api/settings?t=' + Date.now(), { cache: 'no-store' });
+          const json = await res.json();
+          if (json.success && json.settings) {
+            settingsMap = json.settings;
+          }
+        } catch {}
+      }
+
+      if (!settingsMap) return;
+
+      const checkAndUpdate = (key: string, dataKey: string, setter: (val: any) => void) => {
+        const val = settingsMap![key];
+        if (val !== undefined && val !== null) {
+          const newStr = JSON.stringify(val);
+          const currentStr = localStorage.getItem(dataKey);
           if (newStr !== currentStr) {
-            setAboutSettings(settingsMap.about_settings);
-            try { localStorage.setItem('admin_about_settings_v1', newStr); } catch {}
-            triggerUpdateNotice('about_settings');
+            setter(val);
+            try { localStorage.setItem(dataKey, newStr); } catch {}
+            triggerUpdateNotice(key);
           }
         }
+      };
 
-        // Check Footer Settings
-        if (settingsMap.footer_settings) {
-          const newStr = JSON.stringify(settingsMap.footer_settings);
-          const currentStr = localStorage.getItem('admin_footer_settings_v1');
-          if (newStr !== currentStr) {
-            setFooterSettings(settingsMap.footer_settings);
-            try { localStorage.setItem('admin_footer_settings_v1', newStr); } catch {}
-            triggerUpdateNotice('footer_settings');
-          }
-        }
+      checkAndUpdate('about_settings', 'admin_about_settings_v1', setAboutSettings);
+      checkAndUpdate('footer_settings', 'admin_footer_settings_v1', setFooterSettings);
+      checkAndUpdate('site_settings', 'admin_settings', setSiteSettings);
+      checkAndUpdate('coupons', 'admin_coupons_v1', setCoupons);
+      checkAndUpdate('products', 'admin_products', setProducts);
+      checkAndUpdate('services', 'admin_services_pages_v1', setServices);
+      checkAndUpdate('testimonials', 'admin_testimonials', setTestimonials);
+      checkAndUpdate('faqs', 'admin_faqs', setFaqs);
+      checkAndUpdate('blogs', 'admin_blogs', setBlogs);
+      checkAndUpdate('marquee_items', 'admin_marquee_items_v2', setMarqueeItems);
+      checkAndUpdate('marquee_settings', 'admin_marquee_settings', setMarqueeSettings);
+      checkAndUpdate('results', 'admin_results_v1', setResults);
+    };
 
-        // Check Site Settings
-        if (settingsMap.site_settings) {
-          const newStr = JSON.stringify(settingsMap.site_settings);
-          const currentStr = localStorage.getItem('admin_settings');
-          if (newStr !== currentStr) {
-            setSiteSettings(settingsMap.site_settings);
-            try { localStorage.setItem('admin_settings', newStr); } catch {}
-            triggerUpdateNotice('site_settings');
-          }
-        }
-
-        // Check Coupons
-        if (settingsMap.coupons && Array.isArray(settingsMap.coupons)) {
-          const newStr = JSON.stringify(settingsMap.coupons);
-          const currentStr = localStorage.getItem('admin_coupons_v1');
-          if (newStr !== currentStr) {
-            setCoupons(settingsMap.coupons);
-            try { localStorage.setItem('admin_coupons_v1', newStr); } catch {}
-            triggerUpdateNotice('coupons');
-          }
-        }
-
-        // Check Products
-        if (settingsMap.products && Array.isArray(settingsMap.products)) {
-          const newStr = JSON.stringify(settingsMap.products);
-          const currentStr = localStorage.getItem('admin_products');
-          if (newStr !== currentStr) {
-            setProducts(settingsMap.products);
-            try { localStorage.setItem('admin_products', newStr); } catch {}
-            triggerUpdateNotice('products');
-          }
-        }
-
-        // Check Services
-        if (settingsMap.services && Array.isArray(settingsMap.services)) {
-          const newStr = JSON.stringify(settingsMap.services);
-          const currentStr = localStorage.getItem('admin_services_pages_v1');
-          if (newStr !== currentStr) {
-            setServices(settingsMap.services);
-            try { localStorage.setItem('admin_services_pages_v1', newStr); } catch {}
-            triggerUpdateNotice('services');
-          }
-        }
-
-        // Check Testimonials
-        if (settingsMap.testimonials && Array.isArray(settingsMap.testimonials)) {
-          const newStr = JSON.stringify(settingsMap.testimonials);
-          const currentStr = localStorage.getItem('admin_testimonials');
-          if (newStr !== currentStr) {
-            setTestimonials(settingsMap.testimonials);
-            try { localStorage.setItem('admin_testimonials', newStr); } catch {}
-            triggerUpdateNotice('testimonials');
-          }
-        }
-
-        // Check FAQs
-        if (settingsMap.faqs && Array.isArray(settingsMap.faqs)) {
-          const newStr = JSON.stringify(settingsMap.faqs);
-          const currentStr = localStorage.getItem('admin_faqs');
-          if (newStr !== currentStr) {
-            setFaqs(settingsMap.faqs);
-            try { localStorage.setItem('admin_faqs', newStr); } catch {}
-            triggerUpdateNotice('faqs');
-          }
-        }
-
-        // Check Blogs
-        if (settingsMap.blogs && Array.isArray(settingsMap.blogs)) {
-          const newStr = JSON.stringify(settingsMap.blogs);
-          const currentStr = localStorage.getItem('admin_blogs');
-          if (newStr !== currentStr) {
-            setBlogs(settingsMap.blogs);
-            try { localStorage.setItem('admin_blogs', newStr); } catch {}
-            triggerUpdateNotice('blogs');
-          }
-        }
-
-        // Check Marquee Items
-        if (settingsMap.marquee_items && Array.isArray(settingsMap.marquee_items)) {
-          const newStr = JSON.stringify(settingsMap.marquee_items);
-          const currentStr = localStorage.getItem('admin_marquee_items_v2');
-          if (newStr !== currentStr) {
-            setMarqueeItems(settingsMap.marquee_items);
-            try { localStorage.setItem('admin_marquee_items_v2', newStr); } catch {}
-            triggerUpdateNotice('marquee_items');
-          }
-        }
-
-        // Check Marquee Settings
-        if (settingsMap.marquee_settings) {
-          const newStr = JSON.stringify(settingsMap.marquee_settings);
-          const currentStr = localStorage.getItem('admin_marquee_settings');
-          if (newStr !== currentStr) {
-            setMarqueeSettings(settingsMap.marquee_settings);
-            try { localStorage.setItem('admin_marquee_settings', newStr); } catch {}
-            triggerUpdateNotice('marquee_settings');
-          }
-        }
-
-        // Check Results
-        if (settingsMap.results && Array.isArray(settingsMap.results)) {
-          const newStr = JSON.stringify(settingsMap.results);
-          const currentStr = localStorage.getItem('admin_results_v1');
-          if (newStr !== currentStr) {
-            setResults(settingsMap.results);
-            try { localStorage.setItem('admin_results_v1', newStr); } catch {}
-            triggerUpdateNotice('results');
-          }
-        }
-      });
-    }, 5000);
-
+    const intervalId = setInterval(fetchLatestSettings, 3000);
     return () => clearInterval(intervalId);
   }, [triggerUpdateNotice]);
 
@@ -966,6 +965,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AdminDataContext.Provider value={{
+      isLoaded,
       lastLiveUpdate,
       clearLiveUpdate,
       coupons, addCoupon, updateCoupon, deleteCoupon, recordCouponUse, validateCoupon, resetCoupons,

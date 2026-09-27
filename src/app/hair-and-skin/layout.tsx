@@ -1,42 +1,33 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import React from 'react';
 
 export const metadata: Metadata = {
-  title: 'Hair & Skin Treatments Kolhapur | PRP, Mesotherapy, Microneedling | Dr. Monali',
+  title: 'Hair & Skin Clinic Kolhapur | Hair Fall PRP & Advanced Dermatology',
   description:
-    'Advanced hair & skin regeneration at Dr. Monali\'s Clinic Kolhapur. Hair PRP, Skin PRP, Mesotherapy, Microneedling & High-Frequency Therapy for hair loss, acne scars & skin renewal. Dr. Monali Subhedar. Call: +91 92094 72224.',
+    'Best Hair & Skin Clinic in Kolhapur. Autologous Hair PRP Therapy, alopecia treatments, hair thinning reversal, acne control, and skin rejuvenation under expert supervision of Dr. Monali Subhedar.',
   keywords: [
-    'hair treatment kolhapur',
-    'hair fall treatment kolhapur',
+    'hair clinic kolhapur',
+    'hair fall treatment in kolhapur',
     'hair prp kolhapur',
-    'hair prp therapy kolhapur',
-    'hair loss treatment kolhapur',
-    'hair thinning treatment kolhapur',
+    'best skin specialist kolhapur',
     'alopecia treatment kolhapur',
-    'skin prp kolhapur',
-    'mesotherapy kolhapur',
-    'microneedling kolhapur',
-    'high frequency therapy kolhapur',
-    'skin rejuvenation kolhapur',
-    'collagen therapy kolhapur',
-    'hair restoration kolhapur',
-    'prp treatment kolhapur',
-    'trichologist kolhapur',
-    'hair specialist kolhapur',
-    'skin specialist kolhapur',
-    'dr monali hair treatment',
-    'best hair clinic kolhapur',
+    'hair regrowth clinic kolhapur',
+    'dermatology clinic near ring road kolhapur',
+    'scalp treatment kolhapur',
+    'hair thinning solutions kolhapur',
   ],
   alternates: {
     canonical: '/hair-and-skin',
   },
   openGraph: {
-    title: 'Hair & Skin Treatments Kolhapur | Dr. Monali\'s Clinic',
+    title: 'Hair & Skin Clinic Kolhapur | Hair Fall PRP & Dermatology',
     description:
-      'Hair PRP, Skin PRP, Mesotherapy & Microneedling for hair loss, thinning & skin renewal at Dr. Monali\'s Clinic Kolhapur.',
-    url: 'https://www.drmonalisclinic.com/hair-and-skin',
+      'Proven hair regrowth PRP treatments and clinical dermatology in Kolhapur. Book a consultation with Dr. Monali Subhedar.',
+    url: 'https://drmonalisclinic.com/hair-and-skin',
+    images: [{ url: '/hero-model.png', width: 1200, height: 630, alt: 'Hair and Skin Clinic Kolhapur' }],
   },
 };
 
 export default function HairAndSkinLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <>{children}</>;
 }

@@ -7,37 +7,21 @@ export default function LocalClinicSchema() {
       // 1. Medical & Homeopathic Clinic Entity (Local Business)
       {
         '@type': ['MedicalClinic', 'HomeopathicClinic', 'LocalBusiness', 'HealthAndBeautyBusiness'],
-        '@id': 'https://www.drmonalisclinic.com/#clinic',
+        '@id': 'https://drmonalisclinic.com/#clinic',
         name: "Dr. Monali's Homeopathy, Skin & Hair Clinic",
         alternateName: [
           "Dr. Monali's Clinic Kolhapur",
           "Dr. Monali Clinic",
           "Dr. Monali Homeopathy",
           "Dr Monali Subhedar Clinic",
-          "Dr. Monali Cosmetology & Skin Care",
-          "drmonalisclinic",
-          "drmonalisclinic.com",
-          "Dr Monali Sachin Subhedar Clinic",
-          "Monali Homeopathy Clinic Kolhapur",
-          "Dr Monali Skin Clinic Kolhapur",
-          "Best Homeopathy Clinic Kolhapur",
-          "Homeopathy Clinic Near Ring Road Kolhapur",
-          "Skin Hair Clinic Kolhapur",
-          "Golden Spring Clinic Kolhapur"
+          "Dr. Monali Cosmetology & Skin Care"
         ],
-        url: 'https://www.drmonalisclinic.com',
-        logo: {
-          '@type': 'ImageObject',
-          url: 'https://www.drmonalisclinic.com/clinic-logo-icon.png',
-          width: '512',
-          height: '512',
-          caption: "Dr. Monali's Homeopathy Clinic Official Logo",
-        },
+        url: 'https://drmonalisclinic.com',
+        logo: 'https://drmonalisclinic.com/clinic-logo.png',
         image: [
-          'https://www.drmonalisclinic.com/clinic-logo-icon.png',
-          'https://www.drmonalisclinic.com/clinic-logo.png',
-          'https://www.drmonalisclinic.com/hero-model.png',
-          'https://www.drmonalisclinic.com/aboutdoc.png'
+          'https://drmonalisclinic.com/clinic-logo.png',
+          'https://drmonalisclinic.com/hero-model.png',
+          'https://drmonalisclinic.com/aboutdoc.png'
         ],
         description:
           "Ranked #1 Homeopathy, Skin Care & Hair Clinic in Kolhapur. Led by Dr. Monali Subhedar (BHMS, MD Homeopathy, Cosmetologist) & Dr. Sachin Subhedar. Specializing in constitutional homeopathy, chronic skin diseases, hair fall PRP, and clinical medifacials.",
@@ -214,44 +198,6 @@ export default function LocalClinicSchema() {
             },
           },
         ],
-      },
-      // 4. WebSite Schema with SearchAction (enables Google Sitelinks Search Box)
-      {
-        '@type': 'WebSite',
-        '@id': 'https://www.drmonalisclinic.com/#website',
-        url: 'https://www.drmonalisclinic.com',
-        name: "Dr. Monali's Homeopathy Clinic Kolhapur",
-        alternateName: ['drmonalisclinic.com', 'drmonalisclinic'],
-        description: "Official website of Dr. Monali's Homeopathy, Skin & Hair Clinic in Kolhapur, Maharashtra.",
-        publisher: { '@id': 'https://www.drmonalisclinic.com/#clinic' },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: 'https://www.drmonalisclinic.com/?q={search_term_string}',
-          },
-          'query-input': 'required name=search_term_string',
-        },
-        inLanguage: 'en-IN',
-      },
-
-      // 5. Doctor Entity: Dr. Sachin Subhedar
-      {
-        '@type': 'Physician',
-        '@id': 'https://drmonalisclinic.com/#drsachin',
-        name: 'Dr. Sachin Subhedar',
-        url: 'https://drmonalisclinic.com/about',
-        telephone: '+919209472224',
-        medicalSpecialty: ['Homeopathy', 'FamilyMedicine'],
-        worksFor: { '@id': 'https://drmonalisclinic.com/#clinic' },
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: 'Golden Spring Apartment, Near Ring Road',
-          addressLocality: 'Kolhapur',
-          addressRegion: 'Maharashtra',
-          postalCode: '416012',
-          addressCountry: 'IN',
-        },
       },
     ],
   };

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.drmonalisclinic.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drmonalisclinic.com';
 
   return {
     rules: [
@@ -13,7 +13,6 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: [
           'Googlebot',
-          'Googlebot-Image',
           'Bingbot',
           'Applebot',
           'Slurp',

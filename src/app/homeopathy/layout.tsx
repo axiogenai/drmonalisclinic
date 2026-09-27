@@ -1,42 +1,33 @@
-import type { Metadata } from 'next';
+import { Metadata } from 'next';
+import React from 'react';
 
 export const metadata: Metadata = {
-  title: 'Homeopathy Treatments Kolhapur | Kidney Stones, PCOD, Eczema, Height Growth | Dr. Monali',
+  title: 'Homeopathy Treatments in Kolhapur | Skin, Psoriasis, Vitiligo & Chronic Care',
   description:
-    'Expert homeopathic treatments at Dr. Monali\'s Clinic Kolhapur. Constitutional treatment for Kidney Stones, PCOD, Eczema, Psoriasis, Piles, Height Growth & Weight Management by Dr. Monali Subhedar & Dr. Sachin Subhedar (BHMS Mumbai). Book now: +91 92094 72224.',
+    'Best constitutional homeopathy clinic in Kolhapur. Non-steroidal, natural root-cause treatment for Psoriasis, Vitiligo, Eczema, Kidney Stones, PCOD, Allergies, and Pediatric Growth by Dr. Monali Subhedar.',
   keywords: [
-    'homeopathy treatment kolhapur',
-    'homeopathy doctor kolhapur',
-    'best homeopathy clinic kolhapur',
-    'constitutional homeopathy kolhapur',
+    'homeopathy clinic kolhapur',
+    'best homeopathy doctor kolhapur',
+    'psoriasis treatment kolhapur',
+    'vitiligo homeopathy kolhapur',
+    'eczema natural cure kolhapur',
     'kidney stone homeopathy kolhapur',
-    'kidney stone treatment kolhapur',
-    'pcod homeopathy kolhapur',
-    'pcod treatment kolhapur',
-    'pcos treatment kolhapur',
-    'eczema treatment kolhapur',
-    'psoriasis homeopathy kolhapur',
-    'piles treatment kolhapur',
-    'height growth treatment kolhapur',
-    'weight loss kolhapur',
-    'weight gain treatment kolhapur',
-    'dr monali subhedar homeopathy',
-    'dr sachin subhedar',
-    'homeopathy for skin diseases kolhapur',
-    'natural treatment kolhapur',
-    'safe homeopathy treatment',
+    'pcod treatment kolhapur homeopathy',
+    'pediatric growth homeopathy kolhapur',
+    'constitutional homeopathy maharashtra',
   ],
   alternates: {
     canonical: '/homeopathy',
   },
   openGraph: {
-    title: 'Homeopathy Treatments Kolhapur | Dr. Monali\'s Clinic',
+    title: 'Homeopathy Treatments in Kolhapur | Dr. Monali Subhedar',
     description:
-      'Constitutional homeopathic treatments for Kidney Stones, PCOD, Eczema, Psoriasis, Piles, Height Growth & Weight Management. Safe, natural, no side effects.',
-    url: 'https://www.drmonalisclinic.com/homeopathy',
+      'Root-cause constitutional homeopathic treatments for chronic skin diseases, kidney stones, PCOD, and pediatric care in Kolhapur.',
+    url: 'https://drmonalisclinic.com/homeopathy',
+    images: [{ url: '/hero-model.png', width: 1200, height: 630, alt: 'Homeopathy Treatments Kolhapur' }],
   },
 };
 
 export default function HomeopathyLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <>{children}</>;
 }
