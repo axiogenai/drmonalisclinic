@@ -27,12 +27,12 @@ export default function HeroSection() {
         style={{ background: 'radial-gradient(circle, #F0DAAA 0%, transparent 70%)' }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 md:px-10 flex flex-col md:flex-row items-center md:items-end justify-between flex-1 w-full pt-28 xs:pt-32 sm:pt-36 md:pt-0">
+      <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6 md:px-10 flex flex-col md:flex-row items-center md:items-end justify-between flex-1 w-full pt-28 xs:pt-32 sm:pt-36 md:pt-20 lg:pt-24">
 
         {/* ─── LEFT COLUMN (Desktop: Girl Portrait / Mobile: Positioned below text at bottom) ─── */}
         <div className="w-full md:w-[48%] order-2 md:order-1 relative flex flex-col items-center justify-end mt-auto md:mt-0">
           <div
-            className="relative w-full max-w-[320px] xs:max-w-[370px] sm:max-w-[430px] md:max-w-none h-[340px] xs:h-[400px] sm:h-[460px] md:h-screen flex items-end justify-center"
+            className="relative w-full max-w-[320px] xs:max-w-[370px] sm:max-w-[430px] md:max-w-none h-[340px] xs:h-[400px] sm:h-[460px] md:h-[calc(100dvh-5.5rem)] md:max-h-[660px] lg:max-h-[720px] xl:max-h-[760px] flex items-end justify-center"
           >
             <Image
               src="/girl.png"
@@ -46,7 +46,7 @@ export default function HeroSection() {
         </div>
 
         {/* ─── RIGHT COLUMN: Content ─── */}
-        <div className="w-full md:w-[52%] order-1 md:order-2 flex flex-col justify-center items-center md:items-start text-center md:text-left pl-0 md:pl-10 pt-2 sm:pt-4 md:pt-0 pb-2 md:pb-12 min-h-auto md:min-h-screen">
+        <div className="w-full md:w-[52%] order-1 md:order-2 flex flex-col justify-center items-center md:items-start text-center md:text-left pl-0 md:pl-10 pt-2 sm:pt-4 md:pt-0 pb-2 md:pb-12 min-h-auto md:min-h-[calc(100dvh-5.5rem)]">
 
           {/* Headline & Description (No animation on mobile) */}
           <motion.div
