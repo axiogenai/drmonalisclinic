@@ -87,10 +87,10 @@ export default function AboutPage() {
   } catch {}
   const aboutSettings = adminData?.aboutSettings || defaultAboutSettings;
 
-  // Hero background slideshow
+  // Hero background slideshow (optimized local WebP)
   const heroSlides = [
-    '/docbg.png',
-    '/docbg2.png',
+    '/docbg.webp',
+    '/docbg2.webp',
   ];
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
 
@@ -104,54 +104,54 @@ export default function AboutPage() {
   // Doctor section accordion
   const [activeAccordion, setActiveAccordion] = useState<string | null>('expertise');
 
-  // Services Slider
+  // Services Slider (Ultra-light local WebP images, 0ms external network delay)
   const services = [
     {
       title: 'Skin Treatments',
       desc: 'Targeted solutions for acne, pigmentation, aging, and overall skin health.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Skin-treatments.jpg',
+      image: '/about/skin-treatments.webp',
       link: '/cosmetic-treatments'
     },
     {
       title: 'Hair Treatments',
       desc: 'Advanced therapies to treat hair loss, thinning, dandruff, and scalp conditions.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Hair-treatments.jpg',
+      image: '/about/hair-treatments.webp',
       link: '/hair-and-skin'
     },
     {
       title: 'Body Treatments',
       desc: 'Aesthetic treatments for contouring, stretch marks, sweating, and rejuvenation.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Body-treatments.jpg',
+      image: '/about/body-treatments.webp',
       link: '/cosmetic-treatments'
     },
     {
       title: 'Dermato Surgery',
       desc: 'Safe, expert procedures for scars, moles, tags, and more.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Dermato-Surgery.jpg',
+      image: '/about/dermato-surgery.webp',
       link: '/cosmetic-treatments'
     },
     {
       title: 'Medical Dermatology',
       desc: 'Diagnosis and treatment for chronic skin, scalp, and nail conditions.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Medical-Dermatology.jpg',
+      image: '/about/medical-dermatology.webp',
       link: '/homeopathy'
     },
     {
       title: 'Injectables',
       desc: 'Botox, fillers, and boosters for refined, natural-looking enhancement.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Injectables.jpg',
+      image: '/about/injectables.webp',
       link: '/cosmetic-treatments'
     },
     {
       title: 'Wellness',
       desc: 'IV drips and diet counselling to support skin and hair from within.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Wellness.jpg',
+      image: '/about/wellness.webp',
       link: '/homeopathy'
     },
     {
       title: 'Medi Facials',
       desc: 'Dermatologist-designed facials to hydrate, brighten, and renew.',
-      image: 'https://primederm.in/wp-content/uploads/2026/03/Medi-Facials.jpg',
+      image: '/about/medi-facials.webp',
       link: '/cosmetic-treatments'
     }
   ];
@@ -243,9 +243,11 @@ export default function AboutPage() {
             <div className="lg:col-span-6">
               <div className="rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-gray-100/80">
                 <img
-                  src="/about-story.jpg"
+                  src="/about-story.webp"
                   alt="Dr. Monali's Homeopathy & Skin Clinic"
                   className="w-full h-auto object-cover rounded-2xl block"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -329,9 +331,11 @@ export default function AboutPage() {
         {/* Dead-Centered Bottom-Anchored Cutout Model */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-0 flex justify-center items-end opacity-15 lg:opacity-100">
           <img
-            src="/about-model.png"
+            src="/about-model.webp"
             alt="Dr. Monali's Clinic Model"
             className="h-[420px] md:h-[540px] lg:h-[680px] xl:h-[720px] w-auto max-w-none object-contain block translate-y-1"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
@@ -392,9 +396,11 @@ export default function AboutPage() {
             <div className="lg:col-span-5">
               <div className="rounded-xl overflow-hidden shadow-xl">
                 <img
-                  src="https://primederm.in/wp-content/uploads/2025/05/pexels-john-tekeridis-21837-14256897-2.png"
+                  src="/about/why-us.webp"
                   alt="Why Choose Dr. Monali's Clinic"
                   className="w-full h-auto object-cover rounded-xl"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -653,9 +659,11 @@ export default function AboutPage() {
             {/* Center Column: Joint Doctors Portrait (No wrapper, pure image) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
               <img
-                src="/aboutdoc.png?v=latest"
+                src="/aboutdoc.webp"
                 alt={`${aboutSettings.doctor1.name} & ${aboutSettings.doctor2.name}`}
                 className="w-full max-w-[440px] h-auto object-contain block"
+                loading="lazy"
+                decoding="async"
               />
               <div className="mt-4 inline-flex items-center gap-2 bg-white border border-gray-200/80 shadow-xs px-4 py-1.5 rounded-full text-xs font-medium text-gray-700">
                 <Award className="w-4 h-4 text-[#108283]" />

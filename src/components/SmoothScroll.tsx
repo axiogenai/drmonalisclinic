@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import Lenis from 'lenis';
 
 export function scrollToTop(duration = 1.1) {
@@ -26,6 +27,24 @@ export function scrollToTarget(targetId: string, offset = -90, duration = 1.2) {
 }
 
 export default function SmoothScroll() {
+  const pathname = usePathname();
+  const prevPathnameRef = useRef(pathname);
+
+  // Immediately reset scroll to top on route changes (prevent sticky footer scroll carry-over)
+  useEffect(() => {
+    if (prevPathnameRef.current !== pathname) {
+      prevPathnameRef.current = pathname;
+      if (!window.location.hash) {
+        const lenis = (window as any).__lenis;
+        if (lenis) {
+          lenis.scrollTo(0, { immediate: true });
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }
+    }
+  }, [pathname]);
+
   useEffect(() => {
     // Only initialize Lenis on non-touch devices to avoid touch event interference on mobile
     const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);

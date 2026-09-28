@@ -27,10 +27,11 @@ export default function AboutDoctorSection() {
               {/* Main Portrait Card */}
               <div className="relative rounded-[32px] overflow-hidden border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.08)] bg-white">
                 <img
-                  src="/doctor.png?v=original"
+                  src="/doctor.webp"
                   alt={`${aboutSettings.doctor1.name} & ${aboutSettings.doctor2.name} - Dr. Monali's Homeopathy Clinic`}
                   className="w-full h-auto max-h-[580px] object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
 

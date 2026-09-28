@@ -126,6 +126,12 @@ export default function Footer() {
     if (pathname === href) {
       e.preventDefault();
       scrollToTop();
+    } else {
+      const lenis = (window as any).__lenis;
+      if (lenis) {
+        lenis.scrollTo(0, { immediate: true });
+      }
+      window.scrollTo(0, 0);
     }
   };
 
@@ -235,6 +241,7 @@ export default function Footer() {
                 <li>
                   <Link 
                     href="/shop" 
+                    prefetch={true}
                     onClick={(e) => handlePageClick('/shop', e)}
                     className="hover:text-[#108283] hover:translate-x-1 inline-block transition-all cursor-pointer"
                   >
@@ -244,6 +251,7 @@ export default function Footer() {
                 <li>
                   <Link 
                     href="/about" 
+                    prefetch={true}
                     onClick={(e) => handlePageClick('/about', e)}
                     className="hover:text-[#108283] hover:translate-x-1 inline-block transition-all cursor-pointer"
                   >
