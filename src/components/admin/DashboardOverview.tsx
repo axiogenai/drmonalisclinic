@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAdminData } from '@/context/AdminDataContext';
-import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2, TicketPercent, ChevronRight } from 'lucide-react';
+import { Calendar, ShoppingBag, Stethoscope, Star, ArrowRight, PlusCircle, Clock, Images, GraduationCap, Building2, TicketPercent, ChevronRight, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardOverview() {
@@ -205,6 +205,13 @@ export default function DashboardOverview() {
           </div>
           <div className="p-3 space-y-2">
             {[
+              {
+                tab: 'hero',
+                label: 'Hero Section Editor',
+                desc: 'Homepage main headlines, tagline, clinical bio & buttons',
+                icon: Sparkles,
+                iconBg: 'bg-amber-50 text-amber-700',
+              },
               {
                 tab: 'appointments',
                 label: 'Patient Appointments',

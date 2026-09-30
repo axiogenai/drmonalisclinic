@@ -13,6 +13,7 @@ import MarqueeManager from '@/components/admin/MarqueeManager';
 import ResultsManager from '@/components/admin/ResultsManager';
 import FooterManager from '@/components/admin/FooterManager';
 import AboutManager from '@/components/admin/AboutManager';
+import HeroManager from '@/components/admin/HeroManager';
 import CouponsManager from '@/components/admin/CouponsManager';
 
 function AdminContent() {
@@ -20,6 +21,7 @@ function AdminContent() {
   const tab = searchParams.get('tab') || 'dashboard';
   
   switch (tab) {
+    case 'hero': return <HeroManager />;
     case 'appointments': return <AppointmentsManager />;
     case 'about': return <AboutManager />;
     case 'footer': return <FooterManager />;

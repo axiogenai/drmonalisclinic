@@ -6,8 +6,59 @@ import Image from 'next/image';
 import { ArrowRight, CalendarCheck, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import { useAdminData } from '@/context/AdminDataContext';
+import { defaultHeroSettings } from '@/data/defaultHeroSettings';
+
+// Helper to render heading with signature teal italic accent on highlighted terms
+function renderHeadingWithHighlights(heading: string, highlightText?: string) {
+  if (!heading) return null;
+  if (!highlightText || !highlightText.trim()) {
+    return heading;
+  }
+
+  // Split multiple comma- or pipe-separated highlight words
+  const terms = highlightText
+    .split(/[,|]/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  if (terms.length === 0) return heading;
+
+  const escaped = terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const regex = new RegExp(`(${escaped})`, 'gi');
+  const parts = heading.split(regex);
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        const isMatch = terms.some((t) => t.toLowerCase() === part.toLowerCase());
+        if (isMatch) {
+          return (
+            <span
+              key={index}
+              className="font-semibold italic text-[#108283]"
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              {part}
+            </span>
+          );
+        }
+        return <React.Fragment key={index}>{part}</React.Fragment>;
+      })}
+    </>
+  );
+}
+
 export default function HeroSection() {
   const [isMobile, setIsMobile] = useState(true);
+
+  let adminData: ReturnType<typeof useAdminData> | null = null;
+  try {
+    adminData = useAdminData();
+  } catch {
+    // fallback if context not ready
+  }
+  const heroSettings = adminData?.heroSettings || defaultHeroSettings;
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -59,38 +110,16 @@ export default function HeroSection() {
               className="font-playfair text-[30px] xs:text-[36px] sm:text-[40px] md:text-[44px] lg:text-[48px] font-normal leading-[1.15] tracking-tight text-gray-950 mb-2.5"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
-              Advanced{' '}
-              <span
-                className="font-semibold italic text-[#108283]"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-              >
-                Homeopathy
-              </span>
-              ,{' '}
-              <span
-                className="font-semibold italic text-[#108283]"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-              >
-                Skin
-              </span>{' '}
-              &amp;{' '}
-              <span
-                className="font-semibold italic text-[#108283]"
-                style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-              >
-                Hair Care
-              </span>
+              {renderHeadingWithHighlights(heroSettings.heading, heroSettings.headingHighlight)}
             </h1>
             <p
               className="font-playfair text-base xs:text-lg sm:text-xl italic text-gray-700 font-light leading-snug mb-2"
               style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
             >
-              Constitutional Healing &amp; Modern Clinical Cosmetology in Kolhapur.
+              {heroSettings.tagline}
             </p>
-            <p className="font-source text-gray-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-lg mx-auto md:mx-0">
-              Consult with <strong className="font-semibold text-gray-900">Dr. Monali Subhedar</strong> (BHMS, MD, Cosmetologist) &amp;{' '}
-              <strong className="font-semibold text-gray-900">Dr. Sachin Subhedar</strong>.
-              15+ years of trusted clinical excellence, combining root-cause constitutional homeopathy, advanced skin treatments, and hair PRP therapy.
+            <p className="font-source text-gray-600 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-lg mx-auto md:mx-0 whitespace-pre-line">
+              {heroSettings.description}
             </p>
           </motion.div>
 
@@ -102,21 +131,21 @@ export default function HeroSection() {
             className="flex flex-row items-center justify-center md:justify-start gap-2.5 sm:gap-3.5 mb-4 w-full sm:w-auto"
           >
             <Link
-              href="#booking"
+              href={heroSettings.primaryBtnLink || '#booking'}
               className="inline-flex items-center justify-center gap-2 bg-[#108283] hover:bg-[#0c6b6c] active:scale-95 text-white rounded-full px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold transition-all cursor-pointer font-source shadow-[0_8px_20px_rgba(16,130,131,0.22)]"
               style={{ fontFamily: "'Source Sans 3', sans-serif" }}
             >
               <CalendarCheck className="w-4 h-4 text-white" />
-              <span>Book Appointment</span>
+              <span>{heroSettings.primaryBtnText || 'Book Appointment'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
 
             <Link
-              href="#services"
+              href={heroSettings.secondaryBtnLink || '#services'}
               className="inline-flex items-center justify-center gap-1.5 bg-white/90 hover:bg-white active:scale-95 text-gray-900 border border-gray-200/90 rounded-full px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-medium transition-all backdrop-blur-sm cursor-pointer font-source shadow-2xs"
               style={{ fontFamily: "'Source Sans 3', sans-serif" }}
             >
-              <span>Our Services</span>
+              <span>{heroSettings.secondaryBtnText || 'Our Services'}</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#108283]" />
             </Link>
           </motion.div>
@@ -129,15 +158,21 @@ export default function HeroSection() {
             className="hidden md:inline-flex flex-wrap items-center justify-start gap-2.5 bg-white/80 backdrop-blur-md border border-white/90 rounded-full px-3.5 py-2 shadow-[0_4px_16px_rgba(0,0,0,0.04)] font-source text-xs text-gray-700"
             style={{ fontFamily: "'Source Sans 3', sans-serif" }}
           >
-            <div className="flex items-center gap-1.5 font-medium text-gray-900">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-              <span>Open Mon–Sat: 10 AM–2 PM &amp; 5–9 PM</span>
-            </div>
-            <span className="text-gray-300">•</span>
-            <div className="flex items-center gap-1 text-gray-600">
-              <MapPin className="w-3.5 h-3.5 text-[#F0A070] shrink-0" />
-              <span>Near Ring Road, Kolhapur</span>
-            </div>
+            {heroSettings.badgeOpenHours && (
+              <div className="flex items-center gap-1.5 font-medium text-gray-900">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                <span>{heroSettings.badgeOpenHours}</span>
+              </div>
+            )}
+            {heroSettings.badgeOpenHours && heroSettings.badgeLocation && (
+              <span className="text-gray-300">•</span>
+            )}
+            {heroSettings.badgeLocation && (
+              <div className="flex items-center gap-1 text-gray-600">
+                <MapPin className="w-3.5 h-3.5 text-[#F0A070] shrink-0" />
+                <span>{heroSettings.badgeLocation}</span>
+              </div>
+            )}
           </motion.div>
 
         </div>

@@ -14,6 +14,7 @@ import {
   ResultItem, 
   FooterSettings, 
   AboutSettings, 
+  HeroSettings,
   Coupon, 
   CouponValidationResult 
 } from '@/types/admin';
@@ -32,6 +33,7 @@ import { defaultServices } from '@/data/services';
 import { defaultMarqueeItems, defaultMarqueeSettings } from '@/data/marquee';
 import { defaultResults } from '@/data/results';
 import { defaultFooterSettings, defaultAboutSettings } from '@/data/defaultAboutAndFooter';
+import { defaultHeroSettings } from '@/data/defaultHeroSettings';
 import { defaultCoupons } from '@/data/defaultCoupons';
 
 interface LiveUpdateInfo {
@@ -87,6 +89,10 @@ interface AdminDataContextType {
 
   siteSettings: SiteSettings;
   updateSiteSettings: (settings: Partial<SiteSettings>) => Promise<void>;
+
+  heroSettings: HeroSettings;
+  updateHeroSettings: (settings: Partial<HeroSettings>) => Promise<void>;
+  resetHeroSettings: () => Promise<void>;
 
   footerSettings: FooterSettings;
   updateFooterSettings: (settings: Partial<FooterSettings>) => Promise<void>;
@@ -147,6 +153,7 @@ const defaultSettings: SiteSettings = {
 };
 
 const KEY_LABELS: Record<string, string> = {
+  hero_settings: 'Hero Section Headlines & Badges',
   about_settings: 'Physician Profiles & Statistics',
   footer_settings: 'Footer & Clinic Info',
   site_settings: 'Clinic Contact & Headlines',
@@ -211,6 +218,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   const [blogs, setBlogs] = useState<BlogPost[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSettings);
+  const [heroSettings, setHeroSettings] = useState<HeroSettings>(defaultHeroSettings);
   const [footerSettings, setFooterSettings] = useState<FooterSettings>(defaultFooterSettings);
   const [aboutSettings, setAboutSettings] = useState<AboutSettings>(defaultAboutSettings);
   const [marqueeItems, setMarqueeItems] = useState<MarqueeItem[]>([]);
@@ -266,6 +274,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
     setBlogs(loadData<BlogPost[]>('admin_blogs', defaultBlogs));
     setAppointments(loadData<Appointment[]>('admin_appointments_v2', []));
     setSiteSettings(loadData<SiteSettings>('admin_settings', defaultSettings));
+    setHeroSettings(loadData<HeroSettings>('admin_hero_settings_v1', defaultHeroSettings));
     setFooterSettings(loadData<FooterSettings>('admin_footer_settings_v1', defaultFooterSettings));
     setAboutSettings(loadData<AboutSettings>('admin_about_settings_v1', defaultAboutSettings));
 
@@ -314,6 +323,14 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
           try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(settingsMap.about_settings)); } catch {}
         } else {
           persistSetting('about_settings', defaultAboutSettings);
+        }
+
+        // Hero Settings
+        if (settingsMap.hero_settings) {
+          setHeroSettings(settingsMap.hero_settings);
+          try { localStorage.setItem('admin_hero_settings_v1', JSON.stringify(settingsMap.hero_settings)); } catch {}
+        } else {
+          persistSetting('hero_settings', defaultHeroSettings);
         }
 
         // Footer Settings
@@ -421,6 +438,10 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
                 setAboutSettings(data);
                 try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(data)); } catch {}
                 triggerUpdateNotice(key);
+              } else if (key === 'hero_settings' && data) {
+                setHeroSettings(data);
+                try { localStorage.setItem('admin_hero_settings_v1', JSON.stringify(data)); } catch {}
+                triggerUpdateNotice(key);
               } else if (key === 'footer_settings' && data) {
                 setFooterSettings(data);
                 try { localStorage.setItem('admin_footer_settings_v1', JSON.stringify(data)); } catch {}
@@ -488,6 +509,10 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       if (key === 'about_settings' && data) {
         setAboutSettings(data);
         try { localStorage.setItem('admin_about_settings_v1', JSON.stringify(data)); } catch {}
+        triggerUpdateNotice(key);
+      } else if (key === 'hero_settings' && data) {
+        setHeroSettings(data);
+        try { localStorage.setItem('admin_hero_settings_v1', JSON.stringify(data)); } catch {}
         triggerUpdateNotice(key);
       } else if (key === 'footer_settings' && data) {
         setFooterSettings(data);
@@ -884,6 +909,20 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
     await persistSetting('site_settings', updated);
   };
 
+  // Hero actions
+  const updateHeroSettings = async (settings: Partial<HeroSettings>) => {
+    const updated = { ...heroSettings, ...settings };
+    setHeroSettings(updated);
+    try { localStorage.setItem('admin_hero_settings_v1', JSON.stringify(updated)); } catch {}
+    await persistSetting('hero_settings', updated);
+  };
+
+  const resetHeroSettings = async () => {
+    setHeroSettings(defaultHeroSettings);
+    try { localStorage.setItem('admin_hero_settings_v1', JSON.stringify(defaultHeroSettings)); } catch {}
+    await persistSetting('hero_settings', defaultHeroSettings);
+  };
+
   // Footer actions
   const updateFooterSettings = async (settings: Partial<FooterSettings>) => {
     const updated = { ...footerSettings, ...settings };
@@ -988,6 +1027,7 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
       blogs, addBlog, updateBlog, deleteBlog,
       appointments, addAppointment, updateAppointmentStatus, deleteAppointment, clearAppointments,
       siteSettings, updateSiteSettings,
+      heroSettings, updateHeroSettings, resetHeroSettings,
       footerSettings, updateFooterSettings, resetFooterSettings,
       aboutSettings, updateAboutSettings, resetAboutSettings,
       marqueeItems, addMarqueeItem, updateMarqueeItem, deleteMarqueeItem, reorderMarqueeItems,

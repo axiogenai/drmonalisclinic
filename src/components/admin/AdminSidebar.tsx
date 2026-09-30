@@ -17,7 +17,8 @@ import {
   Home,
   GraduationCap,
   Building2,
-  TicketPercent
+  TicketPercent,
+  Sparkles
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -27,6 +28,7 @@ interface AdminSidebarProps {
 
 const navItems = [
   { name: 'Dashboard', id: 'dashboard', icon: LayoutDashboard },
+  { name: 'Hero Section', id: 'hero', icon: Sparkles },
   { name: 'Appointments', id: 'appointments', icon: Calendar },
   { name: 'About & Doctors', id: 'about', icon: GraduationCap },
   { name: 'Footer & Clinic Info', id: 'footer', icon: Building2 },

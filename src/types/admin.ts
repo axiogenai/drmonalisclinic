@@ -66,6 +66,19 @@ export interface SiteSettings {
   heroSubtext: string;
 }
 
+export interface HeroSettings {
+  heading: string;
+  headingHighlight: string;
+  tagline: string;
+  description: string;
+  primaryBtnText: string;
+  primaryBtnLink: string;
+  secondaryBtnText: string;
+  secondaryBtnLink: string;
+  badgeOpenHours: string;
+  badgeLocation: string;
+}
+
 export interface MarqueeItem {
   id: string;
   type: 'product' | 'custom' | 'offer';
